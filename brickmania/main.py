@@ -58,10 +58,12 @@ class Brick:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.color = RED
+        self.color = random.choice([RED, BLUE, GREEN, YELLOW])  # Randomize brick color
 
     def draw(self):
         pygame.draw.rect(screen, self.color, (self.x, self.y, brick_width, brick_height))
+        # Draw black border around the brick
+        pygame.draw.rect(screen, BLACK, (self.x, self.y, brick_width, brick_height), 2)
 
 def draw_player(x, y):
     pygame.draw.rect(screen, BLUE, (x, y, player_width, player_height), border_radius=10)
@@ -187,7 +189,9 @@ def main_game():
             last_move_time = current_time
 
         if keys[pygame.K_UP] and current_time - last_special_ball_time > 20:
-            special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, 15, -15, current_time + 3))
+            dx = random.choice([5, -5])
+            dy = random.choice([-5, -5])  # Ensure the special ball always goes up (no downward fire)
+            special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy, current_time + 3))
             last_special_ball_time = current_time
 
         balls_to_remove = []
