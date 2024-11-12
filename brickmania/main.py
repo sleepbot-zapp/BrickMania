@@ -191,10 +191,10 @@ def main_game():
             player_x += player_speed
             last_move_time = current_time
 
-        if keys[pygame.K_UP] and current_time - last_special_ball_time > 20:
-            for _ in range(10):
-                dx = random.choice([8, -8]) 
-                dy = random.choice([-16, -16])
+        if keys[pygame.K_UP] :#and current_time - last_special_ball_time > 20:
+            for _ in range(1):
+                dx = random.choice([-8, 8]) 
+                dy = random.randint(-5, -2)
                 special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy, current_time + 3))
             last_special_ball_time = current_time
 
