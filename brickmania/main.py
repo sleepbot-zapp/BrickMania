@@ -5,10 +5,10 @@ import time
 
 pygame.init()
 
-pygame.mixer.music.load("music.mp3")
+pygame.mixer.music.load("./brickmania/music.mp3")
 pygame.mixer.music.play(-1)
 
-WIDTH, HEIGHT = 800, 800
+WIDTH, HEIGHT = 800, 900  # Increased height
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("BRICKMANIA")
 
@@ -90,10 +90,10 @@ def show_score(score):
 
 def game_over(score):
     text = font.render("Game Over! Press SPACE to restart", True, WHITE)
-    highscore = int(open("highscore.txt").read())
+    highscore = int(open("./brickmania/highscore.txt").read())
     text2 = font.render(f"High Score = {[score, highscore][highscore>score]}", True, WHITE)
     if highscore < score:
-        with open('highscore.txt', 'w') as f:
+        with open('./brickmania/highscore.txt', 'w') as f:
             f.write(str(score))
     screen.blit(text, (WIDTH // 2 - 200, HEIGHT // 2))
     screen.blit(text2, (WIDTH // 2 - 120, HEIGHT // 2 + 40))
@@ -119,22 +119,48 @@ def create_new_bricks():
             bricks.append(Brick(col * brick_width, row * brick_height))
     return bricks
 
+class SpecialBall:
+    def __init__(self, x, y, dx, dy, expiration_time):
+        self.x = x
+        self.y = y
+        self.dx = dx
+        self.dy = dy
+        self.expiration_time = expiration_time
+
+    def move(self):
+        self.x += self.dx
+        self.y += self.dy
+
+        # Special ball logic: Defy physics, bounce off walls and player
+        if self.x <= ball_radius or self.x >= WIDTH - ball_radius:
+            self.dx = -self.dx
+
+        if self.y <= ball_radius:
+            self.dy = -self.dy
+
+    def draw(self):
+        pygame.draw.circle(screen, RED, (self.x, self.y), ball_radius)
+
 def main_game():
     player_x = (WIDTH - player_width) // 2
-    player_y = HEIGHT - player_height - 10
+    player_y = HEIGHT - player_height - 70  # 70px above the bottom edge to leave space for the line
 
     balls = [(WIDTH // 2, HEIGHT // 2, ball_speed_x, ball_speed_y)]
-    score = 0
+    balls_crossed_line = [False]  # Initialize with one False for the first ball
 
+    score = 0
     bricks = create_new_bricks()
     powerups = []
+    special_balls = []  # Add this line to define the special_balls list
     running = True
 
     last_move_time = time.time()
     inactivity_threshold = 2
 
     last_brick_move_time = time.time()
-    brick_move_speed = 1
+    brick_move_speed = 5
+
+    last_special_ball_time = time.time()  # Track the last special ball time
 
     while running:
         screen.fill(BLACK)
@@ -148,6 +174,7 @@ def main_game():
 
         keys = pygame.key.get_pressed()
 
+        # Handle normal player movement
         if current_time - last_move_time > inactivity_threshold:
             if player_x < WIDTH // 2:
                 player_x += random.choice([player_speed, -player_speed])
@@ -162,8 +189,14 @@ def main_game():
             player_x += player_speed
             last_move_time = current_time
 
-        balls_to_remove = []
+        # Launch a special ball when the UP key is pressed
+        if keys[pygame.K_UP] and current_time - last_special_ball_time > 20:  # 20 seconds cooldown
+            # Launch a special ball
+            special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, 15, -15, current_time + 3))
+            last_special_ball_time = current_time
 
+        # Move and handle balls
+        balls_to_remove = []
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
             ball_x += ball_dx
             ball_y += ball_dy
@@ -174,9 +207,11 @@ def main_game():
             if ball_y <= ball_radius:
                 ball_dy = -ball_dy
 
-            if ball_y >= HEIGHT - ball_radius:
-                balls_to_remove.append(i)
+            # Check if the ball has crossed the horizontal line
+            if ball_y >= HEIGHT - 60 - ball_radius and not balls_crossed_line[i]:  # Ball crosses line
+                balls_crossed_line[i] = True
 
+            # If the ball crosses the line, do not stop it, just update its position
             if player_x < ball_x < player_x + player_width and player_y < ball_y + ball_radius < player_y + player_height:
                 center_x = player_x + player_width / 2
                 if abs(ball_x - center_x) < player_width / 4:
@@ -187,19 +222,22 @@ def main_game():
 
             balls[i] = (ball_x, ball_y, ball_dx, ball_dy)
 
-        for index in reversed(balls_to_remove):
-            balls.pop(index)
-
-        if not balls:
+        # If all balls have crossed the line, end the game
+        if all(balls_crossed_line):
             game_over(score)
             return
 
+        # Handle bricks falling
         if current_time - last_brick_move_time > 1:
             for brick in bricks:
                 brick.y += brick_move_speed
+                if brick.y + brick_height >= HEIGHT:  # Check if the brick reached the bottom of the screen
+                    game_over(score)
+                    return
             last_brick_move_time = current_time
 
-        for brick in bricks:
+        # Handle collision with bricks and powerups
+        for brick in bricks[:]:
             for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
                 if brick.x < ball_x < brick.x + brick_width and brick.y < ball_y < brick.y + brick_height:
                     bricks.remove(brick)
@@ -209,12 +247,28 @@ def main_game():
                         powerups.append(powerup)
                     balls[i] = (ball_x, ball_y, ball_dx, -ball_dy)
 
+            # Handle special ball collision with bricks
+            for special_ball in special_balls[:]:
+                if brick.x < special_ball.x < brick.x + brick_width and brick.y < special_ball.y < brick.y + brick_height:
+                    bricks.remove(brick)
+                    score += 10
+                    powerup = drop_powerup(brick.x, brick.y, powerups)
+                    if powerup:
+                        powerups.append(powerup)
+                    special_ball.dy = -special_ball.dy  # Bounce back
+
         for powerup in powerups[:]:
             if player_x < powerup.x + powerup.width and player_x + player_width > powerup.x and \
                player_y < powerup.y + powerup.height and player_y + player_height > powerup.y:
                 powerups.remove(powerup)
                 balls.append((WIDTH // 2, HEIGHT // 2, ball_speed_x, ball_speed_y))
-                score += 20
+                balls_crossed_line.append(False)  # Add a new entry for the new ball
+                score += 10
+
+        # Move and draw special balls
+        for special_ball in special_balls[:]:
+            special_ball.move()
+            special_ball.draw()
 
         for powerup in powerups:
             powerup.move()
@@ -224,8 +278,24 @@ def main_game():
         draw_player(player_x, player_y)
         for ball_x, ball_y, _, _ in balls:
             draw_ball(ball_x, ball_y)
+
         show_score(score)
+
+        # Show Special Ball availability
+        if current_time - last_special_ball_time > 20:
+            special_ball_text = font.render("Special Ball Ready!", True, WHITE)
+        else:
+            remaining_time = max(0, 20 - (current_time - last_special_ball_time))
+            special_ball_text = font.render(f"Special Ball in {int(remaining_time)}s", True, WHITE)
+
+        # Draw a horizontal line separating the player from the text
+        pygame.draw.line(screen, WHITE, (0, HEIGHT - 60), (WIDTH, HEIGHT - 60), 2)
+
+        # Place the special ball text below the player platform (with a gap)
+        screen.blit(special_ball_text, (WIDTH // 2 - special_ball_text.get_width() // 2, HEIGHT - 40))
+
         pygame.display.flip()
+
 
 if __name__ == "__main__":
     while True:
