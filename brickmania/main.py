@@ -168,6 +168,9 @@ def main_game():
         delta_time = clock.tick(60) / 1000
         current_time = time.time()
 
+        if len(bricks) == 0:
+            bricks = create_new_bricks()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
