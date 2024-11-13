@@ -11,8 +11,8 @@ track2 = pygame.mixer.Sound("./brickmania/music2.mp3")
 track3 = pygame.mixer.Sound("./brickmania/music3.mp3")
 pygame.mixer.music.play(-1)
 
-SCALE = 0.5
-WIDTH, HEIGHT = int(900 * SCALE), int(900 * SCALE)
+SCALE = 1
+WIDTH, HEIGHT = int(800 * SCALE), int(600 * SCALE)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("BRICKMANIA")
 
@@ -37,7 +37,7 @@ brick_rows = 6
 brick_cols = WIDTH // brick_width
 
 clock = pygame.time.Clock()
-font = pygame.font.SysFont(None, int(36 * SCALE))
+font = pygame.font.SysFont(None, int(25 * SCALE))
 
 trail = []
 trail_length = 10
@@ -104,7 +104,7 @@ def game_over(score):
         ...
         # with open('./brickmania/highscore.txt', 'w') as f:
         #     f.write(str(score))
-    screen.blit(text, (WIDTH // 2 - 220 * SCALE, HEIGHT // 2))
+    screen.blit(text, (WIDTH // 2 - 150 * SCALE, HEIGHT // 2))
     screen.blit(text2, (WIDTH // 2 - 100 * SCALE, HEIGHT // 2 + 40 * SCALE))
     screen.blit(text3, (WIDTH // 2 - 100 * SCALE, HEIGHT // 2 + 80 * SCALE))
     pygame.display.flip()
@@ -118,6 +118,9 @@ def game_over(score):
                 track2.stop()
                 pygame.mixer.music.unpause()
                 return
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
+                pygame.quit()
+                sys.exit()
 
 def drop_powerup(brick_x, brick_y, powerups):
     if len(powerups) < 2 and random.random() < 0.2:
@@ -214,12 +217,10 @@ def main_game():
             pygame.mixer.music.pause()
             track1.play()
             last_special_ball_time = current_time
-            
-        # Move all balls including special balls
+
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
             balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
 
-        # Update ball positions
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
             ball_x += ball_dx
             ball_y += ball_dy
@@ -246,7 +247,6 @@ def main_game():
             game_over(score)
             return
 
-        # Update brick positions
         if current_time - last_brick_move_time > 1:
             for brick in bricks:
                 brick.y += brick_move_speed
@@ -289,8 +289,6 @@ def main_game():
                         score += 20
                 last_x_key_time = current_time
 
-
-        # Handle power-ups
         for powerup in powerups[:]:
             powerup.move()
             powerup.draw()
@@ -342,6 +340,65 @@ def main_game():
             track2.stop()
             pygame.mixer.music.unpause()
 
-if __name__ == "__main__":
+class FallingTile:
+    def __init__(self):
+        self.width = brick_width
+        self.height = brick_height
+        self.x = random.randint(0, WIDTH - self.width)
+        self.y = random.randint(-HEIGHT, 0)
+        self.speed = random.randint(2, 7) * SCALE
+        self.color = random.choice([RED, BLUE, GREEN, YELLOW])
+
+    def move(self):
+        self.y += self.speed
+        if self.y > HEIGHT:
+            self.y = random.randint(-HEIGHT, 0)
+            self.x = random.randint(0, WIDTH - self.width) 
+
+    def draw(self):
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
+
+def main_menu():
+    title_font = pygame.font.SysFont(None, int(72 * SCALE))
+    menu_font = pygame.font.SysFont(None, int(48 * SCALE))
+
+    tiles = [FallingTile() for _ in range(20)]
+
     while True:
+        screen.fill(BLACK)
+
+        for tile in tiles:
+            tile.move()
+            tile.draw()
+
+        title_text = title_font.render("BRICKMANIA", True, YELLOW)
+        play_text = menu_font.render("Press SPACE to Play", True, WHITE)
+        quit_text = menu_font.render("Press Q to Quit", True, WHITE)
+
+        screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, HEIGHT // 2 - 100))
+        screen.blit(play_text, (WIDTH // 2 - play_text.get_width() // 2, HEIGHT // 2))
+        screen.blit(quit_text, (WIDTH // 2 - quit_text.get_width() // 2, HEIGHT // 2 + 60))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    return
+                elif event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()
+
+        clock.tick(60)
+
+
+if __name__ == "__main__":
+    main_menu_passed = False
+    while True:
+        if not main_menu_passed:
+            main_menu()
+            main_menu_passed = True
         main_game()
