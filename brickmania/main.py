@@ -43,13 +43,13 @@ trail = []
 trail_length = 10
 
 class PowerUp:
-    def __init__(self, x, y):
+    def __init__(self, x, y, type):
         self.x = x
         self.y = y
         self.width = 40 * SCALE
         self.height = 20 * SCALE
-        self.type = "extra_ball"
-        self.color = GREEN
+        self.type = type
+        self.color = {"extra_ball": GREEN, "longer_slower": YELLOW, "shorter_faster": RED}[type]
         self.fall_speed = 2 * SCALE
 
     def move(self):
@@ -123,9 +123,11 @@ def game_over(score):
                 sys.exit()
 
 def drop_powerup(brick_x, brick_y, powerups):
+    powerup_type = random.choice(["extra_ball", "longer_slower", "shorter_faster"])
     if len(powerups) < 2 and random.random() < 0.2:
-        return PowerUp(brick_x, brick_y)
+        return PowerUp(brick_x, brick_y, powerup_type)
     return None
+
 
 def create_new_bricks():
     bricks = []
@@ -158,7 +160,12 @@ class SpecialBall:
 speed_increment = 1.0001
 
 def main_game():
-    paused = False
+    # Initialize the player-related variables here, before using them
+    equiped = 0
+    player_width = 100 * SCALE
+    player_height = 20 * SCALE
+    player_speed = 15 * SCALE
+
     player_x = (WIDTH - player_width) // 2
     player_y = HEIGHT - player_height - 70
 
@@ -298,6 +305,16 @@ def main_game():
                 if powerup.type == "extra_ball":
                     balls.append((WIDTH // 2, HEIGHT // 2, ball_speed_x, ball_speed_y))
                     balls_crossed_line.append(False)
+                if powerup.type == "longer_slower" and not equiped:
+                    equiped = 1
+                    player_width *= 2
+                    player_speed *= 0.5
+                    powerup_equiped_time = current_time
+                if powerup.type == "shorter_faster" and not equiped:
+                    equiped = 2
+                    player_width *= 0.5
+                    player_speed *= 2
+                    powerup_equiped_time = current_time
 
         for special_ball in special_balls[:]:
             special_ball.move()
@@ -312,6 +329,15 @@ def main_game():
             draw_ball(ball_x, ball_y)
 
         show_score(score)
+
+        if equiped:
+            if current_time - powerup_equiped_time >= 10:
+                if equiped == 1:
+                    player_width *= 0.5
+                    player_speed *= 2
+                elif equiped == 2:
+                    player_speed *= 0.5
+                    player_width *= 2
 
         if current_time - last_special_ball_time > 19:
             special_ball_text = font.render("Special Ball Ready (UP)", True, GREEN)
@@ -340,6 +366,7 @@ def main_game():
             track2.stop()
             pygame.mixer.music.unpause()
 
+
 class FallingTile:
     def __init__(self):
         self.width = brick_width
@@ -347,7 +374,7 @@ class FallingTile:
         self.x = random.randint(0, WIDTH - self.width)
         self.y = random.randint(-HEIGHT, 0)
         self.speed = random.randint(2, 7) * SCALE
-        self.color = random.choice([RED, BLUE, GREEN, YELLOW])
+        self.color = random.choice([RED, BLUE, GREEN])
 
     def move(self):
         self.y += self.speed
