@@ -6,9 +6,12 @@ import time
 pygame.init()
 
 pygame.mixer.music.load("./brickmania/music.mp3")
+track1 = pygame.mixer.Sound("./brickmania/music1.mp3")
+track2 = pygame.mixer.Sound("./brickmania/music2.mp3")
+track3 = pygame.mixer.Sound("./brickmania/music3.mp3")
 pygame.mixer.music.play(-1)
 
-WIDTH, HEIGHT = 800, 900
+WIDTH, HEIGHT = 900, 900
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("BRICKMANIA")
 
@@ -86,10 +89,12 @@ def draw_bricks(bricks):
         brick.draw()
 
 def show_score(score):
-    text = font.render(f"Score: {score}", True, WHITE)
-    screen.blit(text, (10, 10))
+    text = font.render(f"Score: {score}", True, RED)
+    screen.blit(text, (WIDTH // 2 - 100, HEIGHT - 40))
 
 def game_over(score):
+    pygame.mixer.music.pause()
+    track3.play()
     text = font.render("Game Over! Press SPACE to restart", True, WHITE)
     highscore = int(open("./brickmania/highscore.txt").read())
     text2 = font.render(f"High Score = {[score, highscore][highscore>score]}", True, WHITE)
@@ -109,6 +114,8 @@ def game_over(score):
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                track2.stop()
+                pygame.mixer.music.unpause()
                 return
 
 def drop_powerup(brick_x, brick_y, powerups):
@@ -147,6 +154,7 @@ class SpecialBall:
 speed_increment = 1.0001
 
 def main_game():
+    paused = False
     player_x = (WIDTH - player_width) // 2
     player_y = HEIGHT - player_height - 70
 
@@ -191,23 +199,26 @@ def main_game():
                 player_x -= 5 * player_speed
             last_move_time = current_time
 
-        if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and player_x > 5:
+        if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and player_x > 10:
             player_x -= player_speed
             last_move_time = current_time
-        if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and player_x < WIDTH - player_width - 5:
+        if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and player_x < WIDTH - player_width - 10:
             player_x += player_speed
             last_move_time = current_time
 
-        if (keys[pygame.K_w] or keys[pygame.K_UP]) and current_time - last_special_ball_time > 20:
+        if (keys[pygame.K_w] or keys[pygame.K_UP]) and current_time - last_special_ball_time > 19:
             dx = random.choice([-8, 8]) 
             dy = random.randint(-5, -2)
             special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy, current_time + 3))
+            pygame.mixer.music.pause()
+            track1.play()
             last_special_ball_time = current_time
-
-
+            
+        # Move all balls including special balls
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
             balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
 
+        # Update ball positions
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
             ball_x += ball_dx
             ball_y += ball_dy
@@ -234,6 +245,7 @@ def main_game():
             game_over(score)
             return
 
+        # Update brick positions
         if current_time - last_brick_move_time > 1:
             for brick in bricks:
                 brick.y += brick_move_speed
@@ -265,16 +277,19 @@ def main_game():
             if brick in bricks:
                 bricks.remove(brick)
 
-
-        if current_time - last_x_key_time > random_destruction_interval:
+        if current_time - last_x_key_time > random_destruction_interval - 1:
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+                pygame.mixer.music.pause()
+                track2.play()
                 for _ in range(5):
                     if bricks:
                         random_brick = random.choice(bricks)
                         bricks.remove(random_brick)
-                        score += 20 
-                last_x_key_time = current_time 
+                        score += 20
+                last_x_key_time = current_time
 
+
+        # Handle power-ups
         for powerup in powerups[:]:
             powerup.move()
             powerup.draw()
@@ -284,11 +299,13 @@ def main_game():
                 if powerup.type == "extra_ball":
                     balls.append((WIDTH // 2, HEIGHT // 2, ball_speed_x, ball_speed_y))
                     balls_crossed_line.append(False)
-                    score += 50
 
         for special_ball in special_balls[:]:
             special_ball.move()
             special_ball.draw()
+
+            if special_ball.x < 0 or special_ball.x > WIDTH or special_ball.y < 0 or special_ball.y > HEIGHT:
+                special_balls.remove(special_ball)
 
         draw_bricks(bricks)
         draw_player(player_x, player_y)
@@ -298,24 +315,31 @@ def main_game():
         show_score(score)
 
         if current_time - last_special_ball_time > 19:
-            special_ball_text = font.render("Special Ball Ready (UP)", True, WHITE)
+            special_ball_text = font.render("Special Ball Ready (UP)", True, GREEN)
         else:
             remaining_time = max(0, 20 - (current_time - last_special_ball_time))
             special_ball_text = font.render(f"Special Ball in {int(remaining_time)}s", True, WHITE)
 
         if current_time - last_x_key_time > random_destruction_interval - 1:
-            countdown_text = font.render("Brick Destruction Ready (DOWN)", True, WHITE)
+            countdown_text = font.render("Brick Destruction Ready (DOWN)", True, GREEN)
+            screen.blit(countdown_text, (WIDTH // 2 - countdown_text.get_width() // 2 + 250, HEIGHT - 40))
         else:
             time_until_destruction = max(0, random_destruction_interval - (current_time - last_x_key_time))
             countdown_text = font.render(f"Brick Destruction in {int(time_until_destruction)}s", True, WHITE)
+            screen.blit(countdown_text, (WIDTH // 2 - countdown_text.get_width() // 2 + 200, HEIGHT - 40))
 
         pygame.draw.line(screen, WHITE, (0, HEIGHT - 60), (WIDTH, HEIGHT - 60), 2)
-        screen.blit(special_ball_text, (WIDTH // 2 - special_ball_text.get_width() // 2 - 200, HEIGHT - 40))
-        screen.blit(countdown_text, (WIDTH // 2 - countdown_text.get_width() // 2 + 200, HEIGHT - 40))
+        screen.blit(special_ball_text, (WIDTH // 2 - special_ball_text.get_width() // 2 - 250, HEIGHT - 40))
 
         pygame.display.flip()
 
+        if not special_balls or current_time - last_special_ball_time >= 2:
+            track1.stop()
+            pygame.mixer.music.unpause()
 
+        if current_time - last_x_key_time >= 5:
+            track2.stop()
+            pygame.mixer.music.unpause()
 
 if __name__ == "__main__":
     while True:
