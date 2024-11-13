@@ -49,7 +49,7 @@ class PowerUp:
         self.width = 40 * SCALE
         self.height = 20 * SCALE
         self.type = type
-        self.color = {"extra_ball": GREEN, "longer_slower": YELLOW, "shorter_faster": RED}[type]
+        self.color = {"extra_ball": GREEN}[type]
         self.fall_speed = 2 * SCALE
 
     def move(self):
@@ -123,7 +123,7 @@ def game_over(score):
                 sys.exit()
 
 def drop_powerup(brick_x, brick_y, powerups):
-    powerup_type = random.choice(["extra_ball", "longer_slower", "shorter_faster"])
+    powerup_type = random.choice(["extra_ball",])
     if len(powerups) < 2 and random.random() < 0.2:
         return PowerUp(brick_x, brick_y, powerup_type)
     return None
@@ -168,7 +168,7 @@ def main_game():
     player_x = (WIDTH - player_width) // 2
     player_y = HEIGHT - player_height - 70
 
-    balls = [(random.randint(200, WIDTH // 2), random.randint(200, HEIGHT // 2), ball_speed_x, ball_speed_y)]
+    balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), ball_speed_x, ball_speed_y)]
     balls_crossed_line = [False]
 
     score = 0
@@ -304,16 +304,6 @@ def main_game():
                 if powerup.type == "extra_ball":
                     balls.append((WIDTH // 2, HEIGHT // 2, ball_speed_x, ball_speed_y))
                     balls_crossed_line.append(False)
-                if powerup.type == "longer_slower" and not equiped:
-                    equiped = 1
-                    player_width *= 2
-                    player_speed *= 0.5
-                    powerup_equiped_time = current_time
-                if powerup.type == "shorter_faster" and not equiped:
-                    equiped = 2
-                    player_width *= 0.5
-                    player_speed *= 2
-                    powerup_equiped_time = current_time
 
         for special_ball in special_balls[:]:
             special_ball.move()
@@ -328,15 +318,6 @@ def main_game():
             draw_ball(ball_x, ball_y)
 
         show_score(score)
-
-        if equiped:
-            if current_time - powerup_equiped_time >= 10:
-                if equiped == 1:
-                    player_width *= 0.5
-                    player_speed *= 2
-                elif equiped == 2:
-                    player_speed *= 0.5
-                    player_width *= 2
 
         if current_time - last_special_ball_time > 19:
             special_ball_text = font.render("Special Ball Ready (UP)", True, GREEN)
