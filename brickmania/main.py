@@ -141,6 +141,9 @@ class SpecialBall:
     def draw(self):
         pygame.draw.circle(screen, RED, (self.x, self.y), ball_radius)
 
+# Add this at the top of the main_game function
+speed_increment = 1.0001  # The speed increment factor, adjust as needed.
+
 def main_game():
     player_x = (WIDTH - player_width) // 2
     player_y = HEIGHT - player_height - 70
@@ -151,7 +154,7 @@ def main_game():
     score = 0
     bricks = create_new_bricks()
     powerups = []
-    special_balls = []
+    special_balls = []  # list of special balls
     running = True
 
     last_move_time = time.time()
@@ -161,6 +164,9 @@ def main_game():
     brick_move_speed = 3
 
     last_special_ball_time = time.time()
+
+    last_x_key_time = time.time()  # Track the time of the last "X" key press event
+    random_destruction_interval = 60 # Interval of 60 seconds for random brick destruction
 
     while running:
         screen.fill(BLACK)
@@ -190,14 +196,15 @@ def main_game():
             player_x += player_speed
             last_move_time = current_time
 
-        # Spawn special balls if limit not reached and enough time has passed
         if (keys[pygame.K_w] or keys[pygame.K_UP]) and current_time - last_special_ball_time > 20:
-            if len(special_balls) < 5:  # Limit to 5 special balls
-                for _ in range(3):
-                    dx = random.choice([-8, 8]) 
-                    dy = random.randint(-5, -2)
-                    special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy, current_time + 3))
+            dx = random.choice([-8, 8]) 
+            dy = random.randint(-5, -2)
+            special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy, current_time + 3))
             last_special_ball_time = current_time
+
+        # Gradually increase the speed of each ball
+        for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
+            balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
 
         balls_to_remove = []
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
@@ -219,7 +226,6 @@ def main_game():
                 ball_dx = ball_speed_x * hit_position
                 ball_dy = -abs(ball_dy)
                 ball_y = player_y - ball_radius
-
 
             balls[i] = (ball_x, ball_y, ball_dx, ball_dy)
 
@@ -258,6 +264,16 @@ def main_game():
             if brick in bricks:
                 bricks.remove(brick)
 
+        # Handle "X" key for random brick destruction every 60 seconds
+        if current_time - last_x_key_time > random_destruction_interval:
+            if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+                for _ in range(5):
+                    if bricks:
+                        random_brick = random.choice(bricks)
+                        bricks.remove(random_brick)
+                        score += 20  # Add points for destroying bricks
+                last_x_key_time = current_time  # Reset the last press time after destruction
+
         for powerup in powerups[:]:
             powerup.move()
             powerup.draw()
@@ -280,17 +296,28 @@ def main_game():
 
         show_score(score)
 
-        if current_time - last_special_ball_time > 20:
-            special_ball_text = font.render("Special Balls Ready!", True, WHITE)
+        # Special Ball Text
+        if current_time - last_special_ball_time > 19:
+            special_ball_text = font.render("Special Ball Ready!", True, WHITE)
         else:
             remaining_time = max(0, 20 - (current_time - last_special_ball_time))
-            special_ball_text = font.render(f"Special Balls in {int(remaining_time)}s", True, WHITE)
+            special_ball_text = font.render(f"Special Ball in {int(remaining_time)}s", True, WHITE)
 
+        # Countdown Timer for random brick destruction
+        if current_time - last_x_key_time > random_destruction_interval - 1:
+            countdown_text = font.render("Brick Destruction Ready", True, WHITE)
+        else:
+            time_until_destruction = max(0, random_destruction_interval - (current_time - last_x_key_time))
+            countdown_text = font.render(f"Brick Destruction in {int(time_until_destruction)}s", True, WHITE)
+
+        # Draw text on the screen
         pygame.draw.line(screen, WHITE, (0, HEIGHT - 60), (WIDTH, HEIGHT - 60), 2)
-
-        screen.blit(special_ball_text, (WIDTH // 2 - special_ball_text.get_width() // 2, HEIGHT - 40))
+        screen.blit(special_ball_text, (WIDTH // 2 - special_ball_text.get_width() // 2 - 200, HEIGHT - 40))
+        screen.blit(countdown_text, (WIDTH // 2 - countdown_text.get_width() // 2 + 200, HEIGHT - 40))
 
         pygame.display.flip()
+
+
 
 if __name__ == "__main__":
     while True:
