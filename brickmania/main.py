@@ -93,11 +93,14 @@ def game_over(score):
     text = font.render("Game Over! Press SPACE to restart", True, WHITE)
     highscore = int(open("./brickmania/highscore.txt").read())
     text2 = font.render(f"High Score = {[score, highscore][highscore>score]}", True, WHITE)
+    text3 = font.render(f"Your Score = {score}", True, WHITE)
     if highscore < score:
-        with open('./brickmania/highscore.txt', 'w') as f:
-            f.write(str(score))
-    screen.blit(text, (WIDTH // 2 - 200, HEIGHT // 2))
-    screen.blit(text2, (WIDTH // 2 - 120, HEIGHT // 2 + 40))
+        ...
+        # with open('./brickmania/highscore.txt', 'w') as f:
+        #     f.write(str(score))
+    screen.blit(text, (WIDTH // 2 - 220, HEIGHT // 2))
+    screen.blit(text2, (WIDTH // 2 - 100, HEIGHT // 2 + 40))
+    screen.blit(text3, (WIDTH // 2 - 100, HEIGHT // 2 + 80))
     pygame.display.flip()
 
     while True:
@@ -147,7 +150,7 @@ def main_game():
     player_x = (WIDTH - player_width) // 2
     player_y = HEIGHT - player_height - 70
 
-    balls = [(WIDTH // 2, HEIGHT // 2, ball_speed_x, ball_speed_y)]
+    balls = [(random.randint(200, WIDTH // 2), random.randint(200, HEIGHT // 2), ball_speed_x, ball_speed_y)]
     balls_crossed_line = [False]
 
     score = 0
