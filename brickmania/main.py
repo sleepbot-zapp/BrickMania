@@ -58,11 +58,10 @@ class Brick:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.color = random.choice([RED, BLUE, GREEN, YELLOW])  # Randomize brick color
+        self.color = random.choice([RED, BLUE, GREEN, YELLOW])
 
     def draw(self):
         pygame.draw.rect(screen, self.color, (self.x, self.y, brick_width, brick_height))
-        # Draw black border around the brick
         pygame.draw.rect(screen, BLACK, (self.x, self.y, brick_width, brick_height), 2)
 
 def draw_player(x, y):
@@ -184,18 +183,20 @@ def main_game():
                 player_x -= random.choice([player_speed, -player_speed])
             last_move_time = current_time
 
-        if keys[pygame.K_LEFT] and player_x > 0:
+        if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and player_x > 0:
             player_x -= player_speed
             last_move_time = current_time
-        if keys[pygame.K_RIGHT] and player_x < WIDTH - player_width:
+        if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and player_x < WIDTH - player_width:
             player_x += player_speed
             last_move_time = current_time
 
-        if keys[pygame.K_UP] :#and current_time - last_special_ball_time > 20:
-            for _ in range(1):
-                dx = random.choice([-8, 8]) 
-                dy = random.randint(-5, -2)
-                special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy, current_time + 3))
+        # Spawn special balls if limit not reached and enough time has passed
+        if (keys[pygame.K_w] or keys[pygame.K_UP]) and current_time - last_special_ball_time > 20:
+            if len(special_balls) < 5:  # Limit to 5 special balls
+                for _ in range(3):
+                    dx = random.choice([-8, 8]) 
+                    dy = random.randint(-5, -2)
+                    special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy, current_time + 3))
             last_special_ball_time = current_time
 
         balls_to_remove = []
@@ -214,11 +215,11 @@ def main_game():
 
             if player_x < ball_x < player_x + player_width and player_y < ball_y + ball_radius < player_y + player_height:
                 center_x = player_x + player_width / 2
-                if abs(ball_x - center_x) < player_width / 4:
-                    ball_dy = -ball_dy
-                else:
-                    ball_dy = -ball_dy
+                hit_position = (ball_x - center_x) / (player_width / 2)
+                ball_dx = ball_speed_x * hit_position
+                ball_dy = -abs(ball_dy)
                 ball_y = player_y - ball_radius
+
 
             balls[i] = (ball_x, ball_y, ball_dx, ball_dy)
 
@@ -252,7 +253,6 @@ def main_game():
                     powerup = drop_powerup(brick.x, brick.y, powerups)
                     if powerup:
                         powerups.append(powerup)
-                    special_ball.dy = -special_ball.dy
 
         for brick in bricks_to_remove:
             if brick in bricks:
@@ -268,7 +268,6 @@ def main_game():
                     balls.append((WIDTH // 2, HEIGHT // 2, ball_speed_x, ball_speed_y))
                     balls_crossed_line.append(False)
                     score += 50
-
 
         for special_ball in special_balls[:]:
             special_ball.move()
@@ -292,10 +291,6 @@ def main_game():
         screen.blit(special_ball_text, (WIDTH // 2 - special_ball_text.get_width() // 2, HEIGHT - 40))
 
         pygame.display.flip()
-
-
-
-
 
 if __name__ == "__main__":
     while True:
