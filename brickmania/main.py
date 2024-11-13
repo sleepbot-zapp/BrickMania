@@ -160,7 +160,6 @@ class SpecialBall:
 speed_increment = 1.0001
 
 def main_game():
-    # Initialize the player-related variables here, before using them
     equiped = 0
     player_width = 100 * SCALE
     player_height = 20 * SCALE
