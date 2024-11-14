@@ -1,14 +1,17 @@
+import os
 import pygame
 import random
 import sys
 import time
 
+os.chdir(os.path.dirname(__file__))
+
 pygame.init()
 
-pygame.mixer.music.load("./brickmania/music.mp3")
-track1 = pygame.mixer.Sound("./brickmania/music1.mp3")
-track2 = pygame.mixer.Sound("./brickmania/music2.mp3")
-track3 = pygame.mixer.Sound("./brickmania/music3.mp3")
+pygame.mixer.music.load("./music.mp3")
+track1 = pygame.mixer.Sound("./music1.mp3")
+track2 = pygame.mixer.Sound("./music2.mp3")
+track3 = pygame.mixer.Sound("./music3.mp3")
 pygame.mixer.music.play(-1)
 
 SCALE = 1
