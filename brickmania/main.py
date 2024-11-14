@@ -3,6 +3,7 @@ import pygame
 import random
 import sys
 import time
+import os
 
 os.chdir(os.path.dirname(__file__))
 
@@ -75,18 +76,29 @@ def draw_player(x, y):
     pygame.draw.rect(screen, BLUE, (x, y, player_width, player_height), border_radius=10)
 
 def draw_ball(x, y):
+    # Define constants for trail properties that won't change
+    FIXED_TRAIL_LENGTH = 10  # Fixed trail length
+    FIXED_TRAIL_COLOR = (0, 156, 0)  # Solid yellow color for ball and trail
+    MAX_ALPHA = 50  # Fixed maximum opacity for trail
+
+    # Update trail with fixed length
     trail.append((x, y))
-    if len(trail) > trail_length:
+    if len(trail) < FIXED_TRAIL_LENGTH:
         trail.pop(0)
 
+    # Draw the trail with fixed opacity gradient
     for i, (tx, ty) in enumerate(trail):
-        alpha = 255 - int(255 * (i / trail_length))
-        color = (YELLOW[0], YELLOW[1], YELLOW[2], alpha)
+        alpha = MAX_ALPHA - int(MAX_ALPHA * (i / FIXED_TRAIL_LENGTH))  # Consistent opacity gradient
+        color = (FIXED_TRAIL_COLOR[0], FIXED_TRAIL_COLOR[1], FIXED_TRAIL_COLOR[2], alpha)
+        
+        # Ensure trail surface supports alpha transparency
         trail_surface = pygame.Surface((ball_radius * 2, ball_radius * 2), pygame.SRCALPHA)
         pygame.draw.circle(trail_surface, color, (ball_radius, ball_radius), ball_radius)
         screen.blit(trail_surface, (tx - ball_radius, ty - ball_radius))
 
-    pygame.draw.circle(screen, YELLOW, (x, y), ball_radius)
+    # Draw the main ball with fixed color and radius
+    pygame.draw.circle(screen, FIXED_TRAIL_COLOR, (x, y), ball_radius)
+
 
 def draw_bricks(bricks):
     for brick in bricks:
@@ -99,10 +111,11 @@ def show_score(score):
 def game_over(score):
     pygame.mixer.music.pause()
     track3.play()
-    text = font.render("Game Over! Press SPACE to restart", True, WHITE)
+    font_for_game_over = pygame.font.SysFont(None, int(42 * SCALE))
+    text = font_for_game_over.render("Game Over! Press SPACE to restart", True, RED)
     highscore = int(open("./brickmania/highscore.txt").read())
-    text2 = font.render(f"High Score = {[score, highscore][highscore>score]}", True, WHITE)
-    text3 = font.render(f"Your Score = {score}", True, WHITE)
+    text2 = font_for_game_over.render(f"High Score = {[score, highscore][highscore>score]}", True, [GREEN, YELLOW][highscore>score])
+    text3 = font_for_game_over.render(f"Your Score = {score}", True, BLUE)
     if highscore < score:
         ...
         # with open('./brickmania/highscore.txt', 'w') as f:
@@ -163,13 +176,12 @@ class SpecialBall:
 speed_increment = 1.0001
 
 def main_game():
-    equiped = 0
     player_width = 100 * SCALE
     player_height = 20 * SCALE
     player_speed = 15 * SCALE
 
-    player_x = (WIDTH - player_width) // 2
-    player_y = HEIGHT - player_height - 70
+    player_x = (WIDTH * SCALE - player_width) // 2
+    player_y = HEIGHT * SCALE - player_height - 70
 
     balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), ball_speed_x, ball_speed_y)]
     balls_crossed_line = [False]
@@ -403,6 +415,7 @@ def main_menu():
                     sys.exit()
 
         clock.tick(60)
+
 
 
 if __name__ == "__main__":
