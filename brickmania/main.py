@@ -27,6 +27,8 @@ BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
 GREEN = (0, 255, 0)
 
+line_y = HEIGHT - 60  # Position of the white line
+
 player_width = 100 * SCALE
 player_height = 20 * SCALE
 player_speed = 15 * SCALE
@@ -191,6 +193,7 @@ def main_game():
 
     last_brick_move_time = time.time()
     brick_move_speed = 3
+
 
     last_special_ball_time = time.time()
 
@@ -380,7 +383,7 @@ def main_game2():
     random_destruction_interval = 60
     last_ball_missed_time = 0
     ball_miss_chance = 0.2
-    game_over = False
+    is_game_over = False
     game_over_start_time = 0
     last_reaction_time = time.time()  # To control reaction delay
     reaction_delay = 0.05  # Delay between paddle reactions
@@ -391,6 +394,7 @@ def main_game2():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
 
         screen.fill(BLACK)
         current_time = time.time()
@@ -407,7 +411,7 @@ def main_game2():
                     return
             last_brick_move_time = current_time
 
-        if game_over:
+        if is_game_over:
             if current_time - game_over_start_time < 5:
                 pass
             else:
@@ -416,7 +420,7 @@ def main_game2():
                 bricks = create_new_bricks()
                 powerups = []
                 score = 0
-                game_over = False
+                is_game_over = False
             pygame.display.flip()
             continue
 
@@ -481,7 +485,7 @@ def main_game2():
             balls_crossed_line.pop(i)
 
         if len(balls) == 0:
-            game_over = True
+            is_game_over = True
             game_over_start_time = current_time
 
         bricks_to_remove = []
@@ -528,6 +532,15 @@ def main_game2():
                     bricks.remove(brick)
                     score += 20
                     break
+
+        for brick in bricks:
+            if brick.y + brick_height > line_y:
+                is_game_over = True
+                break
+
+        if is_game_over:
+            game_over(score)
+            return
 
         draw_bricks(bricks)
         draw_player(player_x, player_y)
