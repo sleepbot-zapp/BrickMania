@@ -1,15 +1,18 @@
+import os
 import pygame
 import random
 import sys
 import time
 import os
 
+os.chdir(os.path.dirname(__file__))
+
 pygame.init()
 
-pygame.mixer.music.load("./brickmania/music.mp3")
-track1 = pygame.mixer.Sound("./brickmania/music1.mp3")
-track2 = pygame.mixer.Sound("./brickmania/music2.mp3")
-track3 = pygame.mixer.Sound("./brickmania/music3.mp3")
+pygame.mixer.music.load("./music.mp3")
+track1 = pygame.mixer.Sound("./music1.mp3")
+track2 = pygame.mixer.Sound("./music2.mp3")
+track3 = pygame.mixer.Sound("./music3.mp3")
 pygame.mixer.music.play(-1)
 
 SCALE = 1
@@ -103,7 +106,7 @@ def draw_bricks(bricks):
 
 def show_score(score):
     text = font.render(f"Score: {score}", True, RED)
-    screen.blit(text, (WIDTH // 2 - 100 * SCALE, HEIGHT - 40 * SCALE))
+    screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 40) * SCALE))
 
 def game_over(score):
     pygame.mixer.music.pause()
@@ -117,9 +120,9 @@ def game_over(score):
         ...
         # with open('./brickmania/highscore.txt', 'w') as f:
         #     f.write(str(score))
-    screen.blit(text, ((WIDTH * SCALE) // 2 - 250, (HEIGHT * SCALE) // 2 - 80))
-    screen.blit(text2, ((WIDTH * SCALE) // 2 - 100, (HEIGHT * SCALE) // 2 - 20))
-    screen.blit(text3, ((WIDTH * SCALE) // 2 - 100, (HEIGHT * SCALE)// 2 + 40))
+    screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT // 2 - 40) * SCALE))
+    screen.blit(text2, ((WIDTH // 2 - text2.get_width() / 2) * SCALE, (HEIGHT // 2) * SCALE))
+    screen.blit(text3, ((WIDTH // 2 - text3.get_width() / 2) * SCALE, (HEIGHT // 2 + 40) * SCALE))
     pygame.display.flip()
 
     while True:
@@ -339,14 +342,14 @@ def main_game():
 
         if current_time - last_x_key_time > random_destruction_interval - 1:
             countdown_text = font.render("Brick Destruction Ready (DOWN)", True, GREEN)
-            screen.blit(countdown_text, (WIDTH // 2 - countdown_text.get_width() * SCALE // 2 + 250 * SCALE, HEIGHT - 40 * SCALE))
+            screen.blit(countdown_text, ((WIDTH - countdown_text.get_width() - 20) * SCALE, (HEIGHT - 40) * SCALE))
         else:
             time_until_destruction = max(0, random_destruction_interval - (current_time - last_x_key_time))
             countdown_text = font.render(f"Brick Destruction in {int(time_until_destruction)}s", True, WHITE)
-            screen.blit(countdown_text, (WIDTH // 2 - countdown_text.get_width() * SCALE // 2 + 200 * SCALE, HEIGHT - 40 * SCALE))
+            screen.blit(countdown_text, ((WIDTH - countdown_text.get_width() - 20) * SCALE, (HEIGHT - 40) * SCALE))
 
         pygame.draw.line(screen, WHITE, (0, HEIGHT - 60), (WIDTH, HEIGHT - 60), 2)
-        screen.blit(special_ball_text, (WIDTH // 2 - special_ball_text.get_width() * SCALE // 2 - 250 * SCALE, HEIGHT - 40 * SCALE))
+        screen.blit(special_ball_text, (20 * SCALE, (HEIGHT - 40) * SCALE))
 
         pygame.display.flip()
 
@@ -394,9 +397,9 @@ def main_menu():
         play_text = menu_font.render("Press SPACE to Play", True, WHITE)
         quit_text = menu_font.render("Press Q to Quit", True, WHITE)
 
-        screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, HEIGHT // 2 - 100))
-        screen.blit(play_text, (WIDTH // 2 - play_text.get_width() // 2, HEIGHT // 2))
-        screen.blit(quit_text, (WIDTH // 2 - quit_text.get_width() // 2, HEIGHT // 2 + 60))
+        screen.blit(title_text, ((WIDTH // 2 - title_text.get_width() // 2) * SCALE, (HEIGHT // 2 - 100) * SCALE))
+        screen.blit(play_text, ((WIDTH // 2 - play_text.get_width() // 2) * SCALE, (HEIGHT // 2) * SCALE))
+        screen.blit(quit_text, ((WIDTH // 2 - quit_text.get_width() // 2) * SCALE, (HEIGHT // 2 + 60) * SCALE))
 
         pygame.display.flip()
 
