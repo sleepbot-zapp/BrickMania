@@ -103,7 +103,7 @@ def show_score(score):
     text = font.render(f"Score: {score}", True, RED)
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 40) * SCALE))
 
-def game_over(score):
+def game_over(score, type_=0):
     pygame.mixer.music.pause()
     track3.play()
     screen.fill(BLACK)
@@ -112,7 +112,7 @@ def game_over(score):
     highscore = int(open("./highscore.txt").read())
     text2 = font_for_game_over.render(f"High Score = {[score, highscore][highscore>score]}", True, [GREEN, YELLOW][highscore>score])
     text3 = font_for_game_over.render(f"Your Score = {score}", True, BLUE)
-    if highscore < score:
+    if highscore < score and type_==0:
         with open('./highscore.txt', 'w') as f:
             f.write(str(score))
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT // 2 - 40) * SCALE))
@@ -385,8 +385,8 @@ def main_game2():
     is_game_over = False
     game_over_start_time = 0
     last_reaction_time = time.time()  # To control reaction delay
-    reaction_delay = 0.05  # Delay between paddle reactions
-    overshoot_amount = 15 * SCALE
+    reaction_delay = 0.01 # Delay between paddle reactions
+    overshoot_amount = 2 * SCALE
 
     while running:
         for event in pygame.event.get():
