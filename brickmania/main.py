@@ -106,16 +106,15 @@ def show_score(score):
 def game_over(score):
     pygame.mixer.music.pause()
     track3.play()
+    screen.fill(BLACK)
     font_for_game_over = pygame.font.SysFont(None, int(42 * SCALE))
     text = font_for_game_over.render("Game Over! Press ENTER to restart", True, RED)
-    # highscore = int(open("./brickmania/highscore.txt").read())
-    highscore = 0
+    highscore = int(open("./highscore.txt").read())
     text2 = font_for_game_over.render(f"High Score = {[score, highscore][highscore>score]}", True, [GREEN, YELLOW][highscore>score])
     text3 = font_for_game_over.render(f"Your Score = {score}", True, BLUE)
     if highscore < score:
-        ...
-        # with open('./highscore.txt', 'w') as f:
-        #     f.write(str(score))
+        with open('./highscore.txt', 'w') as f:
+            f.write(str(score))
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT // 2 - 40) * SCALE))
     screen.blit(text2, ((WIDTH // 2 - text2.get_width() / 2) * SCALE, (HEIGHT // 2) * SCALE))
     screen.blit(text3, ((WIDTH // 2 - text3.get_width() / 2) * SCALE, (HEIGHT // 2 + 40) * SCALE))
@@ -367,7 +366,7 @@ def main_game2():
     brick_move_speed = 3
     player_width = 100 * SCALE
     player_height = 20 * SCALE
-    base_player_speed = 50 * SCALE
+    base_player_speed = 30 * SCALE
     player_x = (WIDTH * SCALE - player_width) // 2
     player_y = HEIGHT * SCALE - player_height - 70
     balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), ball_speed_x, ball_speed_y)]
@@ -387,7 +386,7 @@ def main_game2():
     game_over_start_time = 0
     last_reaction_time = time.time()  # To control reaction delay
     reaction_delay = 0.05  # Delay between paddle reactions
-    overshoot_amount = 10  # Randomly overshoot target by up to 10 pixels
+    overshoot_amount = 15 * SCALE
 
     while running:
         for event in pygame.event.get():
