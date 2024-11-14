@@ -27,7 +27,7 @@ BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
 GREEN = (0, 255, 0)
 
-line_y = HEIGHT - 60  # Position of the white line
+line_y = HEIGHT - 60  
 
 player_width = 100 * SCALE
 player_height = 20 * SCALE
@@ -125,7 +125,7 @@ def game_over(score, type_=0):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN: #K_SPACE
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN: 
                 track2.stop()
                 pygame.mixer.music.unpause()
                 return
@@ -384,8 +384,8 @@ def main_game2():
     ball_miss_chance = 0.2
     is_game_over = False
     game_over_start_time = 0
-    last_reaction_time = time.time()  # To control reaction delay
-    reaction_delay = 0.01 # Delay between paddle reactions
+    last_reaction_time = time.time()  
+    reaction_delay = 0.01 
     overshoot_amount = 2 * SCALE
 
     while running:
@@ -444,7 +444,7 @@ def main_game2():
                     player_speed = random.uniform(0.8, 1.2) * base_player_speed
                     player_x -= min(player_speed, (player_x + player_width / 2) - target_x)
 
-                # Restrict paddle to screen boundaries
+                
                 player_x = max(0, min(player_x, WIDTH - player_width))
 
                 last_reaction_time = current_time
@@ -452,10 +452,10 @@ def main_game2():
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
             balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
 
-        # [Rest of the code continues as before]
+        
 
 
-        # [Rest of the code continues as before]
+        
         balls_to_remove = []
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
             ball_x += ball_dx
@@ -649,6 +649,6 @@ if __name__ == "__main__":
         selected_option = main_menu()
         
         if selected_option == 0:
-            main_game()   # Start the Main Game
+            main_game()   
         elif selected_option == 1:
-            main_game2()  # Start the Demo Game
+            main_game2()  
