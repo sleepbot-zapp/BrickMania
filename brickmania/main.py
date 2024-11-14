@@ -187,7 +187,7 @@ def main_game():
     running = True
 
     last_move_time = time.time()
-    inactivity_threshold = 2
+    inactivity_threshold = 5
 
     last_brick_move_time = time.time()
     brick_move_speed = 3
@@ -364,7 +364,7 @@ def main_game2():
     brick_move_speed = 3
     player_width = 100 * SCALE
     player_height = 20 * SCALE
-    player_speed = 50 * SCALE
+    base_player_speed = 50 * SCALE
     player_x = (WIDTH * SCALE - player_width) // 2
     player_y = HEIGHT * SCALE - player_height - 70
     balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), ball_speed_x, ball_speed_y)]
@@ -382,6 +382,9 @@ def main_game2():
     ball_miss_chance = 0.2
     game_over = False
     game_over_start_time = 0
+    last_reaction_time = time.time()  # To control reaction delay
+    reaction_delay = 0.05  # Delay between paddle reactions
+    overshoot_amount = 10  # Randomly overshoot target by up to 10 pixels
 
     while running:
         for event in pygame.event.get():
@@ -404,11 +407,9 @@ def main_game2():
                     return
             last_brick_move_time = current_time
 
-        # If game is over, show "Game Over" message for 5 seconds, then reset
         if game_over:
             if current_time - game_over_start_time < 5:
-                ...
-                # show_game_over()  # Display "Game Over" message
+                pass
             else:
                 balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), ball_speed_x, ball_speed_y)]
                 balls_crossed_line = [False] * len(balls)
@@ -429,34 +430,30 @@ def main_game2():
 
         if balls:
             avg_ball_x = sum(ball[0] for ball in balls) / len(balls)
-            if player_x + player_width / 2 < avg_ball_x:
-                player_x += min(player_speed, avg_ball_x - (player_x + player_width / 2))
-            elif player_x + player_width / 2 > avg_ball_x:
-                player_x -= min(player_speed, (player_x + player_width / 2) - avg_ball_x)
+            if current_time - last_reaction_time >= reaction_delay:
+                random_offset = random.uniform(-overshoot_amount, overshoot_amount)
+                target_x = avg_ball_x + random_offset
 
+                if player_x + player_width / 2 < target_x:
+                    player_speed = random.uniform(0.8, 1.2) * base_player_speed
+                    player_x += min(player_speed, target_x - (player_x + player_width / 2))
+                elif player_x + player_width / 2 > target_x:
+                    player_speed = random.uniform(0.8, 1.2) * base_player_speed
+                    player_x -= min(player_speed, (player_x + player_width / 2) - target_x)
 
-        if current_time - last_special_ball_time > 20:
-            dx = random.choice([-8, 8]) 
-            dy = random.randint(-5, -2)
-            special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy, current_time + 3))
-            pygame.mixer.music.pause()
-            track1.play()
-            last_special_ball_time = current_time
+                # Restrict paddle to screen boundaries
+                player_x = max(0, min(player_x, WIDTH - player_width))
 
-        if current_time - last_x_time > random_destruction_interval:
-                pygame.mixer.music.pause()
-                track2.play()
-                for _ in range(5):
-                    if bricks:
-                        random_brick = random.choice(bricks)
-                        bricks.remove(random_brick)
-                        score += 20
-                last_x_time = current_time
+                last_reaction_time = current_time
 
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
             balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
 
-        balls_to_remove = [] 
+        # [Rest of the code continues as before]
+
+
+        # [Rest of the code continues as before]
+        balls_to_remove = []
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
             ball_x += ball_dx
             ball_y += ball_dy
@@ -473,7 +470,7 @@ def main_game2():
             if player_x < ball_x < player_x + player_width and player_y < ball_y + ball_radius < player_y + player_height:
                 center_x = player_x + player_width / 2
                 hit_position = (ball_x - center_x) / (player_width / 2)
-                ball_dx = ball_speed_x * (hit_position + random.uniform(-0.1, 0.1))
+                ball_dx = ball_speed_x * (hit_position + random.uniform(-1, 1))
                 ball_dy = -abs(ball_dy)
                 ball_y = player_y - ball_radius
 
@@ -508,7 +505,12 @@ def main_game2():
             powerup.draw()
             if powerup.y > line_y:
                 powerups.remove(powerup)
-            elif player_x < powerup.x < player_x + player_width and player_y < powerup.y < player_y + player_height:
+            elif (
+                powerup.x < player_x + player_width
+                and powerup.x + powerup.width > player_x
+                and powerup.y < player_y + player_height
+                and powerup.y + powerup.height > player_y
+            ):
                 powerups.remove(powerup)
                 if powerup.type == "extra_ball":
                     balls.append((WIDTH // 2, HEIGHT // 2, ball_speed_x, ball_speed_y))
@@ -520,7 +522,6 @@ def main_game2():
             
             if special_ball.y >= HEIGHT - 10:
                 special_balls.remove(special_ball)
-
 
             for brick in bricks:
                 if brick.x < special_ball.x < brick.x + brick_width and brick.y < special_ball.y < brick.y + brick_height:
@@ -535,7 +536,6 @@ def main_game2():
         for special_ball in special_balls:
             special_ball.draw()
         show_score(score)
-
 
         if current_time - last_special_ball_time > 19:
             special_ball_text = font.render("Special Ball Ready (UP)", True, GREEN)
@@ -563,6 +563,7 @@ def main_game2():
         if current_time - last_x_time >= 5:
             track2.stop()
             pygame.mixer.music.unpause()
+
 
 
 
