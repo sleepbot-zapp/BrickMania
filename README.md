@@ -12,7 +12,7 @@ A special thanks to [@khsaad](https://github.com/khsaad04) for their contributio
 
 ### Keyboard Controls
 
-- Move the paddle using the **WASD** or **Arrow** keys.
+- Move the block using the **WASD** or **Arrow** keys.
 - Pause or resume the game by pressing the **Spacebar**.
 - To quit the game while it’s not running, press the **Q** key.
 
