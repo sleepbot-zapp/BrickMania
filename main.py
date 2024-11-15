@@ -25,7 +25,8 @@ WHITE = (205, 214, 244)
 RED = (150, 15, 57)	
 BLUE = (30, 102, 245)	
 BLACK = (17, 17, 27)	
-YELLOW = (223, 142, 29)		
+YELLOW = (223, 142, 29)	
+GREY = (92, 95, 119)	
 GREEN = (64, 160, 43)	
 
 player_width = 100 * SCALE
@@ -530,7 +531,7 @@ def main_menu(mode=False):
 
     tiles = [FallingTile() for _ in range(20)]
 
-    options = ["Main Game", ["Mute Music", "Unmute Music"][not mode]]
+    options = ["Main Game", ["Mute Music", "Unmute Music"][not mode], "How to Play"]
     selected_option = 0
 
     while True:
@@ -549,10 +550,10 @@ def main_menu(mode=False):
             screen.blit(option_text, ((WIDTH // 2 - option_text.get_width() // 2) * SCALE,
                                       (HEIGHT // 2 + i * 60) * SCALE))
 
-        quit_text = menu_font.render("Press Q to Quit", True, WHITE)
-        screen.blit(quit_text, ((WIDTH // 2 - quit_text.get_width() // 2) * SCALE, (HEIGHT // 2 + 150) * SCALE))
+        quit_text = bottom_font.render("Press Q to Quit", True, GREY)
+        screen.blit(quit_text, (10, (HEIGHT - quit_text.get_height() - 10) * SCALE))
 
-        bottom_text = bottom_font.render("Press Enter to Continue ", True, (92, 95, 119))
+        bottom_text = bottom_font.render("Press Enter to Continue ", True, GREY)
         screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
 
         pygame.display.flip()
@@ -592,3 +593,6 @@ if __name__ == "__main__":
             else:
                 pygame.mixer.music.play(-1)
             is_paused = not is_paused
+        if selected_option==2:
+            ... 
+            """auto_screen_window(WIDTH, HEIGHT, dummy_text)"""
