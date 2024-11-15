@@ -4,6 +4,7 @@ import pygame
 import random
 import sys
 import time
+import math
 
 chdir(dirname(__file__))
 
@@ -411,6 +412,82 @@ def main_game(mode=False):
                 pygame.mixer.music.unpause()
 
 
+def loading_screen():
+    
+    inner_radius = 20  
+    outer_radius = 30  
+    spinner_coverage = 0.7  
+    total_angle = 360  
+    covered_angle = total_angle * spinner_coverage  
+    spinner_segments = 12  
+    angle_per_segment = covered_angle / spinner_segments  
+    spinner_speed = 5  
+    angle = 0  
+
+    
+    tip_font = pygame.font.SysFont("Arial", 24)
+    tips = [
+        "Use the paddle to deflect the ball!",
+        "Hit bricks for power-ups!",
+        "Press UP to launch a special ball!",
+        "Stay active to avoid the paddle drifting!"
+    ]
+    tip = random.choice(tips)
+
+    start_time = time.time()
+    running = True
+
+    while running:
+        screen.fill(BLACK)  
+        clock.tick(60)  
+
+        
+        loading_text = font.render("Loading...", True, WHITE)
+        screen.blit(loading_text, (WIDTH // 2 - loading_text.get_width() // 2, HEIGHT // 2 - 50))
+
+        
+        tip_text = tip_font.render("Tip: "+tip, True, WHITE)
+        screen.blit(tip_text, (WIDTH // 2 - tip_text.get_width() // 2, HEIGHT//2 + 125))
+
+        
+        spinner_center = (WIDTH // 2, HEIGHT // 2 + 50)  
+
+        
+        for i in range(spinner_segments):
+            
+            segment_angle_start = angle + (i * angle_per_segment)
+            segment_angle_end = segment_angle_start + angle_per_segment
+
+            
+            start_x1 = spinner_center[0] + inner_radius * math.cos(math.radians(segment_angle_start))
+            start_y1 = spinner_center[1] + inner_radius * math.sin(math.radians(segment_angle_start))
+
+            end_x1 = spinner_center[0] + outer_radius * math.cos(math.radians(segment_angle_start))
+            end_y1 = spinner_center[1] + outer_radius * math.sin(math.radians(segment_angle_start))
+
+            start_x2 = spinner_center[0] + inner_radius * math.cos(math.radians(segment_angle_end))
+            start_y2 = spinner_center[1] + inner_radius * math.sin(math.radians(segment_angle_end))
+
+            end_x2 = spinner_center[0] + outer_radius * math.cos(math.radians(segment_angle_end))
+            end_y2 = spinner_center[1] + outer_radius * math.sin(math.radians(segment_angle_end))
+
+            
+            pygame.draw.line(screen, WHITE, (end_x1, end_y1), (end_x2, end_y2), 3)
+            pygame.draw.line(screen, WHITE, (start_x1, start_y1), (start_x2, start_y2), 3)
+
+        
+        angle += spinner_speed
+        if angle >= 360:
+            angle = 0  
+
+        
+        if time.time() - start_time >= 2:
+            running = False
+
+        
+        pygame.display.flip()
+
+
 
 class FallingTile:
     def __init__(self):
@@ -481,6 +558,7 @@ if __name__ == "__main__":
     while True:
         selected_option = main_menu()
         if selected_option == 0:
+            loading_screen()
             main_game(is_paused)
         if selected_option== 1:
             if not is_paused:
