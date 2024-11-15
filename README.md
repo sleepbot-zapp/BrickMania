@@ -43,7 +43,7 @@ Powerups are items that drop randomly as you play, either after destroying brick
 
 ### Game Mechanics
 
-If you stay stationary for too long (5 seconds), the paddle will move on its own.
+- If you stay stationary for too long (5 seconds), the paddle will move on its own.
 
 ---
 
