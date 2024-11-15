@@ -105,6 +105,28 @@ def draw_ball(x, y, ball_id):
     
     pygame.draw.circle(screen, FIXED_TRAIL_COLOR, (x, y), ball_radius)
 
+def pause_game():
+    paused = True
+    pause_text = font.render("Game Paused. Press 'P' to Resume.", True, WHITE)
+    dim_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+    dim_surface.fill((0, 0, 0, 180))
+    while paused:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    paused = False
+                if event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()                    
+        
+        screen.blit(dim_surface, (0, 0))
+        screen.blit(pause_text, ((WIDTH - pause_text.get_width()) // 2, HEIGHT // 2))
+        pygame.display.flip()
+
+        clock.tick(10)
 
 
 def draw_bricks(bricks):
@@ -115,9 +137,10 @@ def show_score(score):
     text = font.render(f"Score: {score}", True, RED)
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 30) * SCALE))
 
-def game_over(score, type_=0):
-    pygame.mixer.music.pause()
-    track3.play()
+def game_over(score, type_=0, mode=0):
+    if not mode:
+        pygame.mixer.music.pause()
+        track3.play()
     screen.fill(BLACK)
     font_for_game_over = pygame.font.SysFont(None, int(42 * SCALE))
     text = font_for_game_over.render("Game Over! Press ENTER to restart", True, RED)
@@ -138,8 +161,9 @@ def game_over(score, type_=0):
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN: 
-                track2.stop()
-                pygame.mixer.music.unpause()
+                if not mode:
+                    track2.stop()
+                    pygame.mixer.music.unpause()
                 return
             if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                 pygame.quit()
@@ -147,7 +171,7 @@ def game_over(score, type_=0):
 
 def drop_powerup(brick_x, brick_y, powerups):
     powerup_type = random.choice(["extra_ball",])
-    if len(powerups) < 2 and random.random() < 0.5:
+    if len(powerups) < 2 and random.random() < 0.1:
         return PowerUp(brick_x, brick_y, powerup_type)
     return None
 
@@ -181,7 +205,7 @@ class SpecialBall:
 
 speed_increment = 1.0001
 
-def main_game():
+def main_game(mode=False):
     player_width = 100 * SCALE
     player_height = 20 * SCALE
     player_speed = 15 * SCALE
@@ -210,6 +234,9 @@ def main_game():
     random_destruction_interval = 60
 
     while running:
+
+
+
         screen.fill(BLACK)
         clock.tick(60) / 1000
         current_time = time.time()
@@ -229,6 +256,8 @@ def main_game():
             elif player_x > WIDTH // 2:
                 player_x -= 5 * player_speed
             last_move_time = current_time
+        if (keys[pygame.K_p]):
+                pause_game()
 
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and player_x > 10:
             player_x -= player_speed
@@ -241,8 +270,9 @@ def main_game():
             dx = random.choice([-8, 8]) 
             dy = random.randint(-5, -2)
             special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy, current_time + 3))
-            pygame.mixer.music.pause()
-            track1.play()
+            if not mode:
+                pygame.mixer.music.pause()
+                track1.play()
             last_special_ball_time = current_time
 
         if keys[pygame.K_RSHIFT]:
@@ -274,14 +304,14 @@ def main_game():
             balls[i] = (ball_x, ball_y, ball_dx, ball_dy)
 
         if all(balls_crossed_line):
-            game_over(score)
+            game_over(score, mode=mode)
             return
 
         if current_time - last_brick_move_time > 1:
             for brick in bricks[:]:
                 brick.y += brick_move_speed
                 if brick.y + brick_height >= HEIGHT:
-                    game_over(score)
+                    game_over(score, mode=mode)
                     return
             last_brick_move_time = current_time
 
@@ -310,8 +340,9 @@ def main_game():
 
         if current_time - last_x_key_time > random_destruction_interval - 1:
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                pygame.mixer.music.pause()
-                track2.play()
+                if not mode:
+                    pygame.mixer.music.pause()
+                    track2.play()
                 for _ in range(5):
                     if bricks:
                         random_brick = random.choice(bricks)
@@ -370,12 +401,14 @@ def main_game():
         pygame.display.flip()
 
         if not special_balls or current_time - last_special_ball_time >= 2:
-            track1.stop()
-            pygame.mixer.music.unpause()
+            if not mode:
+                track1.stop()
+                pygame.mixer.music.unpause()
 
         if current_time - last_x_key_time >= 3:
-            track2.stop()
-            pygame.mixer.music.unpause()
+            if not mode:
+                track2.stop()
+                pygame.mixer.music.unpause()
 
 
 
@@ -448,13 +481,13 @@ if __name__ == "__main__":
     while True:
         selected_option = main_menu()
         if selected_option == 0:
-            main_game()
+            main_game(is_paused)
         if selected_option== 1:
             if not is_paused:
                 pygame.mixer.music.stop()
                 is_paused = not is_paused
             else:
-                pygame.mixer.play(song)
+                pygame.mixer.music.play(-1)
                 is_paused = not is_paused
         
         
