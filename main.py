@@ -27,8 +27,6 @@ BLACK = (17, 17, 27)
 YELLOW = (223, 142, 29)		
 GREEN = (64, 160, 43)	
 
-line_y = HEIGHT - 60  
-
 player_width = 100 * SCALE
 player_height = 20 * SCALE
 player_speed = 15 * SCALE
@@ -148,7 +146,7 @@ def game_over(score, type_=0):
 
 def drop_powerup(brick_x, brick_y, powerups):
     powerup_type = random.choice(["extra_ball",])
-    if len(powerups) < 2 and random.random() < 0.9:
+    if len(powerups) < 2 and random.random() < 0.5:
         return PowerUp(brick_x, brick_y, powerup_type)
     return None
 
@@ -332,7 +330,7 @@ def main_game():
                     balls_crossed_line.append(False)
 
         for special_ball in special_balls[:]:
-            if special_ball.y < HEIGHT - 70:  # Only draw special balls above the white line
+            if special_ball.y < HEIGHT - 70:  
                 special_ball.move()
                 special_ball.draw()
 
@@ -340,12 +338,12 @@ def main_game():
                 special_balls.remove(special_ball)
 
 
-        #issue
-        draw_bricks([brick for brick in bricks])  # Only draw bricks above the white line
+        
+        draw_bricks([brick for brick in bricks])  
         draw_player(player_x, player_y)
 
         for i, (ball_x, ball_y, _, _) in enumerate(balls):
-            if ball_y < HEIGHT - 60:  # Only draw balls above the white line
+            if ball_y < HEIGHT - 60:  
                 draw_ball(ball_x, ball_y, i)
 
 
@@ -404,7 +402,7 @@ def main_menu():
 
     tiles = [FallingTile() for _ in range(20)]
 
-    options = ["Main Game"]#, "Demo Game"]
+    options = ["Main Game"]
     selected_option = 0
 
     while True:
@@ -449,5 +447,5 @@ if __name__ == "__main__":
         selected_option = main_menu()
         if selected_option == 0:
             main_game()   
-        # elif selected_option == 1:
-        #     main_game2()  
+        
+        
