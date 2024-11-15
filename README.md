@@ -15,7 +15,8 @@ A special thanks to [@khsaad](https://github.com/khsaad04), [@Aarthex](https://g
 
 - Move the block using the **WASD** or **Arrow** keys.
 - Pause or resume the game by pressing the **Spacebar**.
-- To quit the game while it’s not running, press the **Q** key.
+- To quit the game while it’s not running, press the **Q** key
+- To go back to main menu press **Left Shift** key.
 
 ### Options
 
