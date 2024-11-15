@@ -4,7 +4,8 @@
 
 The game is currently under development, and I plan to implement numerous updates and changes to the code. (Stay tuned for future updates!)
 
-A special thanks to [@khsaad](https://github.com/khsaad04) for their contributions. :D
+A special thanks to [@khsaad](https://github.com/khsaad04), [@Aarthex](https://github.com/Amulet9) for their contributions.
+
 
 ---
 

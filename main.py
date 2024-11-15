@@ -138,8 +138,7 @@ def show_score(score):
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 30) * SCALE))
 
 def game_over(score, settings: settings.Settings, type_=0, mode=0):
-
-    if not mode:
+    if mode:
         pygame.mixer.music.pause()
         track3.play()
     screen.fill(BLACK)
@@ -425,7 +424,7 @@ def main_game(mode=False):
 
 
 def loading_screen():
-    
+    bottom_font = pygame.font.SysFont(None, int(20 * SCALE))
     inner_radius = 20  
     outer_radius = 30  
     spinner_coverage = 0.7  
@@ -446,10 +445,7 @@ def loading_screen():
     ]
     tip = random.choice(tips)
 
-    start_time = time.time()
-    running = True
-
-    while running:
+    while True:
         screen.fill(BLACK)  
         clock.tick(60)  
 
@@ -492,9 +488,19 @@ def loading_screen():
         if angle >= 360:
             angle = 0  
 
-        
-        if time.time() - start_time >= 2:
-            running = False
+        bottom_text = bottom_font.render("Press Enter to Continue ", True, (92, 95, 119))
+        screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    return
+                elif event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()
 
         
         pygame.display.flip()
@@ -568,7 +574,7 @@ def main_menu():
 pygame.mixer.music.play(-1)
 
 if __name__ == "__main__":
-    is_paused = True
+    is_paused = False
     while True:
         selected_option = main_menu()
         if selected_option == 0:
