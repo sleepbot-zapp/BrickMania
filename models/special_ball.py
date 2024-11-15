@@ -1,5 +1,6 @@
-from .color import RED
+from .color import Color
 from pygame.draw import circle
+
 
 class SpecialBall:
     def __init__(self, x, y, dx, dy, expiration_time):
@@ -19,5 +20,5 @@ class SpecialBall:
         if self.y <= ball_radius:
             self.dy = -self.dy
 
-    def draw(self,screen, ball_radius):
-        circle(screen, RED, (self.x, self.y), ball_radius)
+    def draw(self, screen, ball_radius):
+        circle(screen, Color.RED, (self.x, self.y), ball_radius)

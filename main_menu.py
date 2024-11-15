@@ -22,17 +22,11 @@ def main_menu(scale, screen, HEIGHT, WIDTH, clock):
             tile.move()
             tile.draw()
 
-        title_text = title_font.render("BRICKMANIA", True, Color.YELLOW)
-        screen.blit(title_text, ((WIDTH // 2 - title_text.get_width() // 2) * scale, (HEIGHT // 2 - 150) * scale))
-
+        screen.blit(text:=title_font.render("BRICKMANIA", True, Color.YELLOW), ((WIDTH // 2 - text.get_width() // 2) * scale, (HEIGHT // 2 - 150) * scale))
         for i, option in enumerate(options):
             color = Color.YELLOW if i == selected_option else Color.WHITE
-            option_text = menu_font.render(option+[" [PRESS ENTER]",''][color!=Color.YELLOW], True, color)
-            screen.blit(option_text, ((WIDTH // 2 - option_text.get_width() // 2) * scale,
-                                      (HEIGHT // 2 + i * 60) * scale))
-
-        quit_text = menu_font.render("Press Q to Quit", True, Color.WHITE)
-        screen.blit(quit_text, ((WIDTH // 2 - quit_text.get_width() // 2) * scale, (HEIGHT // 2 + 150) * scale))
+            screen.blit(text:=menu_font.render(option+[" [PRESS ENTER]",''][color!=Color.YELLOW], True, color), ((WIDTH // 2 - text.get_width() // 2) * scale, (HEIGHT // 2 + i * 60) * scale))
+        screen.blit(text:=menu_font.render("Press Q to Quit", True, Color.WHITE), ((WIDTH // 2 - text.get_width() // 2) * scale, (HEIGHT // 2 + 150) * scale))
 
         flip()
         for event in event.get():

@@ -1,11 +1,11 @@
-import os
+from os import chdir
+from os.path import dirname
 import pygame
 import random
 import sys
 import time
-import os
 
-os.chdir(os.path.dirname(__file__))
+chdir(dirname(__file__))
 
 pygame.init()
 
@@ -370,7 +370,7 @@ def main_game():
             track1.stop()
             pygame.mixer.music.unpause()
 
-        if current_time - last_x_key_time >= 5:
+        if current_time - last_x_key_time >= 3:
             track2.stop()
             pygame.mixer.music.unpause()
 
@@ -399,7 +399,7 @@ def main_menu():
 
     tiles = [FallingTile() for _ in range(20)]
 
-    options = ["Main Game", "Demo Game"]
+    options = ["Main Game"]#, "Demo Game"]
     selected_option = 0
 
     while True:
