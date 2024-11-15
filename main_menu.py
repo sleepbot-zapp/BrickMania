@@ -4,6 +4,7 @@ from pygame import event, KEYDOWN, K_UP, K_DOWN, K_RETURN, K_q, QUIT, quit
 from models import FallingTile
 from models import Color
 from sys import exit
+from .game_control import game_over
 
 def main_menu(scale, screen, HEIGHT, WIDTH, clock):
     title_font = SysFont(None, int(72 * scale))
@@ -36,8 +37,7 @@ def main_menu(scale, screen, HEIGHT, WIDTH, clock):
         flip()
         for event in event.get():
             if event.type == QUIT:
-                quit()
-                exit()
+                game_over()
             if event.type == KEYDOWN:
                 if event.key == K_DOWN:
                     selected_option = (selected_option + 1) % len(options)
@@ -46,7 +46,6 @@ def main_menu(scale, screen, HEIGHT, WIDTH, clock):
                 elif event.key == K_RETURN:
                     return selected_option
                 elif event.key == K_q:
-                    quit()
-                    exit()
+                    game_over()
 
         clock.tick(60)

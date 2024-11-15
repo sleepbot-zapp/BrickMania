@@ -25,17 +25,19 @@ def game_over(score, screen, track2, track3, HEIGHT, WIDTH, scale, type_=0,):
     while True:
         for eve in event.get():
             if eve.type == QUIT:
-                quit()
-                exit()
+                game_quit()
             if eve.type == KEYDOWN:
                 if event.key == K_RETURN: 
                     track2.stop()
                     mixer.music.unpause()
                     return
                 if eve.key == K_q:
-                    quit()
-                    exit()
+                    game_quit()
 
+
+def game_quit():
+    quit()
+    exit()
 
 def drop_powerup(brick_x, brick_y, powerups):
     powerup_type = random(["extra_ball",])

@@ -9,10 +9,10 @@ os.chdir(os.path.dirname(__file__))
 
 pygame.init()
 
-pygame.mixer.music.load("./music.mp3")
-track1 = pygame.mixer.Sound("./music1.mp3")
-track2 = pygame.mixer.Sound("./music2.mp3")
-track3 = pygame.mixer.Sound("./music3.mp3")
+pygame.mixer.music.load("./assets/music.mp3")
+track1 = pygame.mixer.Sound("./assets/music1.mp3")
+track2 = pygame.mixer.Sound("./assets/music2.mp3")
+track3 = pygame.mixer.Sound("./assets/music3.mp3")
 pygame.mixer.music.play(-1)
 
 SCALE = 1
@@ -20,12 +20,12 @@ WIDTH, HEIGHT = int(800 * SCALE), int(600 * SCALE)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("BRICKMANIA")
 
-WHITE = (255, 255, 255)
-RED = (255, 30, 100)
-BLUE = (0, 0, 255)
-BLACK = (0, 0, 0)
-YELLOW = (255, 255, 0)
-GREEN = (0, 255, 0)
+WHITE = (205, 214, 244)	
+RED = (150, 15, 57)	
+BLUE = (30, 102, 245)	
+BLACK = (17, 17, 27)	
+YELLOW = (223, 142, 29)		
+GREEN = (64, 160, 43)	
 
 line_y = HEIGHT - 60  
 
@@ -242,25 +242,31 @@ def main_game():
             balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
 
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
+            # Update ball position
             ball_x += ball_dx
             ball_y += ball_dy
 
-            if ball_x <= ball_radius or ball_x >= WIDTH - ball_radius:
-                ball_dx = -ball_dx
+            # Check collision with vertical walls (left and right)
+            if ball_x - ball_radius <= 0 or ball_x + ball_radius >= WIDTH:
+                ball_dx = -ball_dx  # Reverse direction horizontally
 
-            if ball_y <= ball_radius:
-                ball_dy = -ball_dy
+            # Check collision with top wall
+            if ball_y - ball_radius <= 0:
+                ball_dy = -ball_dy  # Reverse direction vertically
 
+            # Check if ball falls below the bottom boundary
             if ball_y >= HEIGHT - 60 - ball_radius and not balls_crossed_line[i]:
                 balls_crossed_line[i] = True
 
+            # Collision with player paddle
             if player_x < ball_x < player_x + player_width and player_y < ball_y + ball_radius < player_y + player_height:
                 center_x = player_x + player_width / 2
                 hit_position = (ball_x - center_x) / (player_width / 2)
                 ball_dx = ball_speed_x * hit_position
-                ball_dy = -abs(ball_dy)
+                ball_dy = -abs(ball_dy)  # Ensure upward bounce
                 ball_y = player_y - ball_radius
 
+            # Update ball state in the list
             balls[i] = (ball_x, ball_y, ball_dx, ball_dy)
 
         if all(balls_crossed_line):
@@ -385,8 +391,8 @@ def main_game2():
     is_game_over = False
     game_over_start_time = 0
     last_reaction_time = time.time()  
-    reaction_delay = 0.01 
-    overshoot_amount = 2 * SCALE
+    reaction_delay = 0.1 
+    overshoot_amount = 10 * SCALE
 
     while running:
         for event in pygame.event.get():
@@ -450,34 +456,43 @@ def main_game2():
                 last_reaction_time = current_time
 
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
+            # Update ball speeds with the speed increment
             balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
 
-        
-
-
-        
         balls_to_remove = []
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
+            # Update ball position
             ball_x += ball_dx
             ball_y += ball_dy
 
-            if ball_x <= ball_radius or ball_x >= WIDTH - ball_radius:
-                ball_dx = -ball_dx
-            if ball_y <= ball_radius:
-                ball_dy = -ball_dy
+            # Check collision with vertical walls (left and right)
+            if ball_x - ball_radius <= 0 or ball_x + ball_radius >= WIDTH:
+                ball_dx = -ball_dx  # Reverse direction horizontally
 
-            if ball_y > line_y:
-                balls_to_remove.append(i)
-                continue
+            # Check collision with top wall
+            if ball_y - ball_radius <= 0:
+                ball_dy = -ball_dy  # Reverse direction vertically
 
+            # Check if ball falls below the bottom boundary
+            if ball_y >= HEIGHT - 60 - ball_radius and not balls_crossed_line[i]:
+                balls_crossed_line[i] = True
+
+            # Collision with player paddle
             if player_x < ball_x < player_x + player_width and player_y < ball_y + ball_radius < player_y + player_height:
                 center_x = player_x + player_width / 2
                 hit_position = (ball_x - center_x) / (player_width / 2)
-                ball_dx = ball_speed_x * (hit_position + random.uniform(-1, 1))
-                ball_dy = -abs(ball_dy)
+                ball_dx = ball_speed_x * hit_position
+                ball_dy = -abs(ball_dy)  # Ensure upward bounce
                 ball_y = player_y - ball_radius
 
+            # Update ball state in the list
             balls[i] = (ball_x, ball_y, ball_dx, ball_dy)
+
+
+        if all(balls_crossed_line):
+            game_over(score)
+            return
+
 
         for i in reversed(balls_to_remove):
             balls.pop(i)
