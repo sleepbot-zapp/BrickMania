@@ -206,7 +206,6 @@ def main_game():
     last_brick_move_time = time.time()
     brick_move_speed = 3
 
-
     last_special_ball_time = time.time()
 
     last_x_key_time = time.time()
@@ -255,31 +254,25 @@ def main_game():
             balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
 
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
-            
             ball_x += ball_dx
             ball_y += ball_dy
 
-            
-            if ball_x - ball_radius <= 0 or ball_x + ball_radius >= WIDTH:
-                ball_dx = -ball_dx  
+            if ball_x <= ball_radius or ball_x >= WIDTH - ball_radius:
+                ball_dx = -ball_dx
 
-            
-            if ball_y - ball_radius <= 0:
-                ball_dy = -ball_dy  
+            if ball_y <= ball_radius:
+                ball_dy = -ball_dy
 
-            
             if ball_y >= HEIGHT - 60 - ball_radius and not balls_crossed_line[i]:
                 balls_crossed_line[i] = True
 
-            
-            if player_x < ball_x < player_x + player_width and player_y < ball_y + ball_radius < player_y + player_height:
-                center_x = player_x + player_width / 2
-                hit_position = (ball_x - center_x) / (player_width / 2)
-                ball_dx = ball_speed_x * hit_position
-                ball_dy = -abs(ball_dy)  
+            paddle_center_x = player_x + player_width / 2
+            dx_from_center = (ball_x - paddle_center_x) / (player_width / 2)
+            if player_x - ball_radius < ball_x < player_x + player_width + ball_radius and player_y < ball_y + ball_radius < player_y + player_height:
+                ball_dx = ball_speed_x * dx_from_center
+                ball_dy = -abs(ball_dy)
                 ball_y = player_y - ball_radius
 
-            
             balls[i] = (ball_x, ball_y, ball_dx, ball_dy)
 
         if all(balls_crossed_line):
@@ -352,6 +345,7 @@ def main_game():
 
         show_score(score)
 
+
         if current_time - last_special_ball_time > 19:
             special_ball_text = font.render("Special Ball Ready (UP)", True, GREEN)
         else:
@@ -369,6 +363,7 @@ def main_game():
         pygame.draw.line(screen, WHITE, (0, HEIGHT - 60), (WIDTH, HEIGHT - 60), 2)
         screen.blit(special_ball_text, (20 * SCALE, (HEIGHT - 40) * SCALE))
 
+
         pygame.display.flip()
 
         if not special_balls or current_time - last_special_ball_time >= 2:
@@ -378,234 +373,6 @@ def main_game():
         if current_time - last_x_key_time >= 5:
             track2.stop()
             pygame.mixer.music.unpause()
-
-
-def main_game2():
-    last_brick_move_time = time.time()
-    brick_move_speed = 3
-    player_width = 100 * SCALE
-    player_height = 20 * SCALE
-    base_player_speed = 30 * SCALE
-    player_x = (WIDTH * SCALE - player_width) // 2
-    player_y = HEIGHT * SCALE - player_height - 70
-    balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), ball_speed_x, ball_speed_y)]
-    balls_crossed_line = [False] * len(balls)
-    score = 0
-    bricks = create_new_bricks()
-    powerups = []
-    special_balls = []
-    running = True
-
-    last_special_ball_time = time.time()
-    last_x_time = time.time()
-    random_destruction_interval = 60
-    last_ball_missed_time = 0
-    ball_miss_chance = 0.2
-    is_game_over = False
-    game_over_start_time = 0
-    last_reaction_time = time.time()  
-    reaction_delay = 0.1 
-    overshoot_amount = 10 * SCALE
-
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-
-        screen.fill(BLACK)
-        current_time = time.time()
-
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_RSHIFT]:
-            return
-
-        if current_time - last_brick_move_time > 1:
-            for brick in bricks:
-                brick.y += brick_move_speed
-                if brick.y + brick_height >= HEIGHT:
-                    game_over(score)
-                    return
-            last_brick_move_time = current_time
-
-        if is_game_over:
-            if current_time - game_over_start_time < 5:
-                pass
-            else:
-                balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), ball_speed_x, ball_speed_y)]
-                balls_crossed_line = [False] * len(balls)
-                bricks = create_new_bricks()
-                powerups = []
-                score = 0
-                is_game_over = False
-            pygame.display.flip()
-            continue
-
-        clock.tick(60)
-
-        if len(bricks) == 0:
-            bricks = create_new_bricks()
-
-        line_y = player_y + player_height + 10
-        pygame.draw.line(screen, WHITE, (0, line_y), (WIDTH, line_y), 2)
-
-        if balls:
-            avg_ball_x = sum(ball[0] for ball in balls) / len(balls)
-            if current_time - last_reaction_time >= reaction_delay:
-                random_offset = random.uniform(-overshoot_amount, overshoot_amount)
-                target_x = avg_ball_x + random_offset
-
-                if player_x + player_width / 2 < target_x:
-                    player_speed = random.uniform(0.8, 1.2) * base_player_speed
-                    player_x += min(player_speed, target_x - (player_x + player_width / 2))
-                elif player_x + player_width / 2 > target_x:
-                    player_speed = random.uniform(0.8, 1.2) * base_player_speed
-                    player_x -= min(player_speed, (player_x + player_width / 2) - target_x)
-
-                
-                player_x = max(0, min(player_x, WIDTH - player_width))
-
-                last_reaction_time = current_time
-
-        for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
-            
-            balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
-
-        balls_to_remove = []
-        for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
-            
-            ball_x += ball_dx
-            ball_y += ball_dy
-
-            
-            if ball_x - ball_radius <= 0 or ball_x + ball_radius >= WIDTH:
-                ball_dx = -ball_dx  
-
-            
-            if ball_y - ball_radius <= 0:
-                ball_dy = -ball_dy  
-
-            
-            if ball_y >= HEIGHT - 60 - ball_radius and not balls_crossed_line[i]:
-                balls_crossed_line[i] = True
-
-            
-            if player_x < ball_x < player_x + player_width and player_y < ball_y + ball_radius < player_y + player_height:
-                center_x = player_x + player_width / 2
-                hit_position = (ball_x - center_x) / (player_width / 2)
-                ball_dx = ball_speed_x * hit_position
-                ball_dy = -abs(ball_dy)  
-                ball_y = player_y - ball_radius
-
-            
-            balls[i] = (ball_x, ball_y, ball_dx, ball_dy)
-
-
-        if all(balls_crossed_line):
-            game_over(score)
-            return
-
-
-        for i in reversed(balls_to_remove):
-            balls.pop(i)
-            balls_crossed_line.pop(i)
-
-        if len(balls) == 0:
-            is_game_over = True
-            game_over_start_time = current_time
-
-        bricks_to_remove = []
-        for brick in bricks:
-            for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
-                if brick.x < ball_x < brick.x + brick_width and brick.y < ball_y < brick.y + brick_height:
-                    bricks_to_remove.append(brick)
-                    score += 10
-                    balls[i] = (ball_x, ball_y, ball_dx, -ball_dy)
-
-                    if random.random() < 0.3:
-                        powerup_type = random.choice(["extra_ball"])
-                        powerups.append(PowerUp(brick.x, brick.y, powerup_type))
-
-        for brick in bricks_to_remove:
-            if brick in bricks:
-                bricks.remove(brick)
-
-        for powerup in powerups[:]:
-            powerup.move()
-            powerup.draw()
-            if powerup.y > line_y:
-                powerups.remove(powerup)
-            elif (
-                powerup.x < player_x + player_width
-                and powerup.x + powerup.width > player_x
-                and powerup.y < player_y + player_height
-                and powerup.y + powerup.height > player_y
-            ):
-                powerups.remove(powerup)
-                if powerup.type == "extra_ball":
-                    balls.append((WIDTH // 2, HEIGHT // 2, ball_speed_x, ball_speed_y))
-                    balls_crossed_line.append(False)
-
-        for special_ball in special_balls[:]:
-            special_ball.move()
-            special_ball.draw()
-            
-            if special_ball.y >= HEIGHT - 10:
-                special_balls.remove(special_ball)
-
-            for brick in bricks:
-                if brick.x < special_ball.x < brick.x + brick_width and brick.y < special_ball.y < brick.y + brick_height:
-                    bricks.remove(brick)
-                    score += 20
-                    break
-
-        for brick in bricks:
-            if brick.y + brick_height > line_y:
-                is_game_over = True
-                break
-
-        if is_game_over:
-            game_over(score)
-            return
-
-        draw_bricks(bricks)
-        draw_player(player_x, player_y)
-        for ball_x, ball_y, _, _ in balls:
-            draw_ball(ball_x, ball_y)
-        for special_ball in special_balls:
-            special_ball.draw()
-        show_score(score)
-
-        if current_time - last_special_ball_time > 19:
-            special_ball_text = font.render("Special Ball Ready (UP)", True, GREEN)
-        else:
-            remaining_time = max(0, 20 - (current_time - last_special_ball_time))
-            special_ball_text = font.render(f"Special Ball in {int(remaining_time)}s", True, WHITE)
-
-        if current_time - last_x_time > random_destruction_interval - 1:
-            countdown_text = font.render("Brick Destruction Ready (DOWN)", True, GREEN)
-            screen.blit(countdown_text, ((WIDTH - countdown_text.get_width() - 20) * SCALE, (HEIGHT - 40) * SCALE))
-        else:
-            time_until_destruction = max(0, random_destruction_interval - (current_time - last_x_time))
-            countdown_text = font.render(f"Brick Destruction in {int(time_until_destruction)}s", True, WHITE)
-            screen.blit(countdown_text, ((WIDTH - countdown_text.get_width() - 20) * SCALE, (HEIGHT - 40) * SCALE))
-
-        pygame.draw.line(screen, WHITE, (0, HEIGHT - 60), (WIDTH, HEIGHT - 60), 2)
-        screen.blit(special_ball_text, (20 * SCALE, (HEIGHT - 40) * SCALE))
-
-        pygame.display.flip()
-
-        if not special_balls or current_time - last_special_ball_time >= 2:
-            track1.stop()
-            pygame.mixer.music.unpause()
-
-        if current_time - last_x_time >= 5:
-            track2.stop()
-            pygame.mixer.music.unpause()
-
-
-
 
 
 class FallingTile:
@@ -677,5 +444,5 @@ if __name__ == "__main__":
         selected_option = main_menu()
         if selected_option == 0:
             main_game()   
-        elif selected_option == 1:
-            main_game2()  
+        # elif selected_option == 1:
+        #     main_game2()  
