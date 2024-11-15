@@ -10,12 +10,10 @@ chdir(dirname(__file__))
 
 pygame.init()
 
-song = r"./assets/music.mp3"
-pygame.mixer.music.load(song)
+pygame.mixer.music.load("./assets/music.mp3")
 track1 = pygame.mixer.Sound("./assets/music1.mp3")
 track2 = pygame.mixer.Sound("./assets/music2.mp3")
 track3 = pygame.mixer.Sound("./assets/music3.mp3")
-pygame.mixer.music.play(-1)
 
 SCALE = 1
 WIDTH, HEIGHT = int(800 * SCALE), int(600 * SCALE)
@@ -139,7 +137,7 @@ def show_score(score):
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 30) * SCALE))
 
 def game_over(score, type_=0, mode=0):
-    if not mode:
+    if mode:
         pygame.mixer.music.pause()
         track3.play()
     screen.fill(BLACK)
@@ -162,7 +160,7 @@ def game_over(score, type_=0, mode=0):
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN: 
-                if not mode:
+                if mode:
                     track2.stop()
                     pygame.mixer.music.unpause()
                 return
@@ -273,7 +271,7 @@ def main_game(mode=False):
             dx = random.choice([-8, 8]) 
             dy = random.randint(-5, -2)
             special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy, current_time + 3))
-            if not mode:
+            if mode:
                 pygame.mixer.music.pause()
                 track1.play()
             last_special_ball_time = current_time
@@ -353,7 +351,7 @@ def main_game(mode=False):
 
         if current_time - last_x_key_time > random_destruction_interval - 1:
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                if not mode:
+                if mode:
                     pygame.mixer.music.pause()
                     track2.play()
                 for _ in range(5):
@@ -414,12 +412,12 @@ def main_game(mode=False):
         pygame.display.flip()
 
         if not special_balls or current_time - last_special_ball_time >= 2:
-            if not mode:
+            if mode:
                 track1.stop()
                 pygame.mixer.music.unpause()
 
         if current_time - last_x_key_time >= 3:
-            if not mode:
+            if mode:
                 track2.stop()
                 pygame.mixer.music.unpause()
 
@@ -455,11 +453,11 @@ def loading_screen():
 
         
         loading_text = font.render("Loading...", True, WHITE)
-        screen.blit(loading_text, (WIDTH // 2 - loading_text.get_width() // 2, HEIGHT // 2 - 50))
+        screen.blit(loading_text, (WIDTH // 2 - loading_text.get_width() // 2, HEIGHT // 2 - 123))
 
         
         tip_text = tip_font.render("Tip: "+tip, True, WHITE)
-        screen.blit(tip_text, (WIDTH // 2 - tip_text.get_width() // 2, HEIGHT//2 + 125))
+        screen.blit(tip_text, (WIDTH // 2 - tip_text.get_width() // 2, HEIGHT//2 + 123))
 
         
         spinner_center = (WIDTH // 2, HEIGHT // 2 + 50)  
@@ -467,25 +465,25 @@ def loading_screen():
         
         for i in range(spinner_segments):
             
-            segment_angle_start = angle + (i * angle_per_segment)
-            segment_angle_end = segment_angle_start + angle_per_segment
+            segment_angle_start = angle + (i * angle_per_segment) + 100
+            segment_angle_end = segment_angle_start + angle_per_segment + 100
 
             
-            start_x1 = spinner_center[0] + inner_radius * math.cos(math.radians(segment_angle_start))
-            start_y1 = spinner_center[1] + inner_radius * math.sin(math.radians(segment_angle_start))
+            start_x1 = spinner_center[0] - inner_radius * math.cos(math.radians(segment_angle_start))
+            start_y1 = spinner_center[1] - inner_radius * math.sin(math.radians(segment_angle_start))
 
             end_x1 = spinner_center[0] + outer_radius * math.cos(math.radians(segment_angle_start))
             end_y1 = spinner_center[1] + outer_radius * math.sin(math.radians(segment_angle_start))
 
-            start_x2 = spinner_center[0] + inner_radius * math.cos(math.radians(segment_angle_end))
-            start_y2 = spinner_center[1] + inner_radius * math.sin(math.radians(segment_angle_end))
+            start_x2 = spinner_center[0] - inner_radius * math.cos(math.radians(segment_angle_end))
+            start_y2 = spinner_center[1] - inner_radius * math.sin(math.radians(segment_angle_end))
 
             end_x2 = spinner_center[0] + outer_radius * math.cos(math.radians(segment_angle_end))
             end_y2 = spinner_center[1] + outer_radius * math.sin(math.radians(segment_angle_end))
 
             
-            pygame.draw.line(screen, WHITE, (end_x1, end_y1), (end_x2, end_y2), 3)
-            pygame.draw.line(screen, WHITE, (start_x1, start_y1), (start_x2, start_y2), 3)
+            pygame.draw.line(screen, BLUE, (end_x1, end_y1 - 40), (end_x2, end_y2 - 40), 3)
+            pygame.draw.line(screen, RED, (start_x1, start_y1 - 40), (start_x2, start_y2 - 40), 3)
 
         
         angle += spinner_speed
@@ -525,7 +523,7 @@ def main_menu():
 
     tiles = [FallingTile() for _ in range(20)]
 
-    options = ["Main Game", "MUTE MUSIC"]
+    options = ["Main Game", "Mute Music"]
     selected_option = 0
 
     while True:
@@ -565,19 +563,19 @@ def main_menu():
 
         clock.tick(60)
 
+pygame.mixer.music.play(-1)
+
 if __name__ == "__main__":
-    is_paused = False
+    is_paused = True
     while True:
         selected_option = main_menu()
         if selected_option == 0:
             loading_screen()
             main_game(is_paused)
         if selected_option== 1:
-            if not is_paused:
+            if is_paused:
                 pygame.mixer.music.stop()
                 is_paused = not is_paused
             else:
                 pygame.mixer.music.play(-1)
                 is_paused = not is_paused
-        
-        
