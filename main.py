@@ -43,7 +43,7 @@ brick_cols = WIDTH // brick_width
 
 clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, int(25 * SCALE))
-
+bottom_font = pygame.font.SysFont(None, int(20 * SCALE))
 trail = []
 trail_length = 10
 
@@ -424,7 +424,6 @@ def main_game(mode=False):
 
 
 def loading_screen():
-    bottom_font = pygame.font.SysFont(None, int(20 * SCALE))
     inner_radius = 20  
     outer_radius = 30  
     spinner_coverage = 0.7  
@@ -450,7 +449,7 @@ def loading_screen():
         clock.tick(60)  
 
         
-        loading_text = font.render("Loading...", True, WHITE)
+        loading_text = font.render("BrickMania", True, WHITE)
         screen.blit(loading_text, (WIDTH // 2 - loading_text.get_width() // 2, HEIGHT // 2 - 123))
 
         
@@ -525,13 +524,13 @@ class FallingTile:
     def draw(self):
         pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
 
-def main_menu():
+def main_menu(mode=False):
     title_font = pygame.font.SysFont(None, int(72 * SCALE))
     menu_font = pygame.font.SysFont(None, int(48 * SCALE))
 
     tiles = [FallingTile() for _ in range(20)]
 
-    options = ["Main Game", "Mute Music"]
+    options = ["Main Game", ["Mute Music", "Unmute Music"][not mode]]
     selected_option = 0
 
     while True:
@@ -546,12 +545,15 @@ def main_menu():
 
         for i, option in enumerate(options):
             color = YELLOW if i == selected_option else WHITE
-            option_text = menu_font.render(option+[" [PRESS ENTER]",''][color!=YELLOW], True, color)
+            option_text = menu_font.render(option, True, color)
             screen.blit(option_text, ((WIDTH // 2 - option_text.get_width() // 2) * SCALE,
                                       (HEIGHT // 2 + i * 60) * SCALE))
 
         quit_text = menu_font.render("Press Q to Quit", True, WHITE)
         screen.blit(quit_text, ((WIDTH // 2 - quit_text.get_width() // 2) * SCALE, (HEIGHT // 2 + 150) * SCALE))
+
+        bottom_text = bottom_font.render("Press Enter to Continue ", True, (92, 95, 119))
+        screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
 
         pygame.display.flip()
         for event in pygame.event.get():
@@ -571,19 +573,22 @@ def main_menu():
 
         clock.tick(60)
 
-pygame.mixer.music.play(-1)
+
 
 if __name__ == "__main__":
     is_paused = False
     while True:
-        selected_option = main_menu()
+        if not is_paused:
+            pygame.mixer.music.stop()
+        else:
+            pygame.mixer.music.play(-1)
+        selected_option = main_menu(is_paused)
         if selected_option == 0:
             loading_screen()
             main_game(is_paused)
         if selected_option== 1:
-            if is_paused:
+            if not is_paused:
                 pygame.mixer.music.stop()
-                is_paused = not is_paused
             else:
                 pygame.mixer.music.play(-1)
-                is_paused = not is_paused
+            is_paused = not is_paused
