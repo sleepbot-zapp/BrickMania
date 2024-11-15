@@ -647,7 +647,6 @@ def main_menu():
 if __name__ == "__main__":
     while True:
         selected_option = main_menu()
-        
         if selected_option == 0:
             main_game()   
         elif selected_option == 1:
