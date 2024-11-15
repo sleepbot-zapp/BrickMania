@@ -117,7 +117,7 @@ def pause_game():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_p:
+                if event.key in (pygame.K_p, pygame.K_SPACE, pygame.K_0):
                     paused = False
                 if event.key == pygame.K_q:
                     pygame.quit()
@@ -234,10 +234,11 @@ def main_game(mode=False):
     last_x_key_time = time.time()
     random_destruction_interval = 60
 
+    last_x_time = time.time()
+    last_x_value = None
+
+
     while running:
-
-
-
         screen.fill(BLACK)
         clock.tick(60) / 1000
         current_time = time.time()
@@ -250,6 +251,7 @@ def main_game(mode=False):
                 pygame.quit()
                 sys.exit()
 
+
         keys = pygame.key.get_pressed()
         if current_time - last_move_time > inactivity_threshold:
             if player_x <= WIDTH // 2:
@@ -257,7 +259,7 @@ def main_game(mode=False):
             elif player_x > WIDTH // 2:
                 player_x -= 5 * player_speed
             last_move_time = current_time
-        if (keys[pygame.K_p]):
+        if (keys[pygame.K_p]) or (keys[pygame.K_p]) or (keys[pygame.K_SPACE]) or (keys[pygame.K_0]):
                 pause_game()
 
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and player_x > 10:
@@ -283,11 +285,21 @@ def main_game(mode=False):
             balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
 
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
+            
             ball_x += ball_dx
             ball_y += ball_dy
 
+            if last_x_value == ball_x:
+                if current_time - last_x_time > 3:  
+                    ball_dx = -ball_dx  
+                    ball_x += ball_dx  
+                    last_x_time = current_time  
+            else:
+                last_x_value = ball_x
+                last_x_time = current_time  
+      
             if ball_x <= ball_radius or ball_x >= WIDTH - ball_radius:
-                ball_dx = -ball_dx
+                ball_dx = -ball_dx  
 
             if ball_y <= ball_radius:
                 ball_dy = -ball_dy
