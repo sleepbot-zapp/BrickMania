@@ -5,6 +5,7 @@ import random
 import sys
 import time
 import math
+import settings
 
 chdir(dirname(__file__))
 
@@ -138,19 +139,20 @@ def show_score(score):
     text = font.render(f"Score: {score}", True, RED)
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 30) * SCALE))
 
-def game_over(score, type_=0, mode=0):
+def game_over(score, settings: settings.Settings, type_=0, mode=0):
+
     if not mode:
         pygame.mixer.music.pause()
         track3.play()
     screen.fill(BLACK)
     font_for_game_over = pygame.font.SysFont(None, int(42 * SCALE))
     text = font_for_game_over.render("Game Over! Press ENTER to restart", True, RED)
-    highscore = int(open("./highscore.txt").read())
+    highscore = settings.highscore
     text2 = font_for_game_over.render(f"High Score = {[score, highscore][highscore>score]}", True, [GREEN, YELLOW][highscore>score])
     text3 = font_for_game_over.render(f"Your Score = {score}", True, BLUE)
     if highscore < score and type_==0:
-        with open('./highscore.txt', 'w') as f:
-            f.write(str(score))
+        settings.highscore = score
+        settings.flush()
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT // 2 - 40) * SCALE))
     screen.blit(text2, ((WIDTH // 2 - text2.get_width() / 2) * SCALE, (HEIGHT // 2) * SCALE))
     screen.blit(text3, ((WIDTH // 2 - text3.get_width() / 2) * SCALE, (HEIGHT // 2 + 40) * SCALE))
@@ -210,7 +212,7 @@ def main_game(mode=False):
     player_width = 100 * SCALE
     player_height = 20 * SCALE
     player_speed = 15 * SCALE
-
+    data = settings.Settings.open()
     player_x = (WIDTH * SCALE - player_width) // 2
     player_y = HEIGHT * SCALE - player_height - 70
 
@@ -317,14 +319,14 @@ def main_game(mode=False):
             balls[i] = (ball_x, ball_y, ball_dx, ball_dy)
 
         if all(balls_crossed_line):
-            game_over(score, mode=mode)
+            game_over(score, mode=mode, settings=data)
             return
 
         if current_time - last_brick_move_time > 1:
             for brick in bricks[:]:
                 brick.y += brick_move_speed
                 if brick.y + brick_height >= HEIGHT:
-                    game_over(score, mode=mode)
+                    game_over(score, mode=mode, settings=data)
                     return
             last_brick_move_time = current_time
 
