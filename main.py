@@ -9,7 +9,8 @@ chdir(dirname(__file__))
 
 pygame.init()
 
-pygame.mixer.music.load("./assets/music.mp3")
+song = r"./assets/music.mp3"
+pygame.mixer.music.load(song)
 track1 = pygame.mixer.Sound("./assets/music1.mp3")
 track2 = pygame.mixer.Sound("./assets/music2.mp3")
 track3 = pygame.mixer.Sound("./assets/music3.mp3")
@@ -402,7 +403,7 @@ def main_menu():
 
     tiles = [FallingTile() for _ in range(20)]
 
-    options = ["Main Game"]
+    options = ["Main Game", "MUTE MUSIC"]
     selected_option = 0
 
     while True:
@@ -443,9 +444,17 @@ def main_menu():
         clock.tick(60)
 
 if __name__ == "__main__":
+    is_paused = False
     while True:
         selected_option = main_menu()
         if selected_option == 0:
-            main_game()   
+            main_game()
+        if selected_option== 1:
+            if not is_paused:
+                pygame.mixer.music.stop()
+                is_paused = not is_paused
+            else:
+                pygame.mixer.play(song)
+                is_paused = not is_paused
         
         
