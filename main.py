@@ -77,22 +77,35 @@ class Brick:
 def draw_player(x, y):
     pygame.draw.rect(screen, BLUE, (x, y, player_width, player_height), border_radius=10)
 
-def draw_ball(x, y):
-    FIXED_TRAIL_LENGTH = 10 
+
+ball_trails = {}
+
+def draw_ball(x, y, ball_id):
+    FIXED_TRAIL_LENGTH = 10
     FIXED_TRAIL_COLOR = (0, 156, 0)
-    MAX_ALPHA = 50 
+    MAX_ALPHA = 50
+
+    
+    if ball_id not in ball_trails:
+        ball_trails[ball_id] = []
+
+    
+    trail = ball_trails[ball_id]
     trail.append((x, y))
-    if len(trail) < FIXED_TRAIL_LENGTH:
+    if len(trail) > FIXED_TRAIL_LENGTH:
         trail.pop(0)
 
+    
     for i, (tx, ty) in enumerate(trail):
-        alpha = MAX_ALPHA - int(MAX_ALPHA * (i / FIXED_TRAIL_LENGTH)) 
+        alpha = MAX_ALPHA - int(MAX_ALPHA * (i / FIXED_TRAIL_LENGTH))
         color = (FIXED_TRAIL_COLOR[0], FIXED_TRAIL_COLOR[1], FIXED_TRAIL_COLOR[2], alpha)
         trail_surface = pygame.Surface((ball_radius * 2, ball_radius * 2), pygame.SRCALPHA)
         pygame.draw.circle(trail_surface, color, (ball_radius, ball_radius), ball_radius)
         screen.blit(trail_surface, (tx - ball_radius, ty - ball_radius))
 
+    
     pygame.draw.circle(screen, FIXED_TRAIL_COLOR, (x, y), ball_radius)
+
 
 
 def draw_bricks(bricks):
@@ -242,31 +255,31 @@ def main_game():
             balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
 
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
-            # Update ball position
+            
             ball_x += ball_dx
             ball_y += ball_dy
 
-            # Check collision with vertical walls (left and right)
+            
             if ball_x - ball_radius <= 0 or ball_x + ball_radius >= WIDTH:
-                ball_dx = -ball_dx  # Reverse direction horizontally
+                ball_dx = -ball_dx  
 
-            # Check collision with top wall
+            
             if ball_y - ball_radius <= 0:
-                ball_dy = -ball_dy  # Reverse direction vertically
+                ball_dy = -ball_dy  
 
-            # Check if ball falls below the bottom boundary
+            
             if ball_y >= HEIGHT - 60 - ball_radius and not balls_crossed_line[i]:
                 balls_crossed_line[i] = True
 
-            # Collision with player paddle
+            
             if player_x < ball_x < player_x + player_width and player_y < ball_y + ball_radius < player_y + player_height:
                 center_x = player_x + player_width / 2
                 hit_position = (ball_x - center_x) / (player_width / 2)
                 ball_dx = ball_speed_x * hit_position
-                ball_dy = -abs(ball_dy)  # Ensure upward bounce
+                ball_dy = -abs(ball_dy)  
                 ball_y = player_y - ball_radius
 
-            # Update ball state in the list
+            
             balls[i] = (ball_x, ball_y, ball_dx, ball_dy)
 
         if all(balls_crossed_line):
@@ -334,8 +347,8 @@ def main_game():
 
         draw_bricks(bricks)
         draw_player(player_x, player_y)
-        for ball_x, ball_y, _, _ in balls:
-            draw_ball(ball_x, ball_y)
+        for i, (ball_x, ball_y, _, _) in enumerate(balls):
+            draw_ball(ball_x, ball_y, i)
 
         show_score(score)
 
@@ -456,36 +469,36 @@ def main_game2():
                 last_reaction_time = current_time
 
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
-            # Update ball speeds with the speed increment
+            
             balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
 
         balls_to_remove = []
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
-            # Update ball position
+            
             ball_x += ball_dx
             ball_y += ball_dy
 
-            # Check collision with vertical walls (left and right)
+            
             if ball_x - ball_radius <= 0 or ball_x + ball_radius >= WIDTH:
-                ball_dx = -ball_dx  # Reverse direction horizontally
+                ball_dx = -ball_dx  
 
-            # Check collision with top wall
+            
             if ball_y - ball_radius <= 0:
-                ball_dy = -ball_dy  # Reverse direction vertically
+                ball_dy = -ball_dy  
 
-            # Check if ball falls below the bottom boundary
+            
             if ball_y >= HEIGHT - 60 - ball_radius and not balls_crossed_line[i]:
                 balls_crossed_line[i] = True
 
-            # Collision with player paddle
+            
             if player_x < ball_x < player_x + player_width and player_y < ball_y + ball_radius < player_y + player_height:
                 center_x = player_x + player_width / 2
                 hit_position = (ball_x - center_x) / (player_width / 2)
                 ball_dx = ball_speed_x * hit_position
-                ball_dy = -abs(ball_dy)  # Ensure upward bounce
+                ball_dy = -abs(ball_dy)  
                 ball_y = player_y - ball_radius
 
-            # Update ball state in the list
+            
             balls[i] = (ball_x, ball_y, ball_dx, ball_dy)
 
 
