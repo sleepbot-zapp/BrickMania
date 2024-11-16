@@ -216,8 +216,7 @@ def main_game(mode=False):
     data = settings.Settings.open()
     player_x = (WIDTH * SCALE - player_width) // 2
     player_y = HEIGHT * SCALE - player_height - 70
-
-    balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), ball_speed_x, ball_speed_y)]
+    balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), random.choice((1, -1)) * 5 * SCALE, ball_speed_y)]
     balls_crossed_line = [False]
 
     score = 0
@@ -374,7 +373,7 @@ def main_game(mode=False):
             if player_x < powerup.x + powerup.width and player_x + player_width > powerup.x and player_y < powerup.y + powerup.height and player_y + player_height > powerup.y:
                 powerups.remove(powerup)
                 if powerup.type == "extra_ball":
-                    balls.append((WIDTH // 2, HEIGHT // 2, ball_speed_x, ball_speed_y))
+                    balls.append((WIDTH // 2, HEIGHT // 2, random.choice((1, -1)) * 5 * SCALE, ball_speed_y))
                     balls_crossed_line.append(False)
 
         for special_ball in special_balls[:]:
