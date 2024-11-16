@@ -6,6 +6,7 @@ import sys
 import time
 import math
 import settings
+from laoding_combinations import combs
 
 chdir(dirname(__file__))
 
@@ -424,9 +425,8 @@ def main_game(mode=False):
                 pygame.mixer.music.unpause()
 
 
-def loading_screen():
-    inner_radius = 20  
-    outer_radius = 30  
+def loading_screen(func1, func2, mode):
+    radius = 30
     spinner_coverage = 0.7  
     total_angle = 360  
     covered_angle = total_angle * spinner_coverage  
@@ -463,21 +463,21 @@ def loading_screen():
         
         for i in range(spinner_segments):
             
-            segment_angle_start = angle + (i * angle_per_segment) + 100
-            segment_angle_end = segment_angle_start + angle_per_segment + 100
+            segment_angle_start = angle + (i * angle_per_segment) + 1000
+            segment_angle_end = segment_angle_start + angle_per_segment + 1000
 
             
-            start_x1 = spinner_center[0] - inner_radius * math.cos(math.radians(segment_angle_start))
-            start_y1 = spinner_center[1] - inner_radius * math.sin(math.radians(segment_angle_start))
+            start_x1 = spinner_center[0] - radius * func1(math.cos(math.radians(segment_angle_start)))
+            start_y1 = spinner_center[1] - radius * func1(math.sin(math.radians(segment_angle_start)))
 
-            end_x1 = spinner_center[0] + outer_radius * math.cos(math.radians(segment_angle_start))
-            end_y1 = spinner_center[1] + outer_radius * math.sin(math.radians(segment_angle_start))
+            end_x1 = spinner_center[0] + radius * func1(math.cos(math.radians(segment_angle_start)))
+            end_y1 = spinner_center[1] + radius * func1(math.sin(math.radians(segment_angle_start)))
 
-            start_x2 = spinner_center[0] - inner_radius * math.cos(math.radians(segment_angle_end))
-            start_y2 = spinner_center[1] - inner_radius * math.sin(math.radians(segment_angle_end))
+            start_x2 = spinner_center[0] - radius * func2(math.cos(math.radians(segment_angle_end)))
+            start_y2 = spinner_center[1] - radius * func2(math.sin(math.radians(segment_angle_end)))
 
-            end_x2 = spinner_center[0] + outer_radius * math.cos(math.radians(segment_angle_end))
-            end_y2 = spinner_center[1] + outer_radius * math.sin(math.radians(segment_angle_end))
+            end_x2 = spinner_center[0] + radius * func2(math.cos(math.radians(segment_angle_end)))
+            end_y2 = spinner_center[1] + radius * func2(math.sin(math.radians(segment_angle_end)))
 
             
             pygame.draw.line(screen, BLUE, (end_x1, end_y1 - 40), (end_x2, end_y2 - 40), 3)
@@ -498,9 +498,11 @@ def loading_screen():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     return
-                elif event.key == pygame.K_q:
+                if event.key == pygame.K_q:
                     pygame.quit()
                     sys.exit()
+                if event.key == pygame.K_RSHIFT:
+                   return
 
         
         pygame.display.flip()
@@ -583,9 +585,15 @@ if __name__ == "__main__":
             pygame.mixer.music.stop()
         else:
             pygame.mixer.music.play(-1)
+        # sec = lambda x : 1/math.cos(x)
+        # cosec = lambda x : 1/math.sin(x)
+        # cot = lambda x : 1/math.tan(x)
+        # inv_sinh = lambda x : 1/math.sinh(x)
+        # inv_cosh = lambda x : 1/math.cosh(x)
+        # inv_tanh = lambda x : 1/math.tanh(x)
         selected_option = main_menu(is_paused)
         if selected_option == 0:
-            loading_screen()
+            loading_screen(*random.choice(combs), is_paused)
             main_game(is_paused)
         if selected_option== 1:
             if not is_paused:
