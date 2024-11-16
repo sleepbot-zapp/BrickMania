@@ -4,7 +4,7 @@ from pygame import event, KEYDOWN, K_UP, K_DOWN, K_RETURN, K_q, QUIT, quit
 from models import FallingTile
 from models import Color
 from sys import exit
-from constants import SCALE, screen, brick_width, brick_height, WIDTH, HEIGHT, bottom_font, clock
+from helpers.constants import SCALE, screen, brick_width, brick_height, WIDTH, HEIGHT, bottom_font, clock
 
 
 def main_menu(mode=False):

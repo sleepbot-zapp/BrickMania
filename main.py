@@ -4,14 +4,14 @@ import pygame
 import random
 import sys
 import time
-import settings
+import helpers.settings as settings
 from models import SpecialBall, Color
-from drawings import draw_player, draw_bricks, draw_ball
-from game_control import pause_game, show_score, game_over, drop_powerup, create_new_bricks
-from runner import runner
-from main_menu import main_menu
-from loading_screen import loading_screen
-from constants import *
+from helpers.drawings import draw_player, draw_bricks, draw_ball
+from helpers.game_control import pause_game, show_score, game_over, drop_powerup, create_new_bricks
+from helpers.runner import runner
+from helpers.main_menu import main_menu
+from helpers.loading_screen import loading_screen
+from helpers.constants import *
 
 
 chdir(dirname(__file__))

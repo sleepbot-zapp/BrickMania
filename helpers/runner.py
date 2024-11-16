@@ -1,5 +1,5 @@
 import random
-from loading_combinations import combs
+from helpers.loading_combinations import combs
 import pygame
 
 

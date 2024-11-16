@@ -1,9 +1,9 @@
 import math
 import random
 import pygame
-from constants import screen, WIDTH, HEIGHT, font, bottom_font, clock
+from helpers.constants import screen, WIDTH, HEIGHT, font, bottom_font, clock
 from models import Color
-from runner import runner # to be used for later
+from helpers.runner import runner # to be used for later
 import sys
 
 def loading_screen(func1, func2):

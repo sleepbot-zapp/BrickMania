@@ -1,6 +1,6 @@
 import pygame
-import settings
-from constants import track3, screen, SCALE, WIDTH, HEIGHT, clock, brick_cols, brick_height, brick_width, brick_rows
+import helpers.settings as settings
+from helpers.constants import track3, screen, SCALE, WIDTH, HEIGHT, clock, brick_cols, brick_height, brick_width, brick_rows
 import time
 from models import Color, PowerUp, Brick
 from random import random, choice
