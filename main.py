@@ -143,6 +143,7 @@ def game_over(score, settings: settings.Settings, type_=0, mode=0):
     if mode:
         pygame.mixer.music.pause()
         track3.play()
+        curr = time.time()
     screen.fill(BLACK)
     font_for_game_over = pygame.font.SysFont(None, int(42 * SCALE))
     text = font_for_game_over.render("Game Over! Press ENTER to restart", True, RED)
@@ -158,14 +159,15 @@ def game_over(score, settings: settings.Settings, type_=0, mode=0):
     pygame.display.flip()
 
     while True:
+        if mode and time.time() - curr > 2:
+            if mode:
+                track3.stop()
+                pygame.mixer.music.unpause()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN: 
-                if mode:
-                    track2.stop()
-                    pygame.mixer.music.unpause()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 return
             if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
                 pygame.quit()
