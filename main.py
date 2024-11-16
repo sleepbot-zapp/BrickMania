@@ -17,10 +17,6 @@ chdir(dirname(__file__))
 
 pygame.init()
 
-track1 = pygame.mixer.Sound("./assets/music1.mp3")
-track2 = pygame.mixer.Sound("./assets/music2.mp3")
-track3 = pygame.mixer.Sound("./assets/music3.mp3")
-
 def pause_game():
     paused = True
     pause_text = font.render("Game Paused. Press 'P' to Resume.", True, Color.WHITE)
@@ -96,7 +92,6 @@ def create_new_bricks():
             bricks.append(Brick(col * brick_width, row * brick_height))
     return bricks
 
-speed_increment = 1.0001
 
 def main_game(mode=False):
     data = settings.Settings.open()

@@ -23,3 +23,10 @@ font = pygame.font.SysFont(None, int(25 * SCALE))
 bottom_font = pygame.font.SysFont(None, int(20 * SCALE))
 trail_length = 10
 ball_trails = {}
+
+speed_increment = 1.0001
+
+track1 = pygame.mixer.Sound("./assets/music1.mp3")
+track2 = pygame.mixer.Sound("./assets/music2.mp3")
+track3 = pygame.mixer.Sound("./assets/music3.mp3")
+
