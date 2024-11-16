@@ -425,7 +425,7 @@ def main_game(mode=False):
                 pygame.mixer.music.unpause()
 
 
-def loading_screen(func1, func2, mode):
+def loading_screen(func1, func2):
     radius = 30
     spinner_coverage = 0.7  
     total_angle = 360  
@@ -591,6 +591,9 @@ if __name__ == "__main__":
         # inv_sinh = lambda x : 1/math.sinh(x)
         # inv_cosh = lambda x : 1/math.cosh(x)
         # inv_tanh = lambda x : 1/math.tanh(x)
+        # for i in combs:
+        #     print(*i)
+        #     loading_screen(*i)
         selected_option = main_menu(is_paused)
         if selected_option == 0:
             loading_screen(*random.choice(combs), is_paused)
