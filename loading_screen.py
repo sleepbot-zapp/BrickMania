@@ -9,7 +9,7 @@ import sys
 def loading_screen(func1, func2):
     radius = 30  
     spinner_segments = 12  
-    angle_per_segment = 10
+    angle_per_segment = random.randint(-3600, 3600)
     spinner_speed = 5
     angle = 0  
 
@@ -67,7 +67,7 @@ def loading_screen(func1, func2):
         if angle >= 360:
             angle = 0  
 
-        bottom_text = bottom_font.render("Press Enter to Select", True, (92, 95, 119))
+        bottom_text = bottom_font.render("Press Enter to Continue", True, (92, 95, 119))
         screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
         bottom_text = bottom_font.render("Press Shift to go back ", True, (92, 95, 119))
         screen.blit(bottom_text, (10, HEIGHT - bottom_text.get_height() - 10))

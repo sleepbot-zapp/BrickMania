@@ -28,7 +28,7 @@ def pause_game():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key in (pygame.K_p, pygame.K_SPACE, pygame.K_0):
+                if event.key in (pygame.K_p, pygame.K_SPACE, pygame.K_RCTRL, pygame.K_LCTRL):
                     paused = False
                 if event.key == pygame.K_q:
                     pygame.quit()
@@ -141,7 +141,7 @@ def main_game(mode=False):
             elif player_x > WIDTH // 2:
                 player_x -= 5 * player_speed * dt
             last_move_time = current_time
-        if (keys[pygame.K_p]) or (keys[pygame.K_p]) or (keys[pygame.K_SPACE]) or (keys[pygame.K_0]):
+        if (keys[pygame.K_p]) or (keys[pygame.K_p]) or (keys[pygame.K_SPACE]) or keys[pygame.K_RCTRL] or keys[pygame.K_LCTRL]:
                 pause_game()
 
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and player_x > 10:
