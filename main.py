@@ -140,7 +140,7 @@ def show_score(score):
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 30) * SCALE))
 
 def game_over(score, settings: settings.Settings, type_=0, mode=0):
-    if mode:
+    if not mode:
         pygame.mixer.music.pause()
         track3.play()
         curr = time.time()
@@ -159,8 +159,8 @@ def game_over(score, settings: settings.Settings, type_=0, mode=0):
     pygame.display.flip()
 
     while True:
-        if mode and time.time() - curr > 2:
-            if mode:
+        if not mode and time.time() - curr > 2:
+            if not mode:
                 track3.stop()
                 pygame.mixer.music.unpause()
         for event in pygame.event.get():
@@ -276,7 +276,7 @@ def main_game(mode=False):
             dx = random.choice([-8, 8]) 
             dy = random.randint(-5, -2)
             special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy, current_time + 3))
-            if mode:
+            if not mode:
                 pygame.mixer.music.pause()
                 track1.play()
             last_special_ball_time = current_time
@@ -356,7 +356,7 @@ def main_game(mode=False):
 
         if current_time - last_x_key_time > random_destruction_interval - 1:
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                if mode:
+                if not mode:
                     pygame.mixer.music.pause()
                     track2.play()
                 for _ in range(5):
@@ -417,12 +417,12 @@ def main_game(mode=False):
         pygame.display.flip()
 
         if not special_balls or current_time - last_special_ball_time >= 2:
-            if mode:
+            if not mode:
                 track1.stop()
                 pygame.mixer.music.unpause()
 
         if current_time - last_x_key_time >= 3:
-            if mode:
+            if not mode:
                 track2.stop()
                 pygame.mixer.music.unpause()
 
@@ -536,7 +536,7 @@ def main_menu(mode=False):
 
     tiles = [FallingTile() for _ in range(20)]
 
-    options = ["Main Game", ["Mute Music", "Unmute Music"][not mode], "How to Play"]
+    options = ["Main Game", ["Mute Music", "Unmute Music"][mode], "How to Play"]
     selected_option = 0
 
     while True:
@@ -576,15 +576,14 @@ def main_menu(mode=False):
                 elif event.key == pygame.K_q:
                     pygame.quit()
                     sys.exit()
-
         clock.tick(60)
 
 
 
 if __name__ == "__main__":
-    is_paused = False
+    is_paused = True
     while True:
-        if not is_paused:
+        if is_paused: # False
             pygame.mixer.music.stop()
         else:
             pygame.mixer.music.play(-1)
@@ -602,7 +601,7 @@ if __name__ == "__main__":
             loading_screen(*random.choice(combs))
             main_game(is_paused)
         if selected_option== 1:
-            if not is_paused:
+            if not is_paused: # True
                 pygame.mixer.music.stop()
             else:
                 pygame.mixer.music.play(-1)
