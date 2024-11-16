@@ -201,7 +201,7 @@ def main_game(mode=False):
         if current_time - last_special_ball_time > 19:
             special_ball_text = font.render("Special Ball Ready (UP)", True, Color.GREEN)
         else:
-            remaining_time = max(0, special_ball_time - (current_time - last_special_ball_time))
+            remaining_time = max(0, 20 - (current_time - last_special_ball_time))
             special_ball_text = font.render(f"Special Ball in {int(remaining_time)}s", True, Color.WHITE)
 
         if current_time - last_x_key_time > random_destruction_interval - 1:

@@ -8,9 +8,9 @@ import sys
 
 def loading_screen(func1, func2):
     radius = 30  
-    spinner_segments = 12  
-    angle_per_segment = random.randint(-3600, 3600)
-    spinner_speed = random.choice([-5, 5])
+    spinner_segments = 12
+    angle_per_segment = 25
+    spinner_speed = random.choice([-2, 2])
     angle = 0  
 
     
@@ -23,7 +23,7 @@ def loading_screen(func1, func2):
         "Press DOWN to destroy 5 random bricks!"
     ]
     tip = random.choice(tips)
-
+    direc = random.choice([-1, 1])
     while True:
         screen.fill(Color.BLACK)  
         clock.tick(60)  
@@ -39,33 +39,31 @@ def loading_screen(func1, func2):
         
         spinner_center = (WIDTH // 2, HEIGHT // 2)  
 
-        
         for i in range(spinner_segments):
-            
             segment_angle_start = angle + (i * angle_per_segment)
             segment_angle_end = segment_angle_start + angle_per_segment
+            
+            start_x1 = spinner_center[0] + radius * func1(math.cos(math.radians(segment_angle_start)))
+            start_y1 = spinner_center[1] + radius * func1(math.sin(math.radians(segment_angle_start)))
 
-            x1_multiplier = random.choice([-1, 1])
-            x2_multiplier = random.choice([-1, 1])
-            start_x1 = spinner_center[0] - radius * func1(math.cos(math.radians(segment_angle_start))) * (x1_multiplier)
-            start_y1 = spinner_center[1] + radius * func1(math.sin(math.radians(segment_angle_start))) * x2_multiplier
+            end_x1 = spinner_center[0] - radius * func1(math.cos(math.radians(segment_angle_start)))
+            end_y1 = spinner_center[1] - radius * func1(math.sin(math.radians(segment_angle_start)))
 
-            end_x1 = spinner_center[0] + radius * func1(math.cos(math.radians(segment_angle_start))) * (x1_multiplier)
-            end_y1 = spinner_center[1] - radius * func1(math.sin(math.radians(segment_angle_start))) * x2_multiplier
+            start_x2 = spinner_center[0] + radius * func2(math.cos(math.radians(segment_angle_end)))
+            start_y2 = spinner_center[1] + radius * func2(math.sin(math.radians(segment_angle_end)))
 
-            start_x2 = spinner_center[0] - radius * func2(math.cos(math.radians(segment_angle_end))) * x2_multiplier
-            start_y2 = spinner_center[1] + radius * func2(math.sin(math.radians(segment_angle_end))) * (x1_multiplier)
+            end_x2 = spinner_center[0] - radius * func2(math.cos(math.radians(segment_angle_end)))
+            end_y2 = spinner_center[1] - radius * func2(math.sin(math.radians(segment_angle_end)))
 
-            end_x2 = spinner_center[0] + radius * func2(math.cos(math.radians(segment_angle_end))) * (x2_multiplier)
-            end_y2 = spinner_center[1] - radius * func2(math.sin(math.radians(segment_angle_end))) * (x1_multiplier)
+            
+            pygame.draw.line(screen, Color.BLUE, (end_x1, end_y1), (end_x2, end_y2), 3)
+            pygame.draw.line(screen, Color.RED, (start_x1, start_y1), (start_x2, start_y2), 3)
 
             pygame.draw.line(screen, Color.BLUE, (end_x1, end_y1 ), (end_x2, end_y2), 3)
             pygame.draw.line(screen, Color.RED, (start_x1, start_y1), (start_x2, start_y2), 3)
 
         
-        angle += spinner_speed
-        if angle >= 360:
-            angle = 0  
+        angle += spinner_speed * direc
 
         bottom_text = bottom_font.render("Press Enter to Continue", True, (92, 95, 119))
         screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
