@@ -7,7 +7,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 player_width = 100 * SCALE
 player_height = 20 * SCALE
-player_speed = 500 * SCALE
+player_speed = 900 * SCALE
 
 ball_radius = 10 * SCALE
 ball_speed_x, ball_speed_y = 300 * SCALE, -300 * SCALE
