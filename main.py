@@ -473,10 +473,5 @@ def main_menu(mode=False):
 
 if __name__ == "__main__":
     pygame.mixer.music.load("./assets/music.mp3")
-    while True:
-        is_paused=True
-        if is_paused: # False
-            pygame.mixer.music.stop()
-        else:
-            pygame.mixer.music.play(-1)
-        runner(main_menu, loading_screen, main_game, is_paused, 1)
+    is_paused=True
+    runner(main_menu, loading_screen, main_game, is_paused, 1)

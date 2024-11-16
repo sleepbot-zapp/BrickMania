@@ -1,5 +1,5 @@
 import random
-from laoding_combinations import combs
+from loading_combinations import combs
 import pygame
 
 
@@ -23,12 +23,13 @@ def runner(main_menu, loading_screen, main_game, type_=0, is_paused=True):
         if selected_option == 0:
             loading_screen(*random.choice(combs))
             main_game(is_paused)
-        if selected_option== 1:
+        if selected_option == 1:
             if not is_paused: # True
                 pygame.mixer.music.stop()
             else:
                 pygame.mixer.music.play(-1)
             is_paused = not is_paused
+            selected_option = main_menu(is_paused)
         if selected_option==2:
             ... 
             """auto_screen_window(WIDTH, HEIGHT, dummy_text)"""
