@@ -9,9 +9,9 @@ class SpecialBall:
         self.dx = dx
         self.dy = dy
 
-    def move(self, ball_radius, WIDTH):
-        self.x += self.dx
-        self.y += self.dy
+    def move(self, ball_radius, WIDTH, dt):
+        self.x += self.dx * dt
+        self.y += self.dy * dt
 
         if self.x <= ball_radius or self.x >= WIDTH - ball_radius:
             self.dx = -self.dx

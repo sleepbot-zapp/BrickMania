@@ -99,13 +99,10 @@ def create_new_bricks():
 speed_increment = 1.0001
 
 def main_game(mode=False):
-    player_width = 100 * SCALE
-    player_height = 20 * SCALE
-    player_speed = 15 * SCALE
     data = settings.Settings.open()
     player_x = (WIDTH * SCALE - player_width) // 2
     player_y = HEIGHT * SCALE - player_height - 70
-    balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), random.choice((1, -1)) * 5 * SCALE, ball_speed_y)]
+    balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), random.choice((1, -1)) * ball_speed_x, ball_speed_y)]
     balls_crossed_line = [False]
 
     score = 0
@@ -118,7 +115,6 @@ def main_game(mode=False):
     inactivity_threshold = 5
 
     last_brick_move_time = time.time()
-    brick_move_speed = 3
 
     last_special_ball_time = time.time()
 
@@ -131,7 +127,7 @@ def main_game(mode=False):
 
     while running:
         screen.fill(Color.BLACK)
-        clock.tick(60) / 1000
+        dt = clock.tick(60) / 1000
         current_time = time.time()
 
         if len(bricks) == 0:
@@ -146,23 +142,23 @@ def main_game(mode=False):
         keys = pygame.key.get_pressed()
         if current_time - last_move_time > inactivity_threshold:
             if player_x <= WIDTH // 2:
-                player_x += 5 * player_speed
+                player_x += 5 * player_speed * dt
             elif player_x > WIDTH // 2:
-                player_x -= 5 * player_speed
+                player_x -= 5 * player_speed * dt
             last_move_time = current_time
         if (keys[pygame.K_p]) or (keys[pygame.K_p]) or (keys[pygame.K_SPACE]) or (keys[pygame.K_0]):
                 pause_game()
 
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and player_x > 10:
-            player_x -= player_speed
+            player_x -= player_speed * dt
             last_move_time = current_time
         if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and player_x < WIDTH - player_width - 10:
-            player_x += player_speed
+            player_x += player_speed * dt
             last_move_time = current_time
 
         if (keys[pygame.K_w] or keys[pygame.K_UP]) and current_time - last_special_ball_time > 19:
-            dx = random.choice([-8, 8]) 
-            dy = random.randint(-5, -2)
+            dx = random.choice([-500, 500]) 
+            dy = random.randint(-300, -120)
             special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy))
             if not mode:
                 pygame.mixer.music.pause()
@@ -177,13 +173,13 @@ def main_game(mode=False):
 
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
             
-            ball_x += ball_dx
-            ball_y += ball_dy
+            ball_x += ball_dx * dt
+            ball_y += ball_dy * dt
 
             if last_x_value == ball_x:
                 if current_time - last_x_time > 3:  
                     ball_dx = -ball_dx  
-                    ball_x += ball_dx  
+                    ball_x += ball_dx * dt
                     last_x_time = current_time  
             else:
                 last_x_value = ball_x
@@ -213,7 +209,7 @@ def main_game(mode=False):
 
         if current_time - last_brick_move_time > 1:
             for brick in bricks[:]:
-                brick.y += brick_move_speed
+                brick.y += brick_speed * dt
                 if brick.y + brick_height >= HEIGHT:
                     game_over(score, mode=mode, settings=data)
                     return
@@ -256,18 +252,18 @@ def main_game(mode=False):
 
         for powerup in powerups[:]:
             if powerup.y < HEIGHT - 70:
-                powerup.move()
+                powerup.move(dt)
                 powerup.draw(screen)
 
             if player_x < powerup.x + powerup.width and player_x + player_width > powerup.x and player_y < powerup.y + powerup.height and player_y + player_height > powerup.y:
                 powerups.remove(powerup)
                 if powerup.type == "extra_ball":
-                    balls.append((WIDTH // 2, HEIGHT // 2, random.choice((1, -1)) * 5 * SCALE, ball_speed_y))
+                    balls.append((WIDTH // 2, HEIGHT // 2, random.choice((1, -1)) * ball_speed_x, ball_speed_y))
                     balls_crossed_line.append(False)
 
         for special_ball in special_balls[:]:
             if special_ball.y < HEIGHT - 70:  
-                special_ball.move(ball_radius, WIDTH)
+                special_ball.move(ball_radius, WIDTH, dt)
                 special_ball.draw(screen, ball_radius)
 
             if special_ball.x < 0 or special_ball.x > WIDTH or special_ball.y < 0 or special_ball.y > HEIGHT:

@@ -10,10 +10,10 @@ class PowerUp:
         self.height = 20 * scale
         self.type = type
         self.color = {"extra_ball": Color.GREEN}[type]
-        self.fall_speed = 2 * scale
+        self.fall_speed = 120 * scale
 
-    def move(self):
-        self.y += self.fall_speed
+    def move(self, dt):
+        self.y += self.fall_speed * dt
 
     def draw(self, screen):
         rect(screen, self.color, (self.x, self.y, self.width, self.height))

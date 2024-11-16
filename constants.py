@@ -7,14 +7,14 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 player_width = 100 * SCALE
 player_height = 20 * SCALE
-player_speed = 15 * SCALE
+player_speed = 500 * SCALE
 
 ball_radius = 10 * SCALE
-ball_speed_x, ball_speed_y = 5 * SCALE, -5 * SCALE
+ball_speed_x, ball_speed_y = 300 * SCALE, -300 * SCALE
 
 brick_width = int(80 * SCALE)
 brick_height = 20 * SCALE
-brick_speed = 10 * SCALE
+brick_speed = 100 * SCALE
 brick_rows = 6
 brick_cols = WIDTH // brick_width
 
