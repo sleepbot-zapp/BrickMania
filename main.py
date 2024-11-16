@@ -490,7 +490,8 @@ def loading_screen(func1, func2):
 
         bottom_text = bottom_font.render("Press Enter to Continue ", True, (92, 95, 119))
         screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
-
+        bottom_text = bottom_font.render("Press Right Shift to go back ", True, (92, 95, 119))
+        screen.blit(bottom_text, (10, HEIGHT - bottom_text.get_height() - 10))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -596,7 +597,7 @@ if __name__ == "__main__":
         #     loading_screen(*i)
         selected_option = main_menu(is_paused)
         if selected_option == 0:
-            loading_screen(*random.choice(combs), is_paused)
+            loading_screen(*random.choice(combs))
             main_game(is_paused)
         if selected_option== 1:
             if not is_paused:
