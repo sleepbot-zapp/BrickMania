@@ -1,4 +1,5 @@
 import pygame
+import random
 
 pygame.init()
 SCALE = 1
@@ -29,4 +30,5 @@ speed_increment = 1.0001
 track1 = pygame.mixer.Sound("./assets/music1.mp3")
 track2 = pygame.mixer.Sound("./assets/music2.mp3")
 track3 = pygame.mixer.Sound("./assets/music3.mp3")
+
 

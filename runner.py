@@ -1,5 +1,5 @@
 import random
-from loading_combinations import functions
+from loading_combinations import combs
 import pygame
 
 
@@ -21,12 +21,7 @@ def runner(main_menu, loading_screen, main_game, type_=0, is_paused=True):
         #     print(*i)
         #     loading_screen(*i)
         if selected_option == 0:
-            def gen_spinner():
-                try:
-                    loading_screen(random.choice(functions), random.choice(functions))
-                except (ZeroDivisionError, ValueError, OverflowError):
-                    gen_spinner()
-            gen_spinner()
+            loading_screen(*(random.choice(combs)))
             main_game(is_paused)
         if selected_option == 1:
             if not is_paused: # True

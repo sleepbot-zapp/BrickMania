@@ -10,7 +10,7 @@ def loading_screen(func1, func2):
     radius = 30  
     spinner_segments = 12  
     angle_per_segment = random.randint(-3600, 3600)
-    spinner_speed = 5
+    spinner_speed = random.choice([-5, 5])
     angle = 0  
 
     
@@ -37,7 +37,7 @@ def loading_screen(func1, func2):
         screen.blit(tip_text, (WIDTH // 2 - tip_text.get_width() // 2, HEIGHT//2 + 123))
 
         
-        spinner_center = (WIDTH // 2, HEIGHT // 2 + 50)  
+        spinner_center = (WIDTH // 2, HEIGHT // 2)  
 
         
         for i in range(spinner_segments):
@@ -45,28 +45,22 @@ def loading_screen(func1, func2):
             segment_angle_start = angle + (i * angle_per_segment)
             segment_angle_end = segment_angle_start + angle_per_segment
 
-            def inrange():
-                start_x1 = spinner_center[0] + radius * func1(math.cos(math.radians(segment_angle_start)))
-                start_y1 = spinner_center[1] + radius * func1(math.sin(math.radians(segment_angle_start)))
+            x1_multiplier = random.choice([-1, 1])
+            x2_multiplier = random.choice([-1, 1])
+            start_x1 = spinner_center[0] - radius * func1(math.cos(math.radians(segment_angle_start))) * (x1_multiplier)
+            start_y1 = spinner_center[1] + radius * func1(math.sin(math.radians(segment_angle_start))) * x2_multiplier
 
-                end_x1 = spinner_center[0] - radius * func1(math.cos(math.radians(segment_angle_start)))
-                end_y1 = spinner_center[1] - radius * func1(math.sin(math.radians(segment_angle_start)))
+            end_x1 = spinner_center[0] + radius * func1(math.cos(math.radians(segment_angle_start))) * (x1_multiplier)
+            end_y1 = spinner_center[1] - radius * func1(math.sin(math.radians(segment_angle_start))) * x2_multiplier
 
-                start_x2 = spinner_center[0] + radius * func2(math.cos(math.radians(segment_angle_end)))
-                start_y2 = spinner_center[1] + radius * func2(math.sin(math.radians(segment_angle_end)))
+            start_x2 = spinner_center[0] - radius * func2(math.cos(math.radians(segment_angle_end))) * x2_multiplier
+            start_y2 = spinner_center[1] + radius * func2(math.sin(math.radians(segment_angle_end))) * (x1_multiplier)
 
-                end_x2 = spinner_center[0] - radius * func2(math.cos(math.radians(segment_angle_end)))
-                end_y2 = spinner_center[1] - radius * func2(math.sin(math.radians(segment_angle_end)))
+            end_x2 = spinner_center[0] + radius * func2(math.cos(math.radians(segment_angle_end))) * (x2_multiplier)
+            end_y2 = spinner_center[1] - radius * func2(math.sin(math.radians(segment_angle_end))) * (x1_multiplier)
 
-                if (start_x1 - end_x1) < 500 and (start_x2 - end_x2) < 500 and (start_y1 - end_y1) < 100 and (start_y2 - end_y2) < 100:
-                    pygame.draw.line(screen, Color.BLUE, (end_x1, end_y1 - 40), (end_x2, end_y2 - 40), 3)
-                    pygame.draw.line(screen, Color.RED, (start_x1, start_y1 - 40), (start_x2, start_y2 - 40), 3)
-                else:
-                    try:
-                        inrange()
-                    except RecursionError:
-                        pass
-            inrange()
+            pygame.draw.line(screen, Color.BLUE, (end_x1, end_y1 ), (end_x2, end_y2), 3)
+            pygame.draw.line(screen, Color.RED, (start_x1, start_y1), (start_x2, start_y2), 3)
 
         
         angle += spinner_speed

@@ -22,27 +22,22 @@ pygame.init()
 
 def main_game(mode=False):
     data = settings.Settings.open()
-    player_x = (WIDTH * SCALE - player_width) // 2
-    player_y = HEIGHT * SCALE - player_height - 70
     balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), random.choice((1, -1)) * ball_speed_x, ball_speed_y)]
     balls_crossed_line = [False]
-
+    player_x = (WIDTH * SCALE - player_width) // 2
+    player_y = HEIGHT * SCALE - player_height - 70
     score = 0
     bricks = create_new_bricks()
     powerups = []
     special_balls = []
     running = True
-
     last_move_time = time.time()
     inactivity_threshold = 5
-
     last_brick_move_time = time.time()
-
     last_special_ball_time = time.time()
-
+    special_ball_time = 20
     last_x_key_time = time.time()
     random_destruction_interval = 60
-
     last_x_time = time.time()
     last_x_value = None
 
@@ -206,7 +201,7 @@ def main_game(mode=False):
         if current_time - last_special_ball_time > 19:
             special_ball_text = font.render("Special Ball Ready (UP)", True, Color.GREEN)
         else:
-            remaining_time = max(0, 20 - (current_time - last_special_ball_time))
+            remaining_time = max(0, special_ball_time - (current_time - last_special_ball_time))
             special_ball_text = font.render(f"Special Ball in {int(remaining_time)}s", True, Color.WHITE)
 
         if current_time - last_x_key_time > random_destruction_interval - 1:
@@ -222,13 +217,11 @@ def main_game(mode=False):
 
         pygame.display.flip()
 
-        if not special_balls or current_time - last_special_ball_time >= 2:
-            if not mode:
+        if not mode:
+            if not special_balls or current_time - last_special_ball_time >= 2:
                 track1.stop()
                 pygame.mixer.music.unpause()
-
-        if current_time - last_x_key_time >= 3:
-            if not mode:
+            if current_time - last_x_key_time >= 3:
                 track2.stop()
                 pygame.mixer.music.unpause()
 
