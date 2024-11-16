@@ -85,10 +85,10 @@ def main_game(mode=False):
         if keys[pygame.K_RSHIFT] or keys[pygame.K_LSHIFT]:
             runner(main_menu, loading_screen, main_game, 1)
 
-        for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
+        for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls):
             balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
 
-        for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
+        for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls):
             
             ball_x += ball_dx * dt
             ball_y += ball_dy * dt
@@ -125,7 +125,7 @@ def main_game(mode=False):
             return
 
         if current_time - last_brick_move_time > 1:
-            for brick in bricks[:]:
+            for brick in bricks:
                 brick.y += brick_speed * dt
                 if brick.y + brick_height >= HEIGHT:
                     game_over(score, mode=mode, settings=data)
@@ -133,8 +133,8 @@ def main_game(mode=False):
             last_brick_move_time = current_time
 
         bricks_to_remove = []
-        for brick in bricks[:]:
-            for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
+        for brick in bricks:
+            for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls):
                 if brick.x < ball_x < brick.x + brick_width and brick.y < ball_y < brick.y + brick_height:
                     bricks_to_remove.append(brick)
                     score += 10
@@ -143,7 +143,7 @@ def main_game(mode=False):
                         powerups.append(powerup)
                     balls[i] = (ball_x, ball_y, ball_dx, -ball_dy)
 
-            for special_ball in special_balls[:]:
+            for special_ball in special_balls:
                 if brick.x < special_ball.x < brick.x + brick_width and brick.y < special_ball.y < brick.y + brick_height:
                     bricks_to_remove.append(brick)
                     score += 10
@@ -167,7 +167,7 @@ def main_game(mode=False):
                         score += 20
                 last_x_key_time = current_time
 
-        for powerup in powerups[:]:
+        for powerup in powerups:
             if powerup.y < HEIGHT - 70:
                 powerup.move(dt)
                 powerup.draw(screen)
@@ -178,7 +178,7 @@ def main_game(mode=False):
                     balls.append((WIDTH // 2, HEIGHT // 2, random.choice((1, -1)) * ball_speed_x, ball_speed_y))
                     balls_crossed_line.append(False)
 
-        for special_ball in special_balls[:]:
+        for special_ball in special_balls:
             if special_ball.y < HEIGHT - 70:  
                 special_ball.move(ball_radius, WIDTH, dt)
                 special_ball.draw(screen, ball_radius)
@@ -198,10 +198,10 @@ def main_game(mode=False):
 
         show_score(score, font)
 
-        if current_time - last_special_ball_time > 19:
+        if current_time - last_special_ball_time > special_ball_time - 1:
             special_ball_text = font.render("Special Ball Ready (UP)", True, Color.GREEN)
         else:
-            remaining_time = max(0, 20 - (current_time - last_special_ball_time))
+            remaining_time = max(0, special_ball_time - (current_time - last_special_ball_time))
             special_ball_text = font.render(f"Special Ball in {int(remaining_time)}s", True, Color.WHITE)
 
         if current_time - last_x_key_time > random_destruction_interval - 1:
