@@ -49,7 +49,7 @@ def show_score(score):
     text = font.render(f"Score: {score}", True, Color.RED)
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 30) * SCALE))
 
-def game_over(score, stetings: settings.Settings, type_=0, mode=0):
+def game_over(score, settings: settings.Settings, type_=0, mode=0):
     if not mode:
         pygame.mixer.music.pause()
         track3.play()
