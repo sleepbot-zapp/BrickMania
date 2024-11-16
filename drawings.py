@@ -4,9 +4,9 @@ from pygame.draw import rect, circle
 from pygame import Surface, SRCALPHA
 
 
-def draw_bricks(bricks: Brick):
+def draw_bricks(bricks, screen, brick_width, brick_height):
     for brick in bricks:
-        brick.draw()
+        brick.draw(screen, brick_width, brick_height)
 
 
 def draw_player(x, y, screen, player_width, player_height):

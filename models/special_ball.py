@@ -3,12 +3,11 @@ from pygame.draw import circle
 
 
 class SpecialBall:
-    def __init__(self, x, y, dx, dy, expiration_time):
+    def __init__(self, x, y, dx, dy):
         self.x = x
         self.y = y
         self.dx = dx
         self.dy = dy
-        self.expiration_time = expiration_time
 
     def move(self, ball_radius, WIDTH):
         self.x += self.dx

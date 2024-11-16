@@ -7,6 +7,9 @@ import time
 import math
 import settings
 from laoding_combinations import combs
+from models import FallingTile, PowerUp, Brick, SpecialBall, Color
+from drawings import draw_player, draw_bricks
+
 
 chdir(dirname(__file__))
 
@@ -21,14 +24,6 @@ SCALE = 1
 WIDTH, HEIGHT = int(800 * SCALE), int(600 * SCALE)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("BRICKMANIA")
-
-WHITE = (205, 214, 244)	
-RED = (150, 15, 57)	
-BLUE = (30, 102, 245)	
-BLACK = (17, 17, 27)	
-YELLOW = (223, 142, 29)	
-GREY = (92, 95, 119)	
-GREEN = (64, 160, 43)	
 
 player_width = 100 * SCALE
 player_height = 20 * SCALE
@@ -48,36 +43,6 @@ font = pygame.font.SysFont(None, int(25 * SCALE))
 bottom_font = pygame.font.SysFont(None, int(20 * SCALE))
 trail = []
 trail_length = 10
-
-class PowerUp:
-    def __init__(self, x, y, type):
-        self.x = x
-        self.y = y
-        self.width = 40 * SCALE
-        self.height = 20 * SCALE
-        self.type = type
-        self.color = {"extra_ball": GREEN}[type]
-        self.fall_speed = 2 * SCALE
-
-    def move(self):
-        self.y += self.fall_speed
-
-    def draw(self):
-        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
-
-class Brick:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.color = random.choice([RED, BLUE, GREEN, YELLOW])
-
-    def draw(self):
-        pygame.draw.rect(screen, self.color, (self.x, self.y, brick_width, brick_height))
-        pygame.draw.rect(screen, BLACK, (self.x, self.y, brick_width, brick_height), 2)
-
-def draw_player(x, y):
-    pygame.draw.rect(screen, BLUE, (x, y, player_width, player_height), border_radius=10)
-
 
 ball_trails = {}
 
@@ -109,7 +74,7 @@ def draw_ball(x, y, ball_id):
 
 def pause_game():
     paused = True
-    pause_text = font.render("Game Paused. Press 'P' to Resume.", True, WHITE)
+    pause_text = font.render("Game Paused. Press 'P' to Resume.", True, Color.WHITE)
     dim_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
     dim_surface.fill((0, 0, 0, 180))
     while paused:
@@ -131,12 +96,8 @@ def pause_game():
         clock.tick(10)
 
 
-def draw_bricks(bricks):
-    for brick in bricks:
-        brick.draw()
-
 def show_score(score):
-    text = font.render(f"Score: {score}", True, RED)
+    text = font.render(f"Score: {score}", True, Color.RED)
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 30) * SCALE))
 
 def game_over(score, settings: settings.Settings, type_=0, mode=0):
@@ -144,12 +105,12 @@ def game_over(score, settings: settings.Settings, type_=0, mode=0):
         pygame.mixer.music.pause()
         track3.play()
         curr = time.time()
-    screen.fill(BLACK)
+    screen.fill(Color.BLACK)
     font_for_game_over = pygame.font.SysFont(None, int(42 * SCALE))
-    text = font_for_game_over.render("Game Over! Press ENTER to restart", True, RED)
+    text = font_for_game_over.render("Game Over! Press ENTER to restart", True, Color.RED)
     highscore = settings.highscore
-    text2 = font_for_game_over.render(f"High Score = {[score, highscore][highscore>score]}", True, [GREEN, YELLOW][highscore>score])
-    text3 = font_for_game_over.render(f"Your Score = {score}", True, BLUE)
+    text2 = font_for_game_over.render(f"High Score = {[score, highscore][highscore>score]}", True, [Color.GREEN, Color.YELLOW][highscore>score])
+    text3 = font_for_game_over.render(f"Your Score = {score}", True, Color.BLUE)
     if highscore < score and type_==0:
         settings.highscore = score
         settings.flush()
@@ -176,7 +137,7 @@ def game_over(score, settings: settings.Settings, type_=0, mode=0):
 def drop_powerup(brick_x, brick_y, powerups):
     powerup_type = random.choice(["extra_ball",])
     if len(powerups) < 2 and random.random() < 0.1:
-        return PowerUp(brick_x, brick_y, powerup_type)
+        return PowerUp(brick_x, brick_y, powerup_type, SCALE)
     return None
 
 def create_new_bricks():
@@ -185,27 +146,6 @@ def create_new_bricks():
         for row in range(brick_rows):
             bricks.append(Brick(col * brick_width, row * brick_height))
     return bricks
-
-class SpecialBall:
-    def __init__(self, x, y, dx, dy, expiration_time):
-        self.x = x
-        self.y = y
-        self.dx = dx
-        self.dy = dy
-        self.expiration_time = expiration_time
-
-    def move(self):
-        self.x += self.dx
-        self.y += self.dy
-
-        if self.x <= ball_radius or self.x >= WIDTH - ball_radius:
-            self.dx = -self.dx
-
-        if self.y <= ball_radius:
-            self.dy = -self.dy
-
-    def draw(self):
-        pygame.draw.circle(screen, RED, (self.x, self.y), ball_radius)
 
 speed_increment = 1.0001
 
@@ -241,7 +181,7 @@ def main_game(mode=False):
 
 
     while running:
-        screen.fill(BLACK)
+        screen.fill(Color.BLACK)
         clock.tick(60) / 1000
         current_time = time.time()
 
@@ -274,7 +214,7 @@ def main_game(mode=False):
         if (keys[pygame.K_w] or keys[pygame.K_UP]) and current_time - last_special_ball_time > 19:
             dx = random.choice([-8, 8]) 
             dy = random.randint(-5, -2)
-            special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy, current_time + 3))
+            special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy))
             if not mode:
                 pygame.mixer.music.pause()
                 track1.play()
@@ -368,7 +308,7 @@ def main_game(mode=False):
         for powerup in powerups[:]:
             if powerup.y < HEIGHT - 70:
                 powerup.move()
-                powerup.draw()
+                powerup.draw(screen)
 
             if player_x < powerup.x + powerup.width and player_x + player_width > powerup.x and player_y < powerup.y + powerup.height and player_y + player_height > powerup.y:
                 powerups.remove(powerup)
@@ -378,16 +318,16 @@ def main_game(mode=False):
 
         for special_ball in special_balls[:]:
             if special_ball.y < HEIGHT - 70:  
-                special_ball.move()
-                special_ball.draw()
+                special_ball.move(ball_radius, WIDTH)
+                special_ball.draw(screen, ball_radius)
 
             if special_ball.x < 0 or special_ball.x > WIDTH or special_ball.y < 0 or special_ball.y > HEIGHT:
                 special_balls.remove(special_ball)
 
 
         
-        draw_bricks([brick for brick in bricks])  
-        draw_player(player_x, player_y)
+        draw_bricks([brick for brick in bricks], screen, brick_width, brick_height)  
+        draw_player(player_x, player_y, screen, player_width, player_height)
 
         for i, (ball_x, ball_y, _, _) in enumerate(balls):
             if ball_y < HEIGHT - 60:  
@@ -397,20 +337,20 @@ def main_game(mode=False):
         show_score(score)
 
         if current_time - last_special_ball_time > 19:
-            special_ball_text = font.render("Special Ball Ready (UP)", True, GREEN)
+            special_ball_text = font.render("Special Ball Ready (UP)", True, Color.GREEN)
         else:
             remaining_time = max(0, 20 - (current_time - last_special_ball_time))
-            special_ball_text = font.render(f"Special Ball in {int(remaining_time)}s", True, WHITE)
+            special_ball_text = font.render(f"Special Ball in {int(remaining_time)}s", True, Color.WHITE)
 
         if current_time - last_x_key_time > random_destruction_interval - 1:
-            countdown_text = font.render("Brick Destruction Ready (DOWN)", True, GREEN)
+            countdown_text = font.render("Brick Destruction Ready (DOWN)", True, Color.GREEN)
             screen.blit(countdown_text, ((WIDTH - countdown_text.get_width() - 20) * SCALE, (HEIGHT - 30) * SCALE))
         else:
             time_until_destruction = max(0, random_destruction_interval - (current_time - last_x_key_time))
-            countdown_text = font.render(f"Brick Destruction in {int(time_until_destruction)}s", True, WHITE)
+            countdown_text = font.render(f"Brick Destruction in {int(time_until_destruction)}s", True, Color.WHITE)
             screen.blit(countdown_text, ((WIDTH - countdown_text.get_width() - 20) * SCALE, (HEIGHT - 30) * SCALE))
 
-        pygame.draw.line(screen, WHITE, (0, HEIGHT - 50), (WIDTH, HEIGHT - 50), 2)
+        pygame.draw.line(screen, Color.WHITE, (0, HEIGHT - 50), (WIDTH, HEIGHT - 50), 2)
         screen.blit(special_ball_text, (20 * SCALE, (HEIGHT - 30) * SCALE))
 
         pygame.display.flip()
@@ -447,15 +387,15 @@ def loading_screen(func1, func2):
     tip = random.choice(tips)
 
     while True:
-        screen.fill(BLACK)  
+        screen.fill(Color.BLACK)  
         clock.tick(60)  
 
         
-        loading_text = font.render("BrickMania", True, WHITE)
+        loading_text = font.render("BrickMania", True, Color.WHITE)
         screen.blit(loading_text, (WIDTH // 2 - loading_text.get_width() // 2, HEIGHT // 2 - 123))
 
         
-        tip_text = tip_font.render("Tip: "+tip, True, WHITE)
+        tip_text = tip_font.render("Tip: "+tip, True, Color.WHITE)
         screen.blit(tip_text, (WIDTH // 2 - tip_text.get_width() // 2, HEIGHT//2 + 123))
 
         
@@ -481,8 +421,8 @@ def loading_screen(func1, func2):
             end_y2 = spinner_center[1] + radius * func2(math.sin(math.radians(segment_angle_end)))
 
             
-            pygame.draw.line(screen, BLUE, (end_x1, end_y1 - 40), (end_x2, end_y2 - 40), 3)
-            pygame.draw.line(screen, RED, (start_x1, start_y1 - 40), (start_x2, start_y2 - 40), 3)
+            pygame.draw.line(screen, Color.BLUE, (end_x1, end_y1 - 40), (end_x2, end_y2 - 40), 3)
+            pygame.draw.line(screen, Color.RED, (start_x1, start_y1 - 40), (start_x2, start_y2 - 40), 3)
 
         
         angle += spinner_speed
@@ -510,54 +450,35 @@ def loading_screen(func1, func2):
         pygame.display.flip()
 
 
-
-class FallingTile:
-    def __init__(self):
-        self.width = brick_width
-        self.height = brick_height
-        self.x = random.randint(0, WIDTH - self.width)
-        self.y = random.randint(-HEIGHT, 0)
-        self.speed = random.randint(2, 7) * SCALE
-        self.color = random.choice([RED, BLUE, GREEN])
-
-    def move(self):
-        self.y += self.speed
-        if self.y > HEIGHT:
-            self.y = random.randint(-HEIGHT, 0)
-            self.x = random.randint(0, WIDTH - self.width) 
-
-    def draw(self):
-        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
-
 def main_menu(mode=False):
     title_font = pygame.font.SysFont(None, int(72 * SCALE))
     menu_font = pygame.font.SysFont(None, int(48 * SCALE))
 
-    tiles = [FallingTile() for _ in range(20)]
+    tiles = [FallingTile(brick_width, brick_height, WIDTH, HEIGHT, SCALE) for _ in range(20)]
 
     options = ["Main Game", ["Mute Music", "Unmute Music"][mode], "How to Play"]
     selected_option = 0
 
     while True:
-        screen.fill(BLACK)
+        screen.fill(Color.BLACK)
 
         for tile in tiles:
-            tile.move()
-            tile.draw()
+            tile.move(HEIGHT, WIDTH)
+            tile.draw(screen)
 
-        title_text = title_font.render("BRICKMANIA", True, YELLOW)
+        title_text = title_font.render("BRICKMANIA", True, Color.YELLOW)
         screen.blit(title_text, ((WIDTH // 2 - title_text.get_width() // 2) * SCALE, (HEIGHT // 2 - 150) * SCALE))
 
         for i, option in enumerate(options):
-            color = YELLOW if i == selected_option else WHITE
+            color = Color.YELLOW if i == selected_option else Color.WHITE
             option_text = menu_font.render(option, True, color)
             screen.blit(option_text, ((WIDTH // 2 - option_text.get_width() // 2) * SCALE,
                                       (HEIGHT // 2 + i * 60) * SCALE))
 
-        quit_text = bottom_font.render("Press Q to Quit", True, GREY)
+        quit_text = bottom_font.render("Press Q to Quit", True, Color.GREY)
         screen.blit(quit_text, (10, (HEIGHT - quit_text.get_height() - 10) * SCALE))
 
-        bottom_text = bottom_font.render("Press Enter to Continue ", True, GREY)
+        bottom_text = bottom_font.render("Press Enter to Continue ", True, Color.GREY)
         screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
 
         pygame.display.flip()
