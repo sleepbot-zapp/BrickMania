@@ -6,19 +6,19 @@ import sys
 import time
 import math
 import settings
-from laoding_combinations import combs
 from models import FallingTile, PowerUp, Brick, SpecialBall, Color
-from drawings import draw_player, draw_bricks
+from drawings import draw_player, draw_bricks, draw_ball
+from runner import runner
 
 
 chdir(dirname(__file__))
 
 pygame.init()
 
-pygame.mixer.music.load("./assets/music.mp3")
 track1 = pygame.mixer.Sound("./assets/music1.mp3")
 track2 = pygame.mixer.Sound("./assets/music2.mp3")
 track3 = pygame.mixer.Sound("./assets/music3.mp3")
+
 
 SCALE = 1
 WIDTH, HEIGHT = int(800 * SCALE), int(600 * SCALE)
@@ -41,36 +41,8 @@ brick_cols = WIDTH // brick_width
 clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, int(25 * SCALE))
 bottom_font = pygame.font.SysFont(None, int(20 * SCALE))
-trail = []
 trail_length = 10
-
 ball_trails = {}
-
-def draw_ball(x, y, ball_id):
-    FIXED_TRAIL_LENGTH = 10
-    FIXED_TRAIL_COLOR = (0, 156, 0)
-    MAX_ALPHA = 50
-
-    
-    if ball_id not in ball_trails:
-        ball_trails[ball_id] = []
-
-    
-    trail = ball_trails[ball_id]
-    trail.append((x, y))
-    if len(trail) > FIXED_TRAIL_LENGTH:
-        trail.pop(0)
-
-    
-    for i, (tx, ty) in enumerate(trail):
-        alpha = MAX_ALPHA - int(MAX_ALPHA * (i / FIXED_TRAIL_LENGTH))
-        color = (FIXED_TRAIL_COLOR[0], FIXED_TRAIL_COLOR[1], FIXED_TRAIL_COLOR[2], alpha)
-        trail_surface = pygame.Surface((ball_radius * 2, ball_radius * 2), pygame.SRCALPHA)
-        pygame.draw.circle(trail_surface, color, (ball_radius, ball_radius), ball_radius)
-        screen.blit(trail_surface, (tx - ball_radius, ty - ball_radius))
-
-    
-    pygame.draw.circle(screen, FIXED_TRAIL_COLOR, (x, y), ball_radius)
 
 def pause_game():
     paused = True
@@ -220,8 +192,8 @@ def main_game(mode=False):
                 track1.play()
             last_special_ball_time = current_time
 
-        if keys[pygame.K_RSHIFT]:
-            return
+        if keys[pygame.K_RSHIFT] or keys[pygame.K_LSHIFT]:
+            runner(main_menu, loading_screen, main_game, 1)
 
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls[:]):
             balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
@@ -331,7 +303,7 @@ def main_game(mode=False):
 
         for i, (ball_x, ball_y, _, _) in enumerate(balls):
             if ball_y < HEIGHT - 60:  
-                draw_ball(ball_x, ball_y, i)
+                draw_ball(ball_x, ball_y, i, ball_radius, ball_trails, screen)
 
 
         show_score(score)
@@ -369,11 +341,10 @@ def main_game(mode=False):
 def loading_screen(func1, func2):
     radius = 30
     spinner_coverage = 0.7  
-    total_angle = 360  
-    covered_angle = total_angle * spinner_coverage  
+    total_angle = 180  
     spinner_segments = 12  
-    angle_per_segment = covered_angle / spinner_segments  
-    spinner_speed = 5  
+    angle_per_segment = 10
+    spinner_speed = 5
     angle = 0  
 
     
@@ -404,21 +375,21 @@ def loading_screen(func1, func2):
         
         for i in range(spinner_segments):
             
-            segment_angle_start = angle + (i * angle_per_segment) + 1000
-            segment_angle_end = segment_angle_start + angle_per_segment + 1000
+            segment_angle_start = angle + (i * angle_per_segment)
+            segment_angle_end = segment_angle_start + angle_per_segment
 
             
-            start_x1 = spinner_center[0] - radius * func1(math.cos(math.radians(segment_angle_start)))
-            start_y1 = spinner_center[1] - radius * func1(math.sin(math.radians(segment_angle_start)))
+            start_x1 = spinner_center[0] + radius * func1(math.cos(math.radians(segment_angle_start)))
+            start_y1 = spinner_center[1] + radius * func1(math.sin(math.radians(segment_angle_start)))
 
-            end_x1 = spinner_center[0] + radius * func1(math.cos(math.radians(segment_angle_start)))
-            end_y1 = spinner_center[1] + radius * func1(math.sin(math.radians(segment_angle_start)))
+            end_x1 = spinner_center[0] - radius * func1(math.cos(math.radians(segment_angle_start)))
+            end_y1 = spinner_center[1] - radius * func1(math.sin(math.radians(segment_angle_start)))
 
-            start_x2 = spinner_center[0] - radius * func2(math.cos(math.radians(segment_angle_end)))
-            start_y2 = spinner_center[1] - radius * func2(math.sin(math.radians(segment_angle_end)))
+            start_x2 = spinner_center[0] + radius * func2(math.cos(math.radians(segment_angle_end)))
+            start_y2 = spinner_center[1] + radius * func2(math.sin(math.radians(segment_angle_end)))
 
-            end_x2 = spinner_center[0] + radius * func2(math.cos(math.radians(segment_angle_end)))
-            end_y2 = spinner_center[1] + radius * func2(math.sin(math.radians(segment_angle_end)))
+            end_x2 = spinner_center[0] - radius * func2(math.cos(math.radians(segment_angle_end)))
+            end_y2 = spinner_center[1] - radius * func2(math.sin(math.radians(segment_angle_end)))
 
             
             pygame.draw.line(screen, Color.BLUE, (end_x1, end_y1 - 40), (end_x2, end_y2 - 40), 3)
@@ -429,9 +400,9 @@ def loading_screen(func1, func2):
         if angle >= 360:
             angle = 0  
 
-        bottom_text = bottom_font.render("Press Enter to Continue ", True, (92, 95, 119))
+        bottom_text = bottom_font.render("Press Enter to Select", True, (92, 95, 119))
         screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
-        bottom_text = bottom_font.render("Press Right Shift to go back ", True, (92, 95, 119))
+        bottom_text = bottom_font.render("Press Shift to go back ", True, (92, 95, 119))
         screen.blit(bottom_text, (10, HEIGHT - bottom_text.get_height() - 10))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -443,8 +414,8 @@ def loading_screen(func1, func2):
                 if event.key == pygame.K_q:
                     pygame.quit()
                     sys.exit()
-                if event.key == pygame.K_RSHIFT:
-                   return
+                if event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT):
+                   runner(main_menu, loading_screen, main_game)
 
         
         pygame.display.flip()
@@ -501,31 +472,11 @@ def main_menu(mode=False):
 
 
 if __name__ == "__main__":
-    is_paused = True
+    pygame.mixer.music.load("./assets/music.mp3")
     while True:
+        is_paused=True
         if is_paused: # False
             pygame.mixer.music.stop()
         else:
             pygame.mixer.music.play(-1)
-        # sec = lambda x : 1/math.cos(x)
-        # cosec = lambda x : 1/math.sin(x)
-        # cot = lambda x : 1/math.tan(x)
-        # inv_sinh = lambda x : 1/math.sinh(x)
-        # inv_cosh = lambda x : 1/math.cosh(x)
-        # inv_tanh = lambda x : 1/math.tanh(x)
-        # for i in combs:
-        #     print(*i)
-        #     loading_screen(*i)
-        selected_option = main_menu(is_paused)
-        if selected_option == 0:
-            loading_screen(*random.choice(combs))
-            main_game(is_paused)
-        if selected_option== 1:
-            if not is_paused: # True
-                pygame.mixer.music.stop()
-            else:
-                pygame.mixer.music.play(-1)
-            is_paused = not is_paused
-        if selected_option==2:
-            ... 
-            """auto_screen_window(WIDTH, HEIGHT, dummy_text)"""
+        runner(main_menu, loading_screen, main_game, is_paused, 1)
