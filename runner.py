@@ -30,6 +30,6 @@ def runner(main_menu, loading_screen, main_game, type_=0, is_paused=True):
                 pygame.mixer.music.play(-1)
             is_paused = not is_paused
             selected_option = main_menu(is_paused)
-        if selected_option==2:
-            ... 
+        if selected_option==2: 
             """auto_screen_window(WIDTH, HEIGHT, dummy_text)"""
+            selected_option = main_menu(is_paused)

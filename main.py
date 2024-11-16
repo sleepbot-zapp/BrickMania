@@ -6,9 +6,11 @@ import sys
 import time
 import math
 import settings
-from models import FallingTile, PowerUp, Brick, SpecialBall, Color
+from models import PowerUp, Brick, SpecialBall, Color
 from drawings import draw_player, draw_bricks, draw_ball
 from runner import runner
+from main_menu import main_menu
+from constants import *
 
 
 chdir(dirname(__file__))
@@ -18,31 +20,6 @@ pygame.init()
 track1 = pygame.mixer.Sound("./assets/music1.mp3")
 track2 = pygame.mixer.Sound("./assets/music2.mp3")
 track3 = pygame.mixer.Sound("./assets/music3.mp3")
-
-
-SCALE = 1
-WIDTH, HEIGHT = int(800 * SCALE), int(600 * SCALE)
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("BRICKMANIA")
-
-player_width = 100 * SCALE
-player_height = 20 * SCALE
-player_speed = 15 * SCALE
-
-ball_radius = 10 * SCALE
-ball_speed_x, ball_speed_y = 5 * SCALE, -5 * SCALE
-
-brick_width = int(80 * SCALE)
-brick_height = 20 * SCALE
-brick_speed = 10 * SCALE
-brick_rows = 6
-brick_cols = WIDTH // brick_width
-
-clock = pygame.time.Clock()
-font = pygame.font.SysFont(None, int(25 * SCALE))
-bottom_font = pygame.font.SysFont(None, int(20 * SCALE))
-trail_length = 10
-ball_trails = {}
 
 def pause_game():
     paused = True
@@ -72,7 +49,7 @@ def show_score(score):
     text = font.render(f"Score: {score}", True, Color.RED)
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 30) * SCALE))
 
-def game_over(score, settings: settings.Settings, type_=0, mode=0):
+def game_over(score, stetings: settings.Settings, type_=0, mode=0):
     if not mode:
         pygame.mixer.music.pause()
         track3.play()
@@ -419,56 +396,6 @@ def loading_screen(func1, func2):
 
         
         pygame.display.flip()
-
-
-def main_menu(mode=False):
-    title_font = pygame.font.SysFont(None, int(72 * SCALE))
-    menu_font = pygame.font.SysFont(None, int(48 * SCALE))
-
-    tiles = [FallingTile(brick_width, brick_height, WIDTH, HEIGHT, SCALE) for _ in range(20)]
-
-    options = ["Main Game", ["Mute Music", "Unmute Music"][mode], "How to Play"]
-    selected_option = 0
-
-    while True:
-        screen.fill(Color.BLACK)
-
-        for tile in tiles:
-            tile.move(HEIGHT, WIDTH)
-            tile.draw(screen)
-
-        title_text = title_font.render("BRICKMANIA", True, Color.YELLOW)
-        screen.blit(title_text, ((WIDTH // 2 - title_text.get_width() // 2) * SCALE, (HEIGHT // 2 - 150) * SCALE))
-
-        for i, option in enumerate(options):
-            color = Color.YELLOW if i == selected_option else Color.WHITE
-            option_text = menu_font.render(option, True, color)
-            screen.blit(option_text, ((WIDTH // 2 - option_text.get_width() // 2) * SCALE,
-                                      (HEIGHT // 2 + i * 60) * SCALE))
-
-        quit_text = bottom_font.render("Press Q to Quit", True, Color.GREY)
-        screen.blit(quit_text, (10, (HEIGHT - quit_text.get_height() - 10) * SCALE))
-
-        bottom_text = bottom_font.render("Press Enter to Continue ", True, Color.GREY)
-        screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
-
-        pygame.display.flip()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_DOWN:
-                    selected_option = (selected_option + 1) % len(options)
-                elif event.key == pygame.K_UP:
-                    selected_option = (selected_option - 1) % len(options)
-                elif event.key == pygame.K_RETURN:
-                    return selected_option
-                elif event.key == pygame.K_q:
-                    pygame.quit()
-                    sys.exit()
-        clock.tick(60)
-
 
 
 if __name__ == "__main__":
