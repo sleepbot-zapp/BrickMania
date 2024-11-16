@@ -3,12 +3,12 @@ import settings
 from constants import track3, screen, SCALE, WIDTH, HEIGHT, clock, brick_cols, brick_height, brick_width, brick_rows
 import time
 from models import Color, PowerUp, Brick
-from random import random
+from random import random, choice
 from pygame import QUIT, quit, K_q, K_RETURN, KEYDOWN, event, font, mixer
 from pygame.display import flip
 import sys
 
-def pause_game():
+def pause_game(font):
     paused = True
     pause_text = font.render("Game Paused. Press 'P' to Resume.", True, Color.WHITE)
     dim_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
@@ -70,8 +70,8 @@ def game_over(score, settings: settings.Settings, type_=0, mode=0):
 
 
 def drop_powerup(brick_x, brick_y, powerups):
-    powerup_type = random.choice(["extra_ball",])
-    if len(powerups) < 2 and random.random() < 0.1:
+    powerup_type = choice(["extra_ball",])
+    if len(powerups) < 2 and random() < 0.1:
         return PowerUp(brick_x, brick_y, powerup_type, SCALE)
     return None
 
@@ -83,6 +83,6 @@ def create_new_bricks():
     return bricks
 
 
-def show_score(score):
+def show_score(score, font):
     text = font.render(f"Score: {score}", True, Color.RED)
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 30) * SCALE))
