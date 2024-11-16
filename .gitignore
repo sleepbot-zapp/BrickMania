@@ -1,3 +1,4 @@
 venv/
-alpha/
 maingame2.py
+auto_scroll.py
+__pycache__/
