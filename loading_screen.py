@@ -45,22 +45,28 @@ def loading_screen(func1, func2):
             segment_angle_start = angle + (i * angle_per_segment)
             segment_angle_end = segment_angle_start + angle_per_segment
 
-            
-            start_x1 = spinner_center[0] + radius * func1(math.cos(math.radians(segment_angle_start)))
-            start_y1 = spinner_center[1] + radius * func1(math.sin(math.radians(segment_angle_start)))
+            def inrange():
+                start_x1 = spinner_center[0] + radius * func1(math.cos(math.radians(segment_angle_start)))
+                start_y1 = spinner_center[1] + radius * func1(math.sin(math.radians(segment_angle_start)))
 
-            end_x1 = spinner_center[0] - radius * func1(math.cos(math.radians(segment_angle_start)))
-            end_y1 = spinner_center[1] - radius * func1(math.sin(math.radians(segment_angle_start)))
+                end_x1 = spinner_center[0] - radius * func1(math.cos(math.radians(segment_angle_start)))
+                end_y1 = spinner_center[1] - radius * func1(math.sin(math.radians(segment_angle_start)))
 
-            start_x2 = spinner_center[0] + radius * func2(math.cos(math.radians(segment_angle_end)))
-            start_y2 = spinner_center[1] + radius * func2(math.sin(math.radians(segment_angle_end)))
+                start_x2 = spinner_center[0] + radius * func2(math.cos(math.radians(segment_angle_end)))
+                start_y2 = spinner_center[1] + radius * func2(math.sin(math.radians(segment_angle_end)))
 
-            end_x2 = spinner_center[0] - radius * func2(math.cos(math.radians(segment_angle_end)))
-            end_y2 = spinner_center[1] - radius * func2(math.sin(math.radians(segment_angle_end)))
+                end_x2 = spinner_center[0] - radius * func2(math.cos(math.radians(segment_angle_end)))
+                end_y2 = spinner_center[1] - radius * func2(math.sin(math.radians(segment_angle_end)))
 
-            
-            pygame.draw.line(screen, Color.BLUE, (end_x1, end_y1 - 40), (end_x2, end_y2 - 40), 3)
-            pygame.draw.line(screen, Color.RED, (start_x1, start_y1 - 40), (start_x2, start_y2 - 40), 3)
+                if (start_x1 - end_x1) < 500 and (start_x2 - end_x2) < 500 and (start_y1 - end_y1) < 100 and (start_y2 - end_y2) < 100:
+                    pygame.draw.line(screen, Color.BLUE, (end_x1, end_y1 - 40), (end_x2, end_y2 - 40), 3)
+                    pygame.draw.line(screen, Color.RED, (start_x1, start_y1 - 40), (start_x2, start_y2 - 40), 3)
+                else:
+                    try:
+                        inrange()
+                    except RecursionError:
+                        pass
+            inrange()
 
         
         angle += spinner_speed

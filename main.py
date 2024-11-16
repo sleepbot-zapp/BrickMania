@@ -5,7 +5,7 @@ import random
 import sys
 import time
 import settings
-from models import PowerUp, Brick, SpecialBall, Color
+from models import SpecialBall, Color
 from drawings import draw_player, draw_bricks, draw_ball
 from game_control import pause_game, show_score, game_over, drop_powerup, create_new_bricks
 from runner import runner
