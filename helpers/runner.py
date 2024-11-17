@@ -1,5 +1,6 @@
 import random
 from helpers.loading_combinations import combs
+from helpers.constants import font
 import pygame
 
 
@@ -22,7 +23,7 @@ def runner(main_menu, loading_screen, main_game, type_=0, is_paused=True):
         #     loading_screen(*i)
         if selected_option == 0:
             loading_screen(*(random.choice(combs)))
-            main_game(is_paused)
+            main_game(font, is_paused)
         if selected_option == 1:
             if not is_paused: # True
                 pygame.mixer.music.stop()
