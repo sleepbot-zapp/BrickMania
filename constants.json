@@ -7,7 +7,7 @@
     "player": {
         "width": 100,
         "height": 20,
-        "speed": 15,
+        "speed": 900,
         "inactivity":{
             "multiplier": 5,
             "threshold": 5
@@ -15,21 +15,22 @@
     },
     "ball": {
         "radius": 10,
-        "speed x": 5,
-        "speed y": -5,
-        "speed increment": 1.0001
+        "speed":{
+            "x": 300,
+            "y": -300,
+            "increment": 1.0001
+        }
     },
     "brick": {
         "width": 80,
         "height": 20,
-        "speed": 10,
-        "rows": 6,
-        "move speed": 3
+        "speed": 100,
+        "rows": 6
     },
     "powerup":{
         "width": 40,
         "height": 20,
-        "fall speed": 2,
+        "fall speed": 120,
         "probability": 0.2,
         "max length": 2
     },
