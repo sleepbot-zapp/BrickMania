@@ -3,7 +3,7 @@ from helpers.constants import track3, screen, SCALE, WIDTH, HEIGHT, clock, brick
 import time
 from models import Color, PowerUp, Brick
 from random import random, choice
-from pygame import  Surface, SRCALPHA, QUIT, quit, K_q, K_RETURN, K_p, K_SPACE, KEYDOWN, event, font, K_RSHIFT, K_RCTRL
+from pygame import  Surface, SRCALPHA, QUIT, quit, K_q, K_RETURN, K_p, K_SPACE, KEYDOWN, event, font, K_RSHIFT, K_RCTRL, K_LCTRL
 from pygame.mixer import music
 from pygame.display import flip
 from pages.main_menu import main_menu
@@ -68,7 +68,7 @@ def game_over(score, settings: settings.Settings, type_=0):
             if e.type == KEYDOWN:
                 if e.key == K_RETURN:
                     return
-                if e.key in (K_RSHIFT,):
+                if e.key in (K_RSHIFT, K_LCTRL):
                     return main_menu() #mode
                 if e.key == K_q:
                     quit()

@@ -4,7 +4,7 @@ class Color:
     BLUE = (158,135,233)
     BLACK = (32,32,45)
     YELLOW = (223, 142, 29)	
-    GREY = (240,227,180) 
+    # GREY = (240,227,180) 
     GREEN = (142,227,131) 
     # Previous Colors
     # WHITE = (205, 214, 244)	
@@ -12,5 +12,5 @@ class Color:
     # BLUE = (30, 102, 245)	
     # BLACK = (17, 17, 27)	
     # YELLOW = (223, 142, 29)	
-    # GREY = (92, 95, 119)	
+    GREY = (92, 95, 119)	
     # GREEN = (64, 160, 43)
