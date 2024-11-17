@@ -7,13 +7,13 @@ from sys import exit
 from helpers.constants import SCALE, screen, brick_width, brick_height, WIDTH, HEIGHT, bottom_font, clock
 
 
-def main_menu(mode=False):
+def main_menu(): #mode
     title_font = SysFont(None, int(72 * SCALE))
     menu_font = SysFont(None, int(48 * SCALE))
 
     tiles = [FallingTile(brick_width, brick_height, WIDTH, HEIGHT, SCALE) for _ in range(20)]
 
-    options = ["Main Game", ["Mute Music", "Unmute Music"][mode], "Info"]
+    options = ["Main Game", ["Mute Music", "Unmute Music"][0], "Info"]
     selected_option = 0
 
     while True:

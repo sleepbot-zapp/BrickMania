@@ -3,7 +3,7 @@ from helpers.constants import track3, screen, SCALE, WIDTH, HEIGHT, clock, brick
 import time
 from models import Color, PowerUp, Brick
 from random import random, choice
-from pygame import  Surface, SRCALPHA, QUIT, quit, K_q, K_RETURN, K_p, K_SPACE, KEYDOWN, event, font, K_RSHIFT, K_RCTRL
+from pygame import  Surface, SRCALPHA, QUIT, quit, K_q, K_RETURN, K_p, K_SPACE, KEYDOWN, event, font, K_RSHIFT, K_RCTRL, K_LCTRL
 from pygame.mixer import music
 from pygame.display import flip
 from pages.main_menu import main_menu
@@ -34,11 +34,11 @@ def pause_game(font):
 
 
 
-def game_over(score, settings: settings.Settings, type_=0, mode=0):
-    if not mode:
-        music.pause()
-        track3.play()
-        curr = time.time()
+def game_over(score, settings: settings.Settings, type_=0):
+    # if not mode:
+    #     music.pause()
+    #     track3.play()
+    #     curr = time.time()
     screen.fill(Color.BLACK)
     font_for_game_over = font.SysFont(None, int(42 * SCALE))
     text = font_for_game_over.render("Game Over! Press ENTER to restart", True, Color.RED)
@@ -57,10 +57,10 @@ def game_over(score, settings: settings.Settings, type_=0, mode=0):
     flip()
 
     while True:
-        if not mode and time.time() - curr > 2:
-            if not mode:
-                track3.stop()
-                music.unpause()
+        # if not mode and time.time() - curr > 2:
+        #     if not mode:
+        #         track3.stop()
+        #         music.unpause()
         for e in event.get():
             if e.type == QUIT:
                 quit()
@@ -68,8 +68,8 @@ def game_over(score, settings: settings.Settings, type_=0, mode=0):
             if e.type == KEYDOWN:
                 if e.key == K_RETURN:
                     return
-                if e.key in (K_RSHIFT,):
-                    return main_menu(mode)
+                if e.key in (K_RSHIFT, K_LCTRL):
+                    return main_menu() #mode
                 if e.key == K_q:
                     quit()
                     sys.exit()

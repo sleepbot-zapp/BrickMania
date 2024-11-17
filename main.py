@@ -1,7 +1,7 @@
 from os import chdir
 from os.path import dirname
 from pygame import init, display
-from pygame.mixer import music
+# from pygame.mixer import music
 from helpers.runner import runner
 from pages.main_menu import main_menu
 from pages.loading_screen import loading_screen
@@ -18,4 +18,4 @@ if __name__ == "__main__":
     music = track
     is_paused=True
     type_ = 1
-    runner(main_menu, loading_screen, main_game, type_, is_paused)
+    runner(main_menu, loading_screen, main_game, type_)

@@ -52,6 +52,41 @@
     "duration": {
       "special_ball": 2,
       "random_destruction": 5
+=======
+    "screen":{
+        "scale": 1,
+        "width": 800,
+        "height": 600
+    },
+    "player": {
+        "width": 100,
+        "height": 20,
+        "speed": 900,
+        "inactivity":{
+            "multiplier": 5,
+            "threshold": 5
+        }
+    },
+    "ball": {
+        "radius": 10,
+        "speed":{
+            "x": 300,
+            "y": -300,
+            "increment": 1.0001
+        }
+    },
+    "brick": {
+        "width": 80,
+        "height": 20,
+        "speed": 100,
+        "rows": 6
+    },
+    "powerup":{
+        "width": 40,
+        "height": 20,
+        "fall speed": 120,
+        "probability": 0.2,
+        "max length": 2
     },
     "font_size": {
       "main": 25,
@@ -59,14 +94,8 @@
       "main_menu": {
         "title": 72,
         "menu": 48
-      }
-    },
-    "game_modes": ["Main Game", "Demo Game"],
-    "frames_per_second": 60,
-    "tracks": {
-      "path": "./assets",
-      "files": ["music", "music1", "music2", "music3"],
-      "extension": "mp3"
+        }
+      },
     }
   }
 }

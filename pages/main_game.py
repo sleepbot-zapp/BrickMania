@@ -11,7 +11,7 @@ from helpers.drawings import draw_ball, draw_bricks, draw_player
 from random import randint, choice
 from sys import exit
 
-def main_game(font, mode=False):
+def main_game(font):#, mode=False
     data = settings.Settings.open()
     balls = [(randint(200, WIDTH // 2), randint(400, 500), choice((1, -1)) * ball_speed_x, ball_speed_y)]
     balls_crossed_line = [False]
@@ -66,9 +66,9 @@ def main_game(font, mode=False):
             dx = choice([-500, 500]) 
             dy = randint(-300, -120)
             special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy))
-            if not mode:
-                pygame.mixer.music.pause()
-                track1.play()
+            # if not mode:
+            #     pygame.mixer.music.pause()
+            #     track1.play()
             last_special_ball_time = current_time
 
         if keys[pygame.K_RSHIFT]:
@@ -114,14 +114,14 @@ def main_game(font, mode=False):
             balls[i] = (ball_x, ball_y, ball_dx, ball_dy)
 
         if all(balls_crossed_line):
-            game_over(score, mode=mode, settings=data)
+            game_over(score, settings=data) #mode=mode
             return
 
         if current_time - last_brick_move_time > 1:
             for brick in bricks:
                 brick.y += brick_speed * dt
                 if brick.y + brick_height >= HEIGHT:
-                    game_over(score, mode=mode, settings=data)
+                    game_over(score, settings=data) #mode=mode
                     return
             last_brick_move_time = current_time
 
@@ -150,9 +150,9 @@ def main_game(font, mode=False):
 
         if current_time - last_x_key_time > random_destruction_interval - 1:
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-                if not mode:
-                    pygame.mixer.music.pause()
-                    track2.play()
+                # if not mode:
+                #     pygame.mixer.music.pause()
+                #     track2.play()
                 for _ in range(5):
                     if bricks:
                         random_brick = choice(bricks)
@@ -210,10 +210,10 @@ def main_game(font, mode=False):
 
         pygame.display.flip()
 
-        if not mode:
-            if not special_balls or current_time - last_special_ball_time >= 2:
-                track1.stop()
-                pygame.mixer.music.unpause()
-            if current_time - last_x_key_time >= 3:
-                track2.stop()
-                pygame.mixer.music.unpause()
+        # if not mode:
+        #     if not special_balls or current_time - last_special_ball_time >= 2:
+        #         track1.stop()
+        #         pygame.mixer.music.unpause()
+        #     if current_time - last_x_key_time >= 3:
+        #         track2.stop()
+        #         pygame.mixer.music.unpause()
