@@ -1,11 +1,12 @@
 import helpers.settings as settings
-from helpers.constants import track3, screen, SCALE, WIDTH, HEIGHT, clock, brick_cols, brick_height, brick_width, brick_rows
+from helpers.constants import track3, screen, SCALE, WIDTH, HEIGHT, clock, brick_cols, brick_height, brick_width, brick_rows, bottom_font
 import time
 from models import Color, PowerUp, Brick
 from random import random, choice
-from pygame import  Surface, SRCALPHA, QUIT, quit, K_q, K_RETURN, K_p, K_SPACE, KEYDOWN, event, font
+from pygame import  Surface, SRCALPHA, QUIT, quit, K_q, K_RETURN, K_p, K_SPACE, KEYDOWN, event, font, K_RSHIFT, K_RCTRL
 from pygame.mixer import music
 from pygame.display import flip
+from pages.main_menu import main_menu
 import sys
 
 def pause_game(font):
@@ -19,7 +20,7 @@ def pause_game(font):
                 quit()
                 sys.exit()
             if e.type == KEYDOWN:
-                if event.key in (K_p, K_SPACE):
+                if e.key in (K_p, K_SPACE, K_RCTRL):
                     paused = False
                 if e.key == K_q:
                     quit()
@@ -50,6 +51,9 @@ def game_over(score, settings: settings.Settings, type_=0, mode=0):
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT // 2 - 40) * SCALE))
     screen.blit(text2, ((WIDTH // 2 - text2.get_width() / 2) * SCALE, (HEIGHT // 2) * SCALE))
     screen.blit(text3, ((WIDTH // 2 - text3.get_width() / 2) * SCALE, (HEIGHT // 2 + 40) * SCALE))
+
+    quit_text = bottom_font.render("Press Shift to go to Main Window", True, Color.GREY)
+    screen.blit(quit_text, (10, (HEIGHT - quit_text.get_height() - 10) * SCALE))
     flip()
 
     while True:
@@ -61,11 +65,14 @@ def game_over(score, settings: settings.Settings, type_=0, mode=0):
             if e.type == QUIT:
                 quit()
                 sys.exit()
-            if e.type == KEYDOWN and e.key == K_RETURN:
-                return
-            if e.type == KEYDOWN and e.key == K_q:
-                quit()
-                sys.exit()
+            if e.type == KEYDOWN:
+                if e.key == K_RETURN:
+                    return
+                if e.key in (K_RSHIFT,):
+                    return main_menu(mode)
+                if e.key == K_q:
+                    quit()
+                    sys.exit()
 
 
 

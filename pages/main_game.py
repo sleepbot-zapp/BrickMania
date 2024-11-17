@@ -32,7 +32,6 @@ def main_game(font, mode=False):
     last_x_time = time.time()
     last_x_value = None
 
-
     while running:
         screen.fill(Color.BLACK)
         dt = clock.tick(60) / 1000
@@ -46,7 +45,6 @@ def main_game(font, mode=False):
                 pygame.quit()
                 exit()
 
-
         keys = pygame.key.get_pressed()
         if current_time - last_move_time > inactivity_threshold:
             if player_x <= WIDTH // 2:
@@ -55,7 +53,7 @@ def main_game(font, mode=False):
                 player_x -= 5 * player_speed * dt
             last_move_time = current_time
         if (keys[pygame.K_p]) or (keys[pygame.K_p]) or (keys[pygame.K_SPACE]) or keys[pygame.K_RCTRL] or keys[pygame.K_LCTRL]:
-                pause_game(font)
+            pause_game(font)
 
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and player_x > 10:
             player_x -= player_speed * dt
@@ -73,7 +71,7 @@ def main_game(font, mode=False):
                 track1.play()
             last_special_ball_time = current_time
 
-        if keys[pygame.K_RSHIFT] or keys[pygame.K_LSHIFT]:
+        if keys[pygame.K_RSHIFT]:
             runner(main_menu, loading_screen, main_game, 1)
 
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls):
@@ -105,7 +103,11 @@ def main_game(font, mode=False):
             paddle_center_x = player_x + player_width / 2
             dx_from_center = (ball_x - paddle_center_x) / (player_width / 2)
             if player_x - ball_radius < ball_x < player_x + player_width + ball_radius and player_y < ball_y + ball_radius < player_y + player_height:
-                ball_dx = ball_speed_x * dx_from_center
+                ball_dx = ball_speed_x * dx_from_center * 1.2  # Adjust dx to ensure curvature is covered
+                if ball_dx > 0:
+                    ball_dx += 50
+                else:
+                    ball_dx -= 50
                 ball_dy = -abs(ball_dy)
                 ball_y = player_y - ball_radius
 
@@ -177,8 +179,6 @@ def main_game(font, mode=False):
             if special_ball.x < 0 or special_ball.x > WIDTH or special_ball.y < 0 or special_ball.y > HEIGHT:
                 special_balls.remove(special_ball)
 
-
-        
         draw_bricks([brick for brick in bricks], screen, brick_width, brick_height)  
         draw_player(player_x, player_y, screen, player_width, player_height)
 
@@ -186,8 +186,8 @@ def main_game(font, mode=False):
             if ball_y < HEIGHT - 60:  
                 draw_ball(ball_x, ball_y, i, ball_radius, ball_trails, screen)
 
-
         show_score(score, font)
+
 
         if current_time - last_special_ball_time > special_ball_time - 1:
             special_ball_text = font.render("Special Ball Ready (UP)", True, Color.GREEN)
@@ -205,6 +205,8 @@ def main_game(font, mode=False):
 
         pygame.draw.line(screen, Color.WHITE, (0, HEIGHT - 50), (WIDTH, HEIGHT - 50), 2)
         screen.blit(special_ball_text, (20 * SCALE, (HEIGHT - 30) * SCALE))
+
+        pygame.draw.line(screen, Color.WHITE, (0, HEIGHT - 50), (WIDTH, HEIGHT - 50), 2)
 
         pygame.display.flip()
 

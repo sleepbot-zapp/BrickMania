@@ -13,7 +13,7 @@ def main_menu(mode=False):
 
     tiles = [FallingTile(brick_width, brick_height, WIDTH, HEIGHT, SCALE) for _ in range(20)]
 
-    options = ["Main Game", ["Mute Music", "Unmute Music"][mode], "How to Play"]
+    options = ["Main Game", ["Mute Music", "Unmute Music"][mode], "Info"]
     selected_option = 0
 
     while True:
@@ -35,7 +35,7 @@ def main_menu(mode=False):
         quit_text = bottom_font.render("Press Q to Quit", True, Color.GREY)
         screen.blit(quit_text, (10, (HEIGHT - quit_text.get_height() - 10) * SCALE))
 
-        bottom_text = bottom_font.render("Press Enter to Continue ", True, Color.GREY)
+        bottom_text = bottom_font.render("Press Enter to Select", True, Color.GREY)
         screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
 
         flip()

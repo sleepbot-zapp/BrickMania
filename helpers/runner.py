@@ -2,7 +2,7 @@ from random import choice
 from helpers.loading_combinations import combs
 from helpers.constants import font
 from pygame.mixer import music
-
+from pages.auto_scroll import auto_screen_window
 
 def runner(main_menu, loading_screen, main_game, type_=0, is_paused=True):
     is_paused = True
@@ -32,5 +32,5 @@ def runner(main_menu, loading_screen, main_game, type_=0, is_paused=True):
             is_paused = not is_paused
             selected_option = main_menu(is_paused)
         if selected_option==2: 
-            #"""auto_screen_window(WIDTH, HEIGHT, dummy_text)"""
-            selected_option = main_menu(is_paused)
+            selected_option = auto_screen_window(is_paused)
+            # selected_option = main_menu(is_paused)

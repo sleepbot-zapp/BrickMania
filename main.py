@@ -1,6 +1,6 @@
 from os import chdir
 from os.path import dirname
-from pygame import init
+from pygame import init, display
 from pygame.mixer import music
 from helpers.runner import runner
 from pages.main_menu import main_menu
@@ -12,6 +12,7 @@ chdir(dirname(__file__))
 
 init()
 
+display.set_caption("BrickMania")
 
 if __name__ == "__main__":
     music.load("./assets/music.mp3")
