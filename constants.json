@@ -1,4 +1,58 @@
 {
+  "screen": {
+    "scale": 1,
+    "width": 800,
+    "height": 600
+  },
+  "player": {
+    "width": 100,
+    "height": 20,
+    "speed": 900,
+    "inactivity": {
+      "multiplier": 5,
+      "threshold": 5
+    }
+  },
+  "ball": {
+    "radius": 10,
+    "speed": {
+      "x": 300,
+      "y": -300,
+      "increment": 1.0001
+    },
+    "trail_length": 10
+  },
+  "brick": {
+    "width": 80,
+    "height": 20,
+    "speed": 100,
+    "rows": 6
+  },
+  "powerup": {
+    "width": 40,
+    "height": 20,
+    "fall_speed": 120,
+    "probability": 0.2,
+    "max_length": 2
+  },
+  "falling_tile": {
+    "x_min": 0,
+    "y_max": 0,
+    "speed_upper": 2,
+    "speed_lower": 7,
+    "count": 20
+  },
+  "game_constants": {
+    "title": "BRICKMANIA",
+    "inactivity_threshold": 2,
+    "interval": {
+      "special_ball": 20,
+      "random_destruction": 60
+    },
+    "duration": {
+      "special_ball": 2,
+      "random_destruction": 5
+=======
     "screen":{
         "scale": 1,
         "width": 800,
@@ -34,39 +88,14 @@
         "probability": 0.2,
         "max length": 2
     },
-    "falling tile":{
-        "x min": 0,
-        "y max": 0,
-        "speed upper": 2,
-        "speed lower": 7,
-        "count": 20
-    },
-    "game constants":{
-        "title": "BRICKMANIA",
-        "inactivity threshold": 2,
-        "interval": {
-            "special ball": 20,
-            "random destruction": 60
-        },
-        "duration":{
-            "special ball": 2,
-            "random destruction": 5
-        },
-        "font size":{
-            "main": 25,
-            "game over": 42,
-            "main menu":{
-                "title": 72,
-                "menu": 48
-            }
-        },
-        "frames per second": 60,
-        "tracks":{
-        "path": "./",
-        "files" :[
-            "music", "music1", "music2", "music3"
-        ],
-        "extension": ".mp3"
+    "font_size": {
+      "main": 25,
+      "game_over": 25,
+      "main_menu": {
+        "title": 72,
+        "menu": 48
         }
+      },
     }
+  }
 }
