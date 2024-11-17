@@ -34,11 +34,11 @@ def pause_game(font):
 
 
 
-def game_over(score, settings: settings.Settings, type_=0, mode=0):
-    if not mode:
-        music.pause()
-        track3.play()
-        curr = time.time()
+def game_over(score, settings: settings.Settings, type_=0):
+    # if not mode:
+    #     music.pause()
+    #     track3.play()
+    #     curr = time.time()
     screen.fill(Color.BLACK)
     font_for_game_over = font.SysFont(None, int(42 * SCALE))
     text = font_for_game_over.render("Game Over! Press ENTER to restart", True, Color.RED)
@@ -57,10 +57,10 @@ def game_over(score, settings: settings.Settings, type_=0, mode=0):
     flip()
 
     while True:
-        if not mode and time.time() - curr > 2:
-            if not mode:
-                track3.stop()
-                music.unpause()
+        # if not mode and time.time() - curr > 2:
+        #     if not mode:
+        #         track3.stop()
+        #         music.unpause()
         for e in event.get():
             if e.type == QUIT:
                 quit()
@@ -69,7 +69,7 @@ def game_over(score, settings: settings.Settings, type_=0, mode=0):
                 if e.key == K_RETURN:
                     return
                 if e.key in (K_RSHIFT,):
-                    return main_menu(mode)
+                    return main_menu() #mode
                 if e.key == K_q:
                     quit()
                     sys.exit()

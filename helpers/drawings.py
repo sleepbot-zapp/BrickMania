@@ -15,7 +15,7 @@ def draw_player(x, y, screen, player_width, player_height):
 
 def draw_ball(x, y, ball_id, ball_radius, ball_trails, screen):
     FIXED_TRAIL_LENGTH = 10
-    FIXED_TRAIL_COLOR = (0, 156, 0)
+    FIXED_TRAIL_COLOR = Color.GREEN
     MAX_ALPHA = 50 
     if ball_id not in ball_trails:
         ball_trails[ball_id] = []
