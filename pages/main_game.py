@@ -1,11 +1,11 @@
 from helpers import settings
 import pygame
 import time
-from helpers.loading_screen import loading_screen
+from pages.loading_screen import loading_screen
 from helpers.runner import runner
 from helpers.constants import *
 from models import Color, SpecialBall
-from helpers.main_menu import main_menu
+from pages.main_menu import main_menu
 from helpers.game_control import *
 from helpers.drawings import draw_ball, draw_bricks, draw_player
 import random
