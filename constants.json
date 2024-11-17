@@ -60,7 +60,6 @@
                 "menu": 48
             }
         },
-        "game modes": ["Main Game", "Demo Game"],
         "frames per second": 60,
         "tracks":{
         "path": "./",
