@@ -1,20 +1,22 @@
 import math
-import random
-import pygame
+from random import choice
+from pygame.font import SysFont
+from pygame import KEYDOWN, K_q, K_LSHIFT, K_RSHIFT, K_RETURN, quit, QUIT, event
+from pygame.draw import line
+from pygame.display import flip
 from helpers.constants import screen, WIDTH, HEIGHT, font, bottom_font, clock
 from models import Color
-from helpers.runner import runner # to be used for later
-import sys
+from sys import exit
 
 def loading_screen(func1, func2):
     radius = 30  
     spinner_segments = 12
     angle_per_segment = 25
-    spinner_speed = random.choice([-2, 2])
+    spinner_speed = choice([-2, 2])
     angle = 0  
 
     
-    tip_font = pygame.font.SysFont("Arial", 24)
+    tip_font = SysFont("Arial", 24)
     tips = [
         "Use the paddle to deflect the ball!",
         "Hit bricks for power-ups!",
@@ -22,8 +24,8 @@ def loading_screen(func1, func2):
         "Stay active to avoid the paddle drifting!",
         "Press DOWN to destroy 5 random bricks!"
     ]
-    tip = random.choice(tips)
-    direc = random.choice([-1, 1])
+    tip = choice(tips)
+    direc = choice([-1, 1])
     while True:
         screen.fill(Color.BLACK)  
         clock.tick(60)  
@@ -56,11 +58,11 @@ def loading_screen(func1, func2):
             end_y2 = spinner_center[1] - radius * func2(math.sin(math.radians(segment_angle_end)))
 
             
-            pygame.draw.line(screen, Color.BLUE, (end_x1, end_y1), (end_x2, end_y2), 3)
-            pygame.draw.line(screen, Color.RED, (start_x1, start_y1), (start_x2, start_y2), 3)
+            line(screen, Color.BLUE, (end_x1, end_y1), (end_x2, end_y2), 3)
+            line(screen, Color.RED, (start_x1, start_y1), (start_x2, start_y2), 3)
 
-            pygame.draw.line(screen, Color.BLUE, (end_x1, end_y1 ), (end_x2, end_y2), 3)
-            pygame.draw.line(screen, Color.RED, (start_x1, start_y1), (start_x2, start_y2), 3)
+            line(screen, Color.BLUE, (end_x1, end_y1 ), (end_x2, end_y2), 3)
+            line(screen, Color.RED, (start_x1, start_y1), (start_x2, start_y2), 3)
 
         
         angle += spinner_speed * direc
@@ -69,19 +71,18 @@ def loading_screen(func1, func2):
         screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
         bottom_text = bottom_font.render("Press Shift to go back ", True, (92, 95, 119))
         screen.blit(bottom_text, (10, HEIGHT - bottom_text.get_height() - 10))
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
+        for e in event.get():
+            if e.type == QUIT:
+                quit()
+                exit()
+            if e.type == KEYDOWN:
+                if e.key == K_RETURN:
                     return
-                if event.key == pygame.K_q:
-                    pygame.quit()
-                    sys.exit()
-                if event.key in (pygame.K_RSHIFT, pygame.K_LSHIFT):
-                #    runner(main_menu, loading_screen, main_game)
+                if e.key == K_q:
+                    quit()
+                    exit()
+                if e.key in (K_RSHIFT, K_LSHIFT):
                     return
 
         
-        pygame.display.flip()
+        flip()

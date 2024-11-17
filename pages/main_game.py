@@ -3,17 +3,17 @@ import pygame
 import time
 from pages.loading_screen import loading_screen
 from helpers.runner import runner
-from helpers.constants import *
+from helpers.constants import screen, WIDTH, HEIGHT, SCALE, brick_height, brick_width, clock, ball_speed_x, ball_speed_y, player_height, player_width, player_speed, ball_radius, track1, speed_increment, brick_speed, ball_trails, track2
 from models import Color, SpecialBall
 from pages.main_menu import main_menu
-from helpers.game_control import *
+from helpers.game_control import create_new_bricks, pause_game, game_over, drop_powerup, show_score
 from helpers.drawings import draw_ball, draw_bricks, draw_player
-import random
-
+from random import randint, choice
+from sys import exit
 
 def main_game(font, mode=False):
     data = settings.Settings.open()
-    balls = [(random.randint(200, WIDTH // 2), random.randint(400, 500), random.choice((1, -1)) * ball_speed_x, ball_speed_y)]
+    balls = [(randint(200, WIDTH // 2), randint(400, 500), choice((1, -1)) * ball_speed_x, ball_speed_y)]
     balls_crossed_line = [False]
     player_x = (WIDTH * SCALE - player_width) // 2
     player_y = HEIGHT * SCALE - player_height - 70
@@ -44,7 +44,7 @@ def main_game(font, mode=False):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
+                exit()
 
 
         keys = pygame.key.get_pressed()
@@ -65,8 +65,8 @@ def main_game(font, mode=False):
             last_move_time = current_time
 
         if (keys[pygame.K_w] or keys[pygame.K_UP]) and current_time - last_special_ball_time > 19:
-            dx = random.choice([-500, 500]) 
-            dy = random.randint(-300, -120)
+            dx = choice([-500, 500]) 
+            dy = randint(-300, -120)
             special_balls.append(SpecialBall(player_x + player_width // 2, player_y - ball_radius, dx, dy))
             if not mode:
                 pygame.mixer.music.pause()
@@ -153,7 +153,7 @@ def main_game(font, mode=False):
                     track2.play()
                 for _ in range(5):
                     if bricks:
-                        random_brick = random.choice(bricks)
+                        random_brick = choice(bricks)
                         bricks.remove(random_brick)
                         score += 20
                 last_x_key_time = current_time
@@ -166,7 +166,7 @@ def main_game(font, mode=False):
             if player_x < powerup.x + powerup.width and player_x + player_width > powerup.x and player_y < powerup.y + powerup.height and player_y + player_height > powerup.y:
                 powerups.remove(powerup)
                 if powerup.type == "extra_ball":
-                    balls.append((WIDTH // 2, HEIGHT // 2, random.choice((1, -1)) * ball_speed_x, ball_speed_y))
+                    balls.append((WIDTH // 2, HEIGHT // 2, choice((1, -1)) * ball_speed_x, ball_speed_y))
                     balls_crossed_line.append(False)
 
         for special_ball in special_balls:

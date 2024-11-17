@@ -16,4 +16,5 @@ init()
 if __name__ == "__main__":
     music.load("./assets/music.mp3")
     is_paused=True
-    runner(main_menu, loading_screen, main_game, is_paused, 1)
+    type_ = 1
+    runner(main_menu, loading_screen, main_game, type_, is_paused)
