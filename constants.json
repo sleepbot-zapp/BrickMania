@@ -51,8 +51,7 @@
     },
     "duration": {
       "special_ball": 2,
-      "random_destruction": 5
-=======
+      "random_destruction": 5,
     "screen":{
         "scale": 1,
         "width": 800,
@@ -95,7 +94,7 @@
         "title": 72,
         "menu": 48
         }
-      },
+      }
     }
   }
 }
