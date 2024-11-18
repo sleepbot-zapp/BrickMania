@@ -1,9 +1,6 @@
-from pathlib import Path
-import sys
 import pygame
-
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
 import os
 
 class Screen(BaseModel):

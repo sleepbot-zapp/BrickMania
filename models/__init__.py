@@ -3,5 +3,7 @@ from models.color import *
 from models.falling_tile import *
 from models.power_up import *
 from models.special_ball import *
+from models.player import *
+from models.ball import *
 
-__all__ = {"Brick", "Color", "FallingTile", "PowerUp", "SpecialBall"}
+__all__ = {"Brick", "Color", "FallingTile", "PowerUp", "SpecialBall", "Player", "Ball"}
