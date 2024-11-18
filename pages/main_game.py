@@ -90,12 +90,18 @@ def main_game(font):#, mode=False
             else:
                 last_x_value = ball_x
                 last_x_time = current_time  
-      
-            if ball_x <= ball_radius or ball_x >= WIDTH - ball_radius:
-                ball_dx = -ball_dx  
+
+            if ball_x <= ball_radius:
+                ball_x = ball_radius + 1
+                ball_dx = abs(ball_dx)
+            elif ball_x >= WIDTH - ball_radius:
+                ball_x = WIDTH - ball_radius - 1
+                ball_dx = -abs(ball_dx)
 
             if ball_y <= ball_radius:
-                ball_dy = -ball_dy
+                ball_y = ball_radius + 1
+                ball_dy = abs(ball_dy)
+
 
             if ball_y >= HEIGHT - 60 - ball_radius and not balls_crossed_line[i]:
                 balls_crossed_line[i] = True
@@ -103,7 +109,7 @@ def main_game(font):#, mode=False
             paddle_center_x = player_x + player_width / 2
             dx_from_center = (ball_x - paddle_center_x) / (player_width / 2)
             if player_x - ball_radius < ball_x < player_x + player_width + ball_radius and player_y < ball_y + ball_radius < player_y + player_height:
-                ball_dx = ball_speed_x * dx_from_center * 1.2  # Adjust dx to ensure curvature is covered
+                ball_dx = ball_speed_x * dx_from_center * 1.2
                 if ball_dx > 0:
                     ball_dx += 50
                 else:

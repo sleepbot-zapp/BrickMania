@@ -9,13 +9,13 @@ from sys import exit
 
 from helpers.constants import screen, WIDTH, HEIGHT, font, bottom_font, clock  
 from models import Color  
-from pygame import MOUSEWHEEL  # Import MOUSEWHEEL event
+from pygame import MOUSEWHEEL  
 
 def loading_screen(func1, func2):
     radius = 30
     spinner_segments = 12
     angle_per_segment = 360 / spinner_segments
-    spinner_speed = 2  # Initial rotation speed
+    spinner_speed = 2  
     angle = 0  
 
     spinner_center = [WIDTH // 2, HEIGHT // 2]  
@@ -39,26 +39,26 @@ def loading_screen(func1, func2):
         screen.fill(Color.BLACK)
         clock.tick(60)
 
-        # Display the loading screen text
+        
         loading_text = font.render("BrickMania", True, Color.WHITE)
         screen.blit(loading_text, (WIDTH // 2 - loading_text.get_width() // 2, HEIGHT // 2 - 123))
 
-        # Display the tip
+        
         tip_text = tip_font.render("Tip: " + tip, True, Color.WHITE)
         screen.blit(tip_text, (WIDTH // 2 - tip_text.get_width() // 2, HEIGHT // 2 + 123))
 
-        # Spinner center movement and randomization
-        spinner_center[0] = WIDTH // 2 + 100 * math.sin(time * 0.02) + uniform(-2, 2)  # Randomize X position
-        spinner_center[1] = HEIGHT // 2 + 50 * math.cos(time * 0.03) + uniform(-2, 2)  # Randomize Y position
+        
+        spinner_center[0] = WIDTH // 2 + 100 * math.sin(time * 0.02) + uniform(-2, 2)  
+        spinner_center[1] = HEIGHT // 2 + 50 * math.cos(time * 0.03) + uniform(-2, 2)  
 
-        # Scaling factor calculation
+        
         scale_factor_x = 1 + (spinner_center[0] - WIDTH // 2) / WIDTH  
         scale_factor_y = 1 - (spinner_center[1] - HEIGHT // 2) / HEIGHT  
         scale_factor = max(0.5, min(2, scale_factor_x * scale_factor_y))  
 
         current_center = spinner_center
 
-        # Rotate 2D spinner in 3D space
+        
         def rotate_3d(x, y, z, angle_x, angle_y):
             """Rotate a 2D spinner in 3D space."""
             new_y = y * math.cos(math.radians(angle_x)) - z * math.sin(math.radians(angle_x))
@@ -71,7 +71,7 @@ def loading_screen(func1, func2):
 
             return x, y, z
 
-        # Draw the spinner segments
+        
         for i in range(spinner_segments):
             segment_angle_start = angle + (i * angle_per_segment)
             segment_angle_end = segment_angle_start + angle_per_segment
@@ -101,16 +101,16 @@ def loading_screen(func1, func2):
             line(screen, Color.BLUE, (end_x1, end_y1), (end_x2, end_y2), 3)
             line(screen, Color.RED, (start_x1, start_y1), (start_x2, start_y2), 3)
 
-        # Update spinner angle and time
+        
         angle += spinner_speed
         time += move_speed
 
-        # Display bottom text
+        
         bottom_text = bottom_font.render("Press Enter to Continue", True, (92, 95, 119))
         screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
         bottom_text = bottom_font.render("Press Shift to go back ", True, (92, 95, 119))
         screen.blit(bottom_text, (10, HEIGHT - bottom_text.get_height() - 10))
-        # Event handling
+        
         for e in event.get():
             if e.type == QUIT:
                 quit()
@@ -128,7 +128,7 @@ def loading_screen(func1, func2):
                     rotation_angle_x = max(0, min(90, rotation_angle_x + e.rel[1] * 0.5))  
                     rotation_angle_y += e.rel[0] * 0.5  
             if e.type == MOUSEWHEEL:  
-                # Change direction of rotation, but keep the speed constant
-                spinner_speed = 2 if e.y > 0 else -2  # Set fixed speed based on scroll direction
+                
+                spinner_speed = 2 if e.y > 0 else -2  
 
         flip()
