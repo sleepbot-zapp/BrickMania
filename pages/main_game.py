@@ -75,9 +75,6 @@ def main_game(font):#, mode=False
             runner(main_menu, loading_screen, main_game, 1)
 
         for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls):
-            balls[i] = (ball_x, ball_y, ball_dx * speed_increment, ball_dy * speed_increment)
-
-        for i, (ball_x, ball_y, ball_dx, ball_dy) in enumerate(balls):
             
             ball_x += ball_dx * dt
             ball_y += ball_dy * dt

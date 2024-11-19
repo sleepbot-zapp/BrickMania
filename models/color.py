@@ -3,7 +3,7 @@ class Color:
     RED = (232,134,135)
     BLUE = (137, 180, 250)
     BLACK = (32,32,45)
-    YELLOW = (223, 142, 29)	
+    YELLOW = (249, 226, 175)	
     # GREY = (240,227,180) 
     GREEN = (142,227,131) 
     # Previous Colors
