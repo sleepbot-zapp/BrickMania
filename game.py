@@ -14,8 +14,8 @@ class Game:
         self.scale = scale
         self.screen = pygame.display.set_mode((self.height, self.width))
         # entities
-        self.player = Player()
-        self.balls = [Ball()]
+        self.player = Player(self.screen, self.height, self.width, self.scale)
+        self.balls = [Ball(self.screen, self.height, self.width, self.scale)]
         # game costants
         self.clock = pygame.time.Clock()
         self.music_files = track, track1, track2, track3
