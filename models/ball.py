@@ -24,7 +24,7 @@ class Ball:
 
     def draw_ball(screen, ball_id, x, y, ball_trails):
         max_alpha = 50
-        color = Color.GREEN
+        color = Color().GREEN
         if ball_id not in ball_trails:
             ball_trails[ball_id] = []
         trail = ball_trails[ball_id]

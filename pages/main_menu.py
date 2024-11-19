@@ -17,25 +17,25 @@ def main_menu(): #mode
     selected_option = 0
 
     while True:
-        screen.fill(Color.BLACK)
+        screen.fill(Color().BLACK)
 
         for tile in tiles:
             tile.move(HEIGHT, WIDTH)
             tile.draw(screen)
 
-        title_text = title_font.render("BRICKMANIA", True, Color.YELLOW)
+        title_text = title_font.render("BRICKMANIA", True, Color().YELLOW)
         screen.blit(title_text, ((WIDTH // 2 - title_text.get_width() // 2) * SCALE, (HEIGHT // 2 - 150) * SCALE))
 
         for i, option in enumerate(options):
-            color = Color.YELLOW if i == selected_option else Color.WHITE
+            color = Color().YELLOW if i == selected_option else Color().WHITE
             option_text = menu_font.render(option, True, color)
             screen.blit(option_text, ((WIDTH // 2 - option_text.get_width() // 2) * SCALE,
                                       (HEIGHT // 2 + i * 60) * SCALE))
 
-        quit_text = bottom_font.render("Press Q to Quit", True, Color.GREY)
+        quit_text = bottom_font.render("Press Q to Quit", True, Color().GREY)
         screen.blit(quit_text, (10, (HEIGHT - quit_text.get_height() - 10) * SCALE))
 
-        bottom_text = bottom_font.render("Press Enter to Select", True, Color.GREY)
+        bottom_text = bottom_font.render("Press Enter to Select", True, Color().GREY)
         screen.blit(bottom_text, (WIDTH - bottom_text.get_width() - 10, HEIGHT - bottom_text.get_height() - 10))
 
         flip()

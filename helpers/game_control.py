@@ -11,7 +11,7 @@ import sys
 
 def pause_game(font):
     paused = True
-    pause_text = font.render("Game Paused. Press 'P' to Resume.", True, Color.WHITE)
+    pause_text = font.render("Game Paused. Press 'P' to Resume.", True, Color().WHITE)
     dim_surface = Surface((WIDTH, HEIGHT), SRCALPHA)
     dim_surface.fill((0, 0, 0, 180))
     while paused:
@@ -39,12 +39,12 @@ def game_over(score, settings: settings.Settings, type_=0):
     #     music.pause()
     #     track3.play()
     #     curr = time.time()
-    screen.fill(Color.BLACK)
+    screen.fill(Color().BLACK)
     font_for_game_over = font.SysFont(None, int(42 * SCALE))
-    text = font_for_game_over.render("Game Over! Press ENTER to restart", True, Color.RED)
+    text = font_for_game_over.render("Game Over! Press ENTER to restart", True, Color().RED)
     highscore = settings.highscore
-    text2 = font_for_game_over.render(f"High Score = {[score, highscore][highscore>score]}", True, [Color.GREEN, Color.YELLOW][highscore>score])
-    text3 = font_for_game_over.render(f"Your Score = {score}", True, Color.BLUE)
+    text2 = font_for_game_over.render(f"High Score = {[score, highscore][highscore>score]}", True, [Color().GREEN, Color().YELLOW][highscore>score])
+    text3 = font_for_game_over.render(f"Your Score = {score}", True, Color().BLUE)
     if highscore < score and type_==0:
         settings.highscore = score
         settings.flush()
@@ -52,7 +52,7 @@ def game_over(score, settings: settings.Settings, type_=0):
     screen.blit(text2, ((WIDTH // 2 - text2.get_width() / 2) * SCALE, (HEIGHT // 2) * SCALE))
     screen.blit(text3, ((WIDTH // 2 - text3.get_width() / 2) * SCALE, (HEIGHT // 2 + 40) * SCALE))
 
-    quit_text = bottom_font.render("Press Shift to go to Main Window", True, Color.GREY)
+    quit_text = bottom_font.render("Press Shift to go to Main Window", True, Color().GREY)
     screen.blit(quit_text, (10, (HEIGHT - quit_text.get_height() - 10) * SCALE))
     flip()
 
@@ -91,5 +91,5 @@ def create_new_bricks():
 
 
 def show_score(score, font):
-    text = font.render(f"Score: {score}", True, Color.RED)
+    text = font.render(f"Score: {score}", True, Color().RED)
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 30) * SCALE))

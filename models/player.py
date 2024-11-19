@@ -21,7 +21,7 @@ class Player:
         self.y_end = self.height * scale - self.player_height - 70
         
     def draw_player(self):
-        pygame.draw.rect(self.screen, Color.BLUE, (self.x_start, self.y_start, self.player_width, self.player_height), 10)
+        pygame.draw.rect(self.screen, Color().BLUE, (self.x_start, self.y_start, self.player_width, self.player_height), 10)
 
     def move_player(self, dt, keys, min_limit, max_limit):
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and self.x_start > min_limit:

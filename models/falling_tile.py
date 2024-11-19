@@ -10,7 +10,7 @@ class FallingTile:
         self.x = randint(0, WIDTH * SCALE - self.width)
         self.y = randint(-HEIGHT * SCALE, 0)
         self.speed = randint(2, 7) * SCALE
-        self.color = choice([Color.RED, Color.BLUE, Color.GREEN])
+        self.color = choice([Color().RED, Color().BLUE, Color().GREEN])
 
     def move(self, HEIGHT, WIDTH):
         self.y += self.speed

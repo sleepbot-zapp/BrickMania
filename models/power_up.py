@@ -9,7 +9,7 @@ class PowerUp:
         self.width = 40 * scale
         self.height = 20 * scale
         self.type = type
-        self.color = {"extra_ball": Color.GREEN}[type]
+        self.color = {"extra_ball": Color().GREEN}[type]
         self.fall_speed = 120 * scale
 
     def move(self, dt):

@@ -79,10 +79,10 @@ def auto_screen_window():
     def parse_markdown(line):
         if line.startswith("**") and line.endswith("**"):
             wrapped_lines = wrap_text(line[2:-2], bold_font)
-            return [{"type": "text", "surface": bold_font.render(w, True, Color.WHITE)} for w in wrapped_lines]
+            return [{"type": "text", "surface": bold_font.render(w, True, Color().WHITE)} for w in wrapped_lines]
         elif line.startswith("@"):
             wrapped_lines = wrap_text(line[1:], subtitle_font)
-            return [{"type": "subtitle", "surface": subtitle_font.render(w, True, Color.GREY)} for w in wrapped_lines]
+            return [{"type": "subtitle", "surface": subtitle_font.render(w, True, Color().GREY)} for w in wrapped_lines]
         elif line.startswith("---"):
             return [{"type": "line"}]
         elif line.startswith("^"):
@@ -129,7 +129,7 @@ def auto_screen_window():
                 auto_scroll = False
 
         scroll_y = max(-(total_text_height - HEIGHT // 2), min(top_margin, scroll_y))  # Limit scrolling to top_margin
-        screen.fill(Color.BLACK)
+        screen.fill(Color().BLACK)
 
         # Render lines with wrapping
         current_y = scroll_y
@@ -183,7 +183,7 @@ def auto_screen_window():
         copyright_y = icon_y + sprite_height + 40
         if copyright_y < HEIGHT:
             copyright_text = "© Copyright Text Here"
-            copyright_surface = copyright_font.render(copyright_text, True, Color.WHITE)
+            copyright_surface = copyright_font.render(copyright_text, True, Color().WHITE)
             copyright_x = (WIDTH - copyright_surface.get_width()) // 2
             screen.blit(copyright_surface, (copyright_x, copyright_y))
 

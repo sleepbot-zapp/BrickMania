@@ -33,7 +33,7 @@ def main_game(font):#, mode=False
     last_x_value = None
 
     while running:
-        screen.fill(Color.BLACK)
+        screen.fill(Color().BLACK)
         dt = clock.tick(60) / 1000
         current_time = time.time()
 
@@ -193,23 +193,23 @@ def main_game(font):#, mode=False
 
 
         if current_time - last_special_ball_time > special_ball_time - 1:
-            special_ball_text = font.render("Special Ball Ready (UP)", True, Color.GREEN)
+            special_ball_text = font.render("Special Ball Ready (UP)", True, Color().GREEN)
         else:
             remaining_time = max(0, special_ball_time - (current_time - last_special_ball_time))
-            special_ball_text = font.render(f"Special Ball in {int(remaining_time)}s", True, Color.WHITE)
+            special_ball_text = font.render(f"Special Ball in {int(remaining_time)}s", True, Color().WHITE)
 
         if current_time - last_x_key_time > random_destruction_interval - 1:
-            countdown_text = font.render("Brick Destruction Ready (DOWN)", True, Color.GREEN)
+            countdown_text = font.render("Brick Destruction Ready (DOWN)", True, Color().GREEN)
             screen.blit(countdown_text, ((WIDTH - countdown_text.get_width() - 20) * SCALE, (HEIGHT - 30) * SCALE))
         else:
             time_until_destruction = max(0, random_destruction_interval - (current_time - last_x_key_time))
-            countdown_text = font.render(f"Brick Destruction in {int(time_until_destruction)}s", True, Color.WHITE)
+            countdown_text = font.render(f"Brick Destruction in {int(time_until_destruction)}s", True, Color().WHITE)
             screen.blit(countdown_text, ((WIDTH - countdown_text.get_width() - 20) * SCALE, (HEIGHT - 30) * SCALE))
 
-        pygame.draw.line(screen, Color.WHITE, (0, HEIGHT - 50), (WIDTH, HEIGHT - 50), 2)
+        pygame.draw.line(screen, Color().WHITE, (0, HEIGHT - 50), (WIDTH, HEIGHT - 50), 2)
         screen.blit(special_ball_text, (20 * SCALE, (HEIGHT - 30) * SCALE))
 
-        pygame.draw.line(screen, Color.WHITE, (0, HEIGHT - 50), (WIDTH, HEIGHT - 50), 2)
+        pygame.draw.line(screen, Color().WHITE, (0, HEIGHT - 50), (WIDTH, HEIGHT - 50), 2)
 
         pygame.display.flip()
 
