@@ -7,10 +7,11 @@ from models import Color
 import pygame
 
 class Ball:
-    def __init__(self, *, screen, height, width, ball_radius=ball_radius, ball_speed_x=ball_speed_x, ball_speed_y=ball_speed_y,) -> None:
+    def __init__(self, *, screen, height, width, scale, ball_radius=ball_radius, ball_speed_x=ball_speed_x, ball_speed_y=ball_speed_y,) -> None:
         self.screen = screen
         self.height = height
         self.width = width
+        self.scale = scale
         self.x = random.randint(200, self.height // 2)
         self.y = random.randint(200, self.width // 2)
         self.ball_radius = ball_radius

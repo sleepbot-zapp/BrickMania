@@ -17,8 +17,9 @@ class Player:
         self.player_speed = player_speed
         self.x_start = (self.width * self.scale - self.player_width) // 2
         self.x_end = self.x_start + self.player_width
-        self.y_start = self.y_start - self.player_height
-        self.y_end = self.height * scale - self.player_height - 70
+        self.y_start = self.height * scale - self.player_height - 70
+        self.y_end  = self.y_start - self.player_height
+        
         
     def draw_player(self):
         pygame.draw.rect(self.screen, Color().BLUE, (self.x_start, self.y_start, self.player_width, self.player_height), 10)

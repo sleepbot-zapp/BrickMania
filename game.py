@@ -16,8 +16,8 @@ class Game:
         # colors
         self.colors = Color()
         # entities
-        self.player = Player(self.screen, self.height, self.width, self.scale)
-        self.balls = [Ball(self.screen, self.height, self.width, self.scale)]
+        self.player = Player(screen=self.screen, height=self.height, width=self.width, scale=self.scale)
+        self.balls = [Ball(screen=self.screen, height=self.height, width=self.width, scale=self.scale)]
         # game variables
         self.clock = pygame.time.Clock()
         self.music_files = track, track1, track2, track3
@@ -27,5 +27,5 @@ class Game:
         self.trails = []
 
 
-    def gameloop(self):
-        while True:...
+    def gameloop(self):...
+
