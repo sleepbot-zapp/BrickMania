@@ -3,6 +3,8 @@ from helpers.constants import (
     track, track1, track2, track3
 )
 from models import Player, Ball, Color
+import time
+import sys
 import pygame
 
 class Game:
@@ -12,7 +14,7 @@ class Game:
         self.height = height
         self.width = width
         self.scale = scale
-        self.screen = pygame.display.set_mode((self.height, self.width))
+        self.screen = pygame.display.set_mode((self.width, self.height))
         # colors
         self.colors = Color()
         # entities
@@ -26,6 +28,22 @@ class Game:
         # entity variables
         self.trails = []
 
+    def gameloop(self):
+        while True:
+            self.screen.fill(self.colors.BLACK)
+            dt = self.clock.tick(60) / 1000
+            current_time = time.time()
 
-    def gameloop(self):...
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()  
+                if self.music_is_playing:
+                    pygame.mixer.music.load("./assets/music.mp3")
+                    pygame.mixer.music.play(-1)
 
+            
+
+
+a = Game()
+a.gameloop()
