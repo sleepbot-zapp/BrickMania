@@ -7,6 +7,7 @@ import time
 import sys
 from pages.main_menu_page import MainMenu
 from pages.settings_page import Settings
+from pages.info_page import Info
 import pygame
 
 class Game:
@@ -31,7 +32,8 @@ class Game:
         self.trails = []
         # pages
         self.main_menu = MainMenu(self.screen, self.height, self.width, self.scale)
-        self.settings_page = Settings(self.screen,  self, self.height, self.width, self.scale,)
+        self.settings_page = Settings(self.screen, self, self.height, self.width, self.scale,)
+        self.info_page = Info(self.screen, self, self.height, self.width, self.scale, self.colors)
         
 
     def gameloop(self):
@@ -51,7 +53,9 @@ class Game:
             if selected_option == 1:
                 self.is_main_menu = False
                 self.is_main_menu = self.settings_page.display(self.colors)
-
+            elif selected_option == 2:
+                self.is_main_menu = False
+                self.is_main_menu = self.info_page.scroll(self.colors)
 
 a = Game()
 a.gameloop()

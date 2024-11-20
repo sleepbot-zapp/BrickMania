@@ -13,7 +13,7 @@ class Settings(Page):
         height: typing.Union[int, float], 
         width: typing.Union[int, float],
         scale: typing.Union[int, float],
-        fonts: typing.Tuple[pygame.font.SysFont] = None, 
+        fonts = None, 
         settings_options: typing.Tuple[str] = None
     ) -> None:
         super().__init__(screen, height, width, scale, fonts)
@@ -53,6 +53,8 @@ class Settings(Page):
                     quit()
                     exit()
                 if e.type == pygame.KEYDOWN:
+                    if e.key == pygame.K_RSHIFT:
+                        return True
                     if e.key == pygame.K_DOWN:
                         self.selected_option = (self.selected_option + 1) % len(self.settings_options)
                     elif e.key == pygame.K_UP:

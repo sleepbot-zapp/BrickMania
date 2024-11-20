@@ -11,7 +11,7 @@ class MainMenu(Page):
             height: typing.Union[int, float], 
             width: typing.Union[int, float],
             scale: typing.Union[int, float],
-            fonts: typing.Tuple[pygame.font.SysFont] = None, 
+            fonts = None, 
             options: typing.Tuple[str] =  None
         ) -> None:
         super().__init__(screen, height, width, scale, fonts)

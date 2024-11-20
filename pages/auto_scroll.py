@@ -99,11 +99,99 @@ def auto_screen_window():
     scroll_y = top_margin  # Add top margin
     line_height = font.get_linesize()
     total_text_height = line_height * len(rendered_lines)
-    scroll_speed = 1
+    scroll_speed = 5
     auto_scroll = True
 
     running = True
     while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEWHEEL:
+                scroll_y -= event.y * scroll_speed * 10
+                auto_scroll = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    return
+                if event.key == pygame.K_UP:
+                    scroll_y += scroll_speed * 10
+                    auto_scroll = False
+                if event.key == pygame.K_DOWN:
+                    scroll_y -= scroll_speed * 10
+                    auto_scroll = False
+                if event.key == pygame.K_RSHIFT:
+                    return main_menu()
+
+        if auto_scroll:
+            scroll_y -= scroll_speed
+            if scroll_y <= -(total_text_height - HEIGHT // 2):
+                auto_scroll = False
+
+        scroll_y = max(-(total_text_height - HEIGHT // 2), min(top_margin, scroll_y))  # Limit scrolling to top_margin
+        screen.fill(Color().BLACK)
+
+        # Render lines with wrapping
+        current_y = scroll_y
+        for line in rendered_lines:
+            if line["type"] == "text":
+                line_surface = line["surface"]
+                line_x = (WIDTH - line_surface.get_width()) // 2
+                if -line_height < current_y < HEIGHT:
+                    screen.blit(line_surface, (line_x, current_y))
+                current_y += line_height
+            elif line["type"] == "subtitle":
+                line_surface = line["surface"]
+                line_x = (WIDTH - line_surface.get_width()) // 2
+                if -line_height < current_y < HEIGHT:
+                    screen.blit(line_surface, (line_x, current_y))
+                current_y += line_height + 10
+            elif line["type"] == "line":
+                current_y += 15
+                if -line_height < current_y < HEIGHT:
+                    line_width = int(WIDTH * 0.4)
+                    line_x_start = (WIDTH - line_width) // 2
+                    pygame.draw.line(
+                        screen,
+                        (60, 68, 76),
+                        (line_x_start, current_y + 5),
+                        (line_x_start + line_width, current_y + 5),
+                        2,
+                    )
+                current_y += 15
+            elif line["type"] == "line2":
+                current_y += 15
+                if -line_height < current_y < HEIGHT:
+                    line_width = int(WIDTH * 0.8)
+                    line_x_start = (WIDTH - line_width) // 2
+                    pygame.draw.line(
+                        screen,
+                        (69, 70, 80),
+                        (line_x_start, current_y + 5),
+                        (line_x_start + line_width, current_y + 5),
+                        5,
+                    )
+                current_y += 20
+
+        # Render sprites and copyright text
+        pos = WIDTH // (len(sprites) + 1)
+        icon_y = current_y + 40
+        if -line_height < icon_y < HEIGHT:
+            for i, sprite in enumerate(sprites):
+                screen.blit(sprite, ((i + 1) * pos, icon_y))
+
+        copyright_y = icon_y + sprite_height + 40
+        if copyright_y < HEIGHT:
+            copyright_text = "© Copyright Text Here"
+            copyright_surface = copyright_font.render(copyright_text, True, Color().WHITE)
+            copyright_x = (WIDTH - copyright_surface.get_width()) // 2
+            screen.blit(copyright_surface, (copyright_x, copyright_y))
+
+        pygame.display.flip()
+        pygame.time.Clock().tick(60)
+
+
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
