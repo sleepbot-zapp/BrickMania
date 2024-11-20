@@ -50,6 +50,8 @@ class Game:
                     pygame.quit()
                     sys.exit()
             if selected_option == 1:
+                ... # main_game
+            if selected_option == 1:
                 self.is_main_menu = False
                 self.is_main_menu = self.settings_page.display(self.colors)
             elif selected_option == 2:

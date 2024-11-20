@@ -40,7 +40,7 @@ class Settings(Page):
             
             options_font = self.fonts[1]
             for i, option in enumerate(self.settings_options):
-                c = color.BLUE if i != self.selected_option else color.YELLOW
+                c = [color.BLUE, color.YELLOW][i == self.selected_option]
                 if i == 0:
                     option_text = options_font.render(option[self.game.music_is_playing], True, c)
                 else:
