@@ -5,6 +5,8 @@ from helpers.constants import (
 from models import Player, Ball, Color
 import time
 import sys
+from pages.main_menu_page import MainMenu
+from pages.settings_page import Settings
 import pygame
 
 class Game:
@@ -27,21 +29,34 @@ class Game:
         self.keys = pygame.key.get_pressed()
         # entity variables
         self.trails = []
+        # pages
+        self.main_menu = MainMenu(self.screen, self.height, self.width, self.scale)
+        self.settings_page = Settings(self.screen, self.height, self.width, self.scale)
+        
 
     def gameloop(self):
         while True:
+            if self.music_is_playing:
+                pygame.mixer.music.load("./assets/music.mp3")
+                pygame.mixer.music.play(-1)
             self.screen.fill(self.colors.BLACK)
             dt = self.clock.tick(60) / 1000
             current_time = time.time()
-
+            # selected_option = self.main_menu.generate(self.colors, 80, 20, self.clock)
+            self.settings_page.display(self.colors)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()  
-                if self.music_is_playing:
-                    pygame.mixer.music.load("./assets/music.mp3")
-                    pygame.mixer.music.play(-1)
+            # if selected_option == 1:
+            #     if self.music_is_playing:
+            #         pygame.mixer.music.stop()
+            #     else:
+            #         pygame.mixer.music.play(-1)
+            #     self.music_is_playing = not self.music_is_playing
 
+
+            
             
 
 
