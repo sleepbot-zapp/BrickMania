@@ -65,7 +65,7 @@
     "frames_per_second": 60,
     "tracks": {
       "path": "./assets",
-      "files": ["music", "music1", "music2", "music3"],
+      "files": ["music", "music1", "music2", "music3", "music4"],
       "extension": "mp3"
     }
   }
