@@ -1,6 +1,6 @@
 from helpers.constants import (
     HEIGHT, WIDTH, SCALE,
-    track, track1, track2, track3
+    track_path, track1, track2, track3
 )
 from models import Player, Ball, Color
 import time
@@ -24,40 +24,33 @@ class Game:
         self.balls = [Ball(screen=self.screen, height=self.height, width=self.width, scale=self.scale)]
         # game variables
         self.clock = pygame.time.Clock()
-        self.music_files = track, track1, track2, track3
+        self.music_files = track_path, track1, track2, track3
         self.music_is_playing = False
-        self.keys = pygame.key.get_pressed()
+        self.is_main_menu = True
         # entity variables
         self.trails = []
         # pages
         self.main_menu = MainMenu(self.screen, self.height, self.width, self.scale)
-        self.settings_page = Settings(self.screen, self.height, self.width, self.scale)
+        self.settings_page = Settings(self.screen,  self, self.height, self.width, self.scale,)
         
 
     def gameloop(self):
         while True:
             if self.music_is_playing:
-                pygame.mixer.music.load("./assets/music.mp3")
+                pygame.mixer.music.load(self.music_files[0])
                 pygame.mixer.music.play(-1)
+            else:
+                pygame.mixer.music.stop()
             self.screen.fill(self.colors.BLACK)
-            dt = self.clock.tick(60) / 1000
-            current_time = time.time()
-            # selected_option = self.main_menu.generate(self.colors, 80, 20, self.clock)
-            self.settings_page.display(self.colors)
+            if self.is_main_menu:
+                selected_option = self.main_menu.generate(self.colors, 80, 20, self.clock)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    sys.exit()  
-            # if selected_option == 1:
-            #     if self.music_is_playing:
-            #         pygame.mixer.music.stop()
-            #     else:
-            #         pygame.mixer.music.play(-1)
-            #     self.music_is_playing = not self.music_is_playing
-
-
-            
-            
+                    sys.exit()
+            if selected_option == 1:
+                self.is_main_menu = False
+                self.is_main_menu = self.settings_page.display(self.colors)
 
 
 a = Game()

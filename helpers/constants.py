@@ -137,7 +137,7 @@ get_music_path = lambda constants, n: os.path.join(
     f"{constants.game_constants.tracks.files[n]}.{constants.game_constants.tracks.extension}"
 )
 
-track = pygame.mixer.music.load(get_music_path(constants, 0))
+track_path = get_music_path(constants, 0)
 track1 = pygame.mixer.Sound(get_music_path(constants, 1))
 track2 = pygame.mixer.Sound(get_music_path(constants, 2))
 track3 = pygame.mixer.Sound(get_music_path(constants, 3))
