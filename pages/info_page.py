@@ -106,7 +106,13 @@ class Info(Page):
         total_text_height = self.fonts[0].get_linesize() * len(rendered_lines)
         running = True
         scroll_speed = 1
+
+        tooltips = ["Saad", "Zapp", "Aarthex"]
+        
         while running:
+            mouse_pos = pygame.mouse.get_pos()
+            hover_sprite_index = None 
+
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     pygame.quit()
@@ -179,7 +185,20 @@ class Info(Page):
             icon_y = current_y + 40
             if -line_height < icon_y < self.height:
                 for i, sprite in enumerate(self.sprites):
-                    self.screen.blit(sprite, ((i + 1) * pos, icon_y))
+                    sprite_x = (i + 1) * pos
+                    sprite_rect = sprite.get_rect(center=(sprite_x, icon_y))
+                    
+                    if sprite_rect.collidepoint(mouse_pos):
+                        hover_sprite_index = i
+                    
+                    self.screen.blit(sprite, sprite_rect.topleft)
+
+            if hover_sprite_index is not None:
+                tooltip_text = tooltips[hover_sprite_index]
+                tooltip_surface = self.fonts[2].render(tooltip_text, True, color.RED)
+                tooltip_x = mouse_pos[0]
+                tooltip_y = mouse_pos[1] + 40
+                self.screen.blit(tooltip_surface, (tooltip_x, tooltip_y))
 
             copyright_y = icon_y + self.sprite_height + 40
             if copyright_y < self.height:
@@ -190,9 +209,3 @@ class Info(Page):
 
             pygame.display.flip()
             pygame.time.Clock().tick(60)
-
-
-
-    
-        
-    

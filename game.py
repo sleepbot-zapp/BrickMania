@@ -3,7 +3,6 @@ from helpers.constants import (
     track_path, track1, track2, track3
 )
 from models import Player, Ball, Color
-import time
 import sys
 from pages.main_menu_page import MainMenu
 from pages.settings_page import Settings
