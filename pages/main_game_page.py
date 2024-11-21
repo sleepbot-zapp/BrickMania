@@ -1,8 +1,8 @@
 from pages.pages import Page
 from helpers import settings
-from helpers.game_control import create_new_bricks, game_over
-from helpers.constants import ball_radius, track1, track2, track3, track4, font, bottom_font
-from helpers.drawings import draw_bricks, draw_ball
+from helpers.game_control import create_new_bricks
+from helpers.constants import ball_radius, track1, track2, track3, track3, font, bottom_font
+from helpers.drawings import draw_bricks
 from models import Player, Color, SpecialBall, Ball, drop_powerup
 import pygame
 import sys
@@ -39,7 +39,7 @@ class MainGame(Page):
         curr = time.time()
         if self.game.music_is_playing:
             pygame.mixer.music.pause()
-            track4.play()
+            track3.play()
         self.screen.fill(color.BLACK)
         font_for_game_over = self.fonts[0]
         text = font_for_game_over.render("Game Over! Press ENTER to restart", True, color.RED)
@@ -61,7 +61,7 @@ class MainGame(Page):
 
         while True:     
             if self.game.music_is_playing and curr - time.time() > 3:
-                track4.stop()
+                track3.stop()
                 pygame.mixer.music.unpause()                           
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
