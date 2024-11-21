@@ -5,13 +5,14 @@ from pygame import KEYDOWN, K_q, K_LSHIFT, K_RSHIFT, K_RETURN, quit, QUIT, event
 from pygame.draw import line
 from pygame.display import flip
 from sys import exit
-
-
 from helpers.constants import screen, WIDTH, HEIGHT, font, bottom_font, clock  
 from models import Color
 from pygame import MOUSEWHEEL  
+from helpers.loading_combinations import combs
+import random
 
-def loading_screen(func1, func2):
+def loading_screen():
+    func1, func2 = random.choice(combs)
     radius = 30
     spinner_segments = 12
     angle_per_segment = 360 / spinner_segments
@@ -40,7 +41,7 @@ def loading_screen(func1, func2):
         clock.tick(60)
 
         
-        loading_text = font.render("BrickMania", True, Color().WHITE)
+        loading_text = tip_font.render("BrickMania", True, Color().WHITE)
         screen.blit(loading_text, (WIDTH // 2 - loading_text.get_width() // 2, HEIGHT // 2 - 123))
 
         
@@ -122,7 +123,7 @@ def loading_screen(func1, func2):
                     quit()
                     exit()
                 if e.key in (K_RSHIFT, K_LSHIFT):
-                    return
+                    return True
             if e.type == MOUSEMOTION:
                 if e.buttons[0]:  
                     rotation_angle_x = max(0, min(90, rotation_angle_x + e.rel[1] * 0.5))  

@@ -13,7 +13,7 @@ class Ball:
         self.width = width
         self.scale = scale
         self.x = random.randint(200, self.width // 2)
-        self.y = random.randint(self.height // 2, self.height - 100)
+        self.y =  random.randint(300, 400)
         self.ball_radius = ball_radius
         self.ball_speed_x = ball_speed_x
         self.ball_speed_y = ball_speed_y

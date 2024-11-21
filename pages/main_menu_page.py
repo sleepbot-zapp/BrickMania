@@ -52,6 +52,8 @@ class MainMenu(Page):
                  self.width - bottom_text.get_height() - 10)
             )
 
+            self.screen.blit(bottom_text, (self.width - bottom_text.get_width() - 10, self.height - bottom_text.get_height() - 10))
+
             # Menu Text
             for i, option in enumerate(self.options):
                 c = [color.YELLOW, color.BLUE][i != self.selected_option]
