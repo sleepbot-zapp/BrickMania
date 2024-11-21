@@ -34,7 +34,7 @@ def pause_game(font):
 
 
 
-def game_over(score, settings: settings.Settings, type_=0):
+def game_over(score, settings: settings.Settings):
     # if not mode:
     #     music.pause()
     #     track3.play()
@@ -45,7 +45,7 @@ def game_over(score, settings: settings.Settings, type_=0):
     highscore = settings.highscore
     text2 = font_for_game_over.render(f"High Score = {[score, highscore][highscore>score]}", True, [Color().GREEN, Color().YELLOW][highscore>score])
     text3 = font_for_game_over.render(f"Your Score = {score}", True, Color().BLUE)
-    if highscore < score and type_==0:
+    if highscore < score:
         settings.highscore = score
         settings.flush()
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT // 2 - 40) * SCALE))
@@ -67,12 +67,9 @@ def game_over(score, settings: settings.Settings, type_=0):
                 sys.exit()
             if e.type == KEYDOWN:
                 if e.key == K_RETURN:
-                    return
+                    return False
                 if e.key in (K_RSHIFT, K_LCTRL):
-                    return main_menu() #mode
-                if e.key == K_q:
-                    quit()
-                    sys.exit()
+                    return True
 
 
 

@@ -34,7 +34,7 @@ class Game:
         self.main_menu = MainMenu(self.screen, self.height, self.width, self.scale)
         self.settings_page = Settings(self.screen, self, self.height, self.width, self.scale,)
         self.info_page = Info(self.screen, self, self.height, self.width, self.scale, self.colors)
-        self.game_page = MainGame(self.screen, self.height, self.width, self.scale, self.colors)
+        self.game_page = MainGame(self.screen, self.height, self.width, self.scale, self)
         
 
     def gameloop(self):
