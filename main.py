@@ -5,6 +5,7 @@ from pages.main_menu_page import MainMenu
 from pages.main_game_page import MainGame
 from pages.settings_page import Settings
 from pages.info_page import Info
+from pages.loading_screen import loading_screen
 import pygame
 
 
@@ -61,14 +62,6 @@ class Game:
 
     def gameloop(self):
         while True:
-            self.balls = [
-                Ball(
-                    screen=self.screen,
-                    height=self.height,
-                    width=self.width,
-                    scale=self.scale,
-                )
-            ]
             if self.music_is_playing:
                 pygame.mixer.music.load(self.music_files[0])
                 pygame.mixer.music.play(-1)
@@ -85,6 +78,7 @@ class Game:
                     sys.exit()
             if selected_option == 0:
                 self.is_main_menu = False
+                loading_screen()
                 self.is_main_menu = self.game_page.runner(
                     self.colors,
                     self.player,

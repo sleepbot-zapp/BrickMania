@@ -1,4 +1,5 @@
 from pages.pages import Page
+from pages.loading_screen import loading_screen
 from helpers import settings
 from helpers.game_control import create_new_bricks
 from helpers.constants import (
@@ -109,6 +110,7 @@ class MainGame(Page):
                     sys.exit()
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_RETURN:
+                        loading_screen()
                         return False
                     if e.key in (pygame.K_RSHIFT, pygame.K_LCTRL):
                         return True
