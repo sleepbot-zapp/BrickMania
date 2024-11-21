@@ -8,16 +8,16 @@ from models.ball import *
 
 __all__ = {
     # Classes
-        "Brick", 
-        "Color", 
-        "FallingTile", 
-        "PowerUp", 
-        "SpecialBall", 
-        "Player", 
-        "Ball", 
+    "Brick",
+    "Color",
+    "FallingTile",
+    "PowerUp",
+    "SpecialBall",
+    "Player",
+    "Ball",
     # Functions
-        "create_new_bricks",
-        "drop_powerup"
+    "create_new_bricks",
+    "drop_powerup"
     # Types
-        "ColorType"
-    }
+    "ColorType",
+}

@@ -1,19 +1,28 @@
-from helpers.constants import (
-    ball_radius, ball_speed_x, ball_speed_y, trail_length
-)
+from helpers.constants import ball_radius, ball_speed_x, ball_speed_y, trail_length
 from models.player import Player
 import random
 from models import Color
 import pygame
 
+
 class Ball:
-    def __init__(self, *, screen, height, width, scale, ball_radius=ball_radius, ball_speed_x=ball_speed_x, ball_speed_y=ball_speed_y,) -> None:
+    def __init__(
+        self,
+        *,
+        screen,
+        height,
+        width,
+        scale,
+        ball_radius=ball_radius,
+        ball_speed_x=ball_speed_x,
+        ball_speed_y=ball_speed_y,
+    ) -> None:
         self.screen = screen
         self.height = height
         self.width = width
         self.scale = scale
         self.x = random.randint(200, self.width // 2)
-        self.y =  random.randint(300, 400)
+        self.y = random.randint(300, 400)
         self.ball_radius = ball_radius
         self.ball_speed_x = ball_speed_x
         self.ball_speed_y = ball_speed_y
@@ -21,7 +30,6 @@ class Ball:
         self.dy = ball_speed_y
         self.ball_crossed_line = False
         self.trail = []
-
 
     def draw_ball(self, screen, color, ball_id, x, y, ball_trails):
         max_alpha = 50
@@ -39,13 +47,19 @@ class Ball:
         # Draw the trail
         for i, (tx, ty) in enumerate(trail):
             alpha = max_alpha - int(max_alpha * (i / trail_length))  # Fade effect
-            trail_surface = pygame.Surface((ball_radius * 2, ball_radius * 2), pygame.SRCALPHA)
-            pygame.draw.circle(trail_surface, (color[0], color[1], color[2], alpha), (ball_radius, ball_radius), ball_radius)
+            trail_surface = pygame.Surface(
+                (ball_radius * 2, ball_radius * 2), pygame.SRCALPHA
+            )
+            pygame.draw.circle(
+                trail_surface,
+                (color[0], color[1], color[2], alpha),
+                (ball_radius, ball_radius),
+                ball_radius,
+            )
             screen.blit(trail_surface, (tx - ball_radius, ty - ball_radius))
 
         # Draw the ball itself
         pygame.draw.circle(screen, color, (int(x), int(y)), ball_radius)
-
 
     def move_ball(self, dt, player: Player):
         self.x += self.dx * dt
@@ -73,8 +87,12 @@ class Ball:
         dx_from_center = (self.x - player_center) / (player.player_width / 2)
 
         if (
-            player.x_start - self.ball_radius < self.x < player.x_start + player.player_width + self.ball_radius
-            and player.y_start < self.y + self.ball_radius < player.y_start + player.player_height
+            player.x_start - self.ball_radius
+            < self.x
+            < player.x_start + player.player_width + self.ball_radius
+            and player.y_start
+            < self.y + self.ball_radius
+            < player.y_start + player.player_height
         ):
             self.dx = self.ball_speed_x * dx_from_center
             self.dx += [50, -50][self.dx < 0]  # Add a small boost to speed
@@ -82,4 +100,3 @@ class Ball:
             self.y = player.y_start - self.ball_radius
 
         return self.x, self.y, self.dx, self.dy
-

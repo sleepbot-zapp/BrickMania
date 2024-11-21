@@ -45,56 +45,83 @@ long_text = """
 ^
 """
 
+
 class Info(Page):
-    def __init__(self, screen, game, height, width, scale, fonts=None,) -> None:
+    def __init__(
+        self,
+        screen,
+        game,
+        height,
+        width,
+        scale,
+        fonts=None,
+    ) -> None:
         super().__init__(screen, height, width, scale, fonts)
         self.fonts = (
-            pygame.font.Font(None, 20), # Font
-            pygame.font.Font(None, 30), # Bold
-            pygame.font.Font(None, 24), # Subtitle
-            pygame.font.Font(None, 26) # Bottom
+            pygame.font.Font(None, 20),  # Font
+            pygame.font.Font(None, 30),  # Bold
+            pygame.font.Font(None, 24),  # Subtitle
+            pygame.font.Font(None, 26),  # Bottom
         )
         self.game = game
         self.sprite_width = self.sprite_height = 50
         self.top_margin = 50
-        
 
     def make_circular_icon(self, sprite):
-        icon_surface = pygame.Surface((self.sprite_width, self.sprite_height), pygame.SRCALPHA)
-        pygame.draw.circle(icon_surface, (255, 255, 255), (self.sprite_width // 2, self.sprite_height // 2), self.sprite_width // 2)
+        icon_surface = pygame.Surface(
+            (self.sprite_width, self.sprite_height), pygame.SRCALPHA
+        )
+        pygame.draw.circle(
+            icon_surface,
+            (255, 255, 255),
+            (self.sprite_width // 2, self.sprite_height // 2),
+            self.sprite_width // 2,
+        )
         icon_surface.blit(sprite, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
         return icon_surface
-    
+
     @property
     def sprites(self):
         sprites = []
         for filename in os.listdir("./assets/sprites"):
             sprite = pygame.image.load(f"./assets/sprites/{filename}").convert_alpha()
-            sprite = pygame.transform.scale(sprite, (self.sprite_width, self.sprite_height))
+            sprite = pygame.transform.scale(
+                sprite, (self.sprite_width, self.sprite_height)
+            )
             sprites.append(self.make_circular_icon(sprite))
         return sprites
-    
 
     def wrap_text(self, line, font):
         max_text_width = int(self.width * 0.8)
         words = textwrap.wrap(line, width=max_text_width // font.size(" ")[0])
         return words
-    
 
-    def parse_markdown(self,line, color):
+    def parse_markdown(self, line, color):
         if line.startswith("**") and line.endswith("**"):
             wrapped_lines = self.wrap_text(line[2:-2], self.fonts[1])
-            return [{"type": "text", "surface": self.fonts[1].render(w, True, color.WHITE)} for w in wrapped_lines]
+            return [
+                {"type": "text", "surface": self.fonts[1].render(w, True, color.WHITE)}
+                for w in wrapped_lines
+            ]
         elif line.startswith("@"):
             wrapped_lines = self.wrap_text(line[1:], self.fonts[2])
-            return [{"type": "subtitle", "surface": self.fonts[2].render(w, True, color.GREY)} for w in wrapped_lines]
+            return [
+                {
+                    "type": "subtitle",
+                    "surface": self.fonts[2].render(w, True, color.GREY),
+                }
+                for w in wrapped_lines
+            ]
         elif line.startswith("---"):
             return [{"type": "line"}]
         elif line.startswith("^"):
             return [{"type": "line2"}]
         else:
             wrapped_lines = self.wrap_text(line, self.fonts[0])
-            return [{"type": "text", "surface": self.fonts[0].render(w, True, color.WHITE)} for w in wrapped_lines]
+            return [
+                {"type": "text", "surface": self.fonts[0].render(w, True, color.WHITE)}
+                for w in wrapped_lines
+            ]
 
     def scroll(self, color):
         rendered_lines = []
@@ -107,10 +134,10 @@ class Info(Page):
         running = True
         scroll_speed = 1
         tooltips = ["Saad", "Zapp", "Aarthex"]
-        
+
         while running:
             mouse_pos = pygame.mouse.get_pos()
-            hover_sprite_index = None 
+            hover_sprite_index = None
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     pygame.quit()
@@ -135,7 +162,9 @@ class Info(Page):
                 if scroll_y <= -(total_text_height - self.height // 2):
                     auto_scroll = False
 
-            scroll_y = max(-(total_text_height - self.height // 2), min(self.top_margin, scroll_y))
+            scroll_y = max(
+                -(total_text_height - self.height // 2), min(self.top_margin, scroll_y)
+            )
             self.screen.fill(color.BLACK)
 
             current_y = scroll_y
