@@ -20,4 +20,4 @@ class SpecialBall:
             self.dy = -self.dy
 
     def draw(self, screen, ball_radius):
-        circle(screen, Color.RED, (self.x, self.y), ball_radius)
+        circle(screen, Color().RED, (self.x, self.y), ball_radius)

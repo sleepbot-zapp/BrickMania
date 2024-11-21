@@ -6,12 +6,11 @@ from random import random, choice
 from pygame import  Surface, SRCALPHA, QUIT, quit, K_q, K_RETURN, K_p, K_SPACE, KEYDOWN, event, font, K_RSHIFT, K_RCTRL, K_LCTRL
 from pygame.mixer import music
 from pygame.display import flip
-from pages.main_menu import main_menu
 import sys
 
 def pause_game(font):
     paused = True
-    pause_text = font.render("Game Paused. Press 'P' to Resume.", True, Color.WHITE)
+    pause_text = font.render("Game Paused. Press 'P' to Resume.", True, Color().WHITE)
     dim_surface = Surface((WIDTH, HEIGHT), SRCALPHA)
     dim_surface.fill((0, 0, 0, 180))
     while paused:
@@ -34,25 +33,25 @@ def pause_game(font):
 
 
 
-def game_over(score, settings: settings.Settings, type_=0):
+def game_over(score, settings: settings.Settings):
     # if not mode:
     #     music.pause()
     #     track3.play()
     #     curr = time.time()
-    screen.fill(Color.BLACK)
+    screen.fill(Color().BLACK)
     font_for_game_over = font.SysFont(None, int(42 * SCALE))
-    text = font_for_game_over.render("Game Over! Press ENTER to restart", True, Color.RED)
+    text = font_for_game_over.render("Game Over! Press ENTER to restart", True, Color().RED)
     highscore = settings.highscore
-    text2 = font_for_game_over.render(f"High Score = {[score, highscore][highscore>score]}", True, [Color.GREEN, Color.YELLOW][highscore>score])
-    text3 = font_for_game_over.render(f"Your Score = {score}", True, Color.BLUE)
-    if highscore < score and type_==0:
+    text2 = font_for_game_over.render(f"High Score = {[score, highscore][highscore>score]}", True, [Color().GREEN, Color().YELLOW][highscore>score])
+    text3 = font_for_game_over.render(f"Your Score = {score}", True, Color().BLUE)
+    if highscore < score:
         settings.highscore = score
         settings.flush()
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT // 2 - 40) * SCALE))
     screen.blit(text2, ((WIDTH // 2 - text2.get_width() / 2) * SCALE, (HEIGHT // 2) * SCALE))
     screen.blit(text3, ((WIDTH // 2 - text3.get_width() / 2) * SCALE, (HEIGHT // 2 + 40) * SCALE))
 
-    quit_text = bottom_font.render("Press Shift to go to Main Window", True, Color.GREY)
+    quit_text = bottom_font.render("Press Shift to go to Main Window", True, Color().GREY)
     screen.blit(quit_text, (10, (HEIGHT - quit_text.get_height() - 10) * SCALE))
     flip()
 
@@ -67,12 +66,9 @@ def game_over(score, settings: settings.Settings, type_=0):
                 sys.exit()
             if e.type == KEYDOWN:
                 if e.key == K_RETURN:
-                    return
+                    return False
                 if e.key in (K_RSHIFT, K_LCTRL):
-                    return main_menu() #mode
-                if e.key == K_q:
-                    quit()
-                    sys.exit()
+                    return True
 
 
 
@@ -91,5 +87,5 @@ def create_new_bricks():
 
 
 def show_score(score, font):
-    text = font.render(f"Score: {score}", True, Color.RED)
+    text = font.render(f"Score: {score}", True, Color().RED)
     screen.blit(text, ((WIDTH // 2 - text.get_width() / 2) * SCALE, (HEIGHT - 30) * SCALE))

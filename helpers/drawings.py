@@ -10,12 +10,12 @@ def draw_bricks(bricks: Brick, screen, brick_width, brick_height):
 
 
 def draw_player(x, y, screen, player_width, player_height):
-    rect(screen, Color.BLUE, (x, y, player_width, player_height), border_radius=10)
+    rect(screen, Color().BLUE, (x, y, player_width, player_height), border_radius=10)
 
 
 def draw_ball(x, y, ball_id, ball_radius, ball_trails, screen):
     FIXED_TRAIL_LENGTH = 10
-    FIXED_TRAIL_COLOR = Color.GREEN
+    FIXED_TRAIL_COLOR = Color().GREEN
     MAX_ALPHA = 50 
     if ball_id not in ball_trails:
         ball_trails[ball_id] = []
