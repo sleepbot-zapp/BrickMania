@@ -1,7 +1,7 @@
 from pages.pages import Page
 from helpers import settings
 from helpers.game_control import create_new_bricks, game_over
-from helpers.constants import ball_radius, track1, track2, track3, track4, font
+from helpers.constants import ball_radius, track1, track2, track3, track4, font, bottom_font
 from helpers.drawings import draw_bricks, draw_ball
 from models import Player, Color, SpecialBall, Ball, drop_powerup
 import pygame
@@ -11,8 +11,8 @@ import random
 
 class MainGame(Page):
     inactivity_threshold = 5
-    special_ball_time = 2
-    random_destruction_time = 6
+    special_ball_time = 20
+    random_destruction_time = 60
 
 
     def __init__(self, screen, height, width, scale, game, fonts=None) -> None:
@@ -55,8 +55,8 @@ class MainGame(Page):
         self.screen.blit(text2, ((self.width // 2 - text2.get_width() / 2) * self.scale, (self.height // 2) * self.scale))
         self.screen.blit(text3, ((self.width // 2 - text3.get_width() / 2) * self.scale, (self.height // 2 + 40) * self.scale))
 
-        quit_text = self.fonts[0].render("Press Shift to go to Main Menu", True, color.GREY)
-        self.screen.blit(quit_text, (10, (self.width - quit_text.get_height() - 10) * self.scale))
+        quit_text = bottom_font.render("Press Shift to go to Main Window", True, color.GREY)
+        self.screen.blit(quit_text, (10, (self.height - quit_text.get_height() - 10) * self.scale))
         pygame.display.flip()
 
         while True:     
