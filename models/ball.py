@@ -19,11 +19,11 @@ class Ball:
         self.ball_speed_y = ball_speed_y
         self.dx = random.choice((1, -1)) * self.ball_speed_x
         self.dy = ball_speed_y
-        self.ball_crosed_line = False
+        self.ball_crossed_line = False
         self.trail = []
 
 
-    def draw_ball(screen, ball_id, x, y, ball_trails):
+    def draw_ball(self, screen, ball_id, x, y, ball_trails):
         max_alpha = 50
         color = Color().GREEN
         if ball_id not in ball_trails:
@@ -57,7 +57,7 @@ class Ball:
             self.dx = -abs(self.dx)
         
         if self.y >= self.height - self.ball_radius - 60 and not self.ball_crosed_line:
-            self.ball_crosed_line = False
+            self.ball_crosed_line = True
 
         player_center = player.x_start + player.player_width / 2
         dx_from_center = (self.x - player_center) / (player.width / 2)
@@ -67,3 +67,5 @@ class Ball:
             self.dx += [50, -50][self.dx < 0]
             self.dy = -abs(self.dy)
             self.y = player.y_start - self.ball_radius
+
+        return self.x, self.y, self.dx, self.dy

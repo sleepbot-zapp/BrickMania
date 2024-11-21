@@ -2,7 +2,7 @@ from .color import Color
 import pygame
 import random
 from helpers.constants import (
-    brick_cols, brick_rows, brick_width, brick_height
+    brick_cols, brick_rows, brick_width, brick_height, brick_speed
 )
 
 
@@ -10,6 +10,9 @@ class Brick:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.speed = brick_speed
+        self.height = brick_height
+        self.width = brick_width
         self.color = random.choice([Color().RED, Color().BLUE, Color().GREEN, Color().YELLOW])
 
     def draw(self, screen, brick_width, brick_height):

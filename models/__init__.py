@@ -17,6 +17,7 @@ __all__ = {
         "Ball", 
     # Functions
         "create_new_bricks",
+        "drop_powerup"
     # Types
         "ColorType"
     }

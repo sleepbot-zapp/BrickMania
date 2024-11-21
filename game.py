@@ -5,6 +5,7 @@ from helpers.constants import (
 from models import Player, Ball, Color
 import sys
 from pages.main_menu_page import MainMenu
+from pages.main_game_page import MainGame
 from pages.settings_page import Settings
 from pages.info_page import Info
 import pygame
@@ -28,11 +29,12 @@ class Game:
         self.music_is_playing = False
         self.is_main_menu = True
         # entity variables
-        self.trails = []
+        self.trails = {}
         # pages
         self.main_menu = MainMenu(self.screen, self.height, self.width, self.scale)
         self.settings_page = Settings(self.screen, self, self.height, self.width, self.scale,)
         self.info_page = Info(self.screen, self, self.height, self.width, self.scale, self.colors)
+        self.game_page = MainGame(self.screen, self.height, self.width, self.scale, self.colors)
         
 
     def gameloop(self):
@@ -49,8 +51,9 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            if selected_option == 1:
-                ... # main_game
+            if selected_option == 0:
+                self.is_main_menu = False
+                self.is_main_menu = self.game_page.runner(self.colors, self.player, self.balls, 20, 80, self.trails, self.clock)
             if selected_option == 1:
                 self.is_main_menu = False
                 self.is_main_menu = self.settings_page.display(self.colors)
