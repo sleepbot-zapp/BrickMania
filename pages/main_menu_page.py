@@ -1,8 +1,11 @@
-from pages.pages import Page
-import typing
-import pygame
-from models import Color, FallingTile
 import sys
+import typing
+
+import pygame
+
+from models import Color, FallingTile
+
+from .pages import Page
 
 
 class MainMenu(Page):

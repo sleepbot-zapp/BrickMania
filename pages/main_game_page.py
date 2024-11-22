@@ -1,17 +1,16 @@
-from pages.pages import Page
-from pages.loading_screen import loading_screen
-from helpers import settings
-from helpers.game_control import create_new_bricks
-from helpers.constants import (
-    ball_radius,
-    font,
-    bottom_font,
-)
-from models import Player, Color, SpecialBall, Ball, drop_powerup, draw_bricks
-import pygame
+import random
 import sys
 import time
-import random
+
+import pygame
+
+from helpers import settings
+from helpers.constants import ball_radius, bottom_font, font
+from helpers.game_control import create_new_bricks
+from models import Ball, Color, Player, SpecialBall, draw_bricks, drop_powerup
+
+from .loading_screen import loading_screen
+from .pages import Page
 
 
 class MainGame(Page):
@@ -35,7 +34,9 @@ class MainGame(Page):
 
     def pause_game(self, clock):
         paused = True
-        pause_text = self.fonts[0].render("Game Paused. Press 'P' to Resume.", True, Color().WHITE)
+        pause_text = self.fonts[0].render(
+            "Game Paused. Press 'P' to Resume.", True, Color().WHITE
+        )
         dim_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         dim_surface.fill((0, 0, 0, 180))
         while paused:
@@ -51,12 +52,13 @@ class MainGame(Page):
                         sys.exit()
 
             self.screen.blit(dim_surface, (0, 0))
-            self.screen.blit(pause_text, ((self.width - pause_text.get_width()) // 2, self.height // 2))
+            self.screen.blit(
+                pause_text,
+                ((self.width - pause_text.get_width()) // 2, self.height // 2),
+            )
             pygame.display.flip()
 
             clock.tick(10)
-
-
 
     def show_score(self, color):
         score = self.score
@@ -193,7 +195,7 @@ class MainGame(Page):
                         player.x_start -= 5 * player.player_speed * dt
                     self.last_move_time = current_time
 
-                if (keys[pygame.K_RCTRL]):
+                if keys[pygame.K_RCTRL]:
                     self.pause_game(clock)
 
                 if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and player.x_start > 10:
@@ -255,7 +257,6 @@ class MainGame(Page):
                     ball.x, ball.y, ball.dx, ball.dy = ball.move_ball(dt, player)
 
                 if all(ball.y >= self.height - 60 for ball in balls):
-                    
                     user_exited = self.game_over(self.score, color, self.data)
                     if user_exited:
                         return True

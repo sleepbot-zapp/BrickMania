@@ -1,39 +1,38 @@
-import helpers.settings as settings
-from helpers.constants import (
-    track3,
-    screen,
-    SCALE,
-    WIDTH,
-    HEIGHT,
-    clock,
-    brick_cols,
-    brick_height,
-    brick_width,
-    brick_rows,
-    bottom_font,
-)
-import time
-from models import Color, PowerUp, Brick
-from random import random, choice
+import sys
+from random import choice, random
+
 from pygame import (
-    Surface,
-    SRCALPHA,
-    QUIT,
-    quit,
-    K_q,
+    K_LCTRL,
+    K_RCTRL,
     K_RETURN,
-    K_p,
+    K_RSHIFT,
     K_SPACE,
     KEYDOWN,
+    QUIT,
+    SRCALPHA,
+    K_p,
+    K_q,
+    Surface,
     event,
     font,
-    K_RSHIFT,
-    K_RCTRL,
-    K_LCTRL,
+    quit,
 )
-from pygame.mixer import music
 from pygame.display import flip
-import sys
+
+import helpers.settings as settings
+from helpers import (
+    HEIGHT,
+    SCALE,
+    WIDTH,
+    bottom_font,
+    brick_cols,
+    brick_height,
+    brick_rows,
+    brick_width,
+    clock,
+    screen,
+)
+from models import Brick, Color, PowerUp
 
 
 def pause_game(font):
