@@ -4,10 +4,6 @@ from helpers import settings
 from helpers.game_control import create_new_bricks
 from helpers.constants import (
     ball_radius,
-    track1,
-    track2,
-    track3,
-    track3,
     font,
     bottom_font,
 )
@@ -37,6 +33,31 @@ class MainGame(Page):
             self.last_special_ball_time
         ) = self.last_x_time = time.time()
 
+    def pause_game(self, clock):
+        paused = True
+        pause_text = self.fonts[0].render("Game Paused. Press 'P' to Resume.", True, Color().WHITE)
+        dim_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+        dim_surface.fill((0, 0, 0, 180))
+        while paused:
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    quit()
+                    sys.exit()
+                if e.type == pygame.KEYDOWN:
+                    if e.key in (pygame.K_p, pygame.K_SPACE, pygame.K_RCTRL):
+                        paused = False
+                    if e.key == pygame.K_q:
+                        quit()
+                        sys.exit()
+
+            self.screen.blit(dim_surface, (0, 0))
+            self.screen.blit(pause_text, ((self.width - pause_text.get_width()) // 2, self.height // 2))
+            pygame.display.flip()
+
+            clock.tick(10)
+
+
+
     def show_score(self, color):
         score = self.score
         text = font.render(f"Score: {score}", True, color.RED)
@@ -60,7 +81,7 @@ class MainGame(Page):
         curr = time.time()
         if self.game.music_is_playing:
             pygame.mixer.music.pause()
-            track3.play()
+            self.game.music_files[2].play()
         self.screen.fill(color.BLACK)
         font_for_game_over = self.fonts[0]
         text = font_for_game_over.render(
@@ -110,7 +131,7 @@ class MainGame(Page):
 
         while True:
             if self.game.music_is_playing and curr - time.time() > 3:
-                track3.stop()
+                self.game.music_files[2].stop()
                 pygame.mixer.music.unpause()
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
@@ -175,6 +196,9 @@ class MainGame(Page):
                         player.x_start -= 5 * player.player_speed * dt
                     self.last_move_time = current_time
 
+                if (keys[pygame.K_RCTRL]):
+                    self.pause_game(clock)
+
                 if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and player.x_start > 10:
                     player.x_start -= player.player_speed * dt
                     self.last_move_time = current_time
@@ -201,7 +225,7 @@ class MainGame(Page):
                     )
                     if self.game.music_is_playing:
                         pygame.mixer.music.pause()
-                        track1.play()
+                        self.game.music_files[0].play()
                     self.last_special_ball_time = current_time
 
                 if (
@@ -216,7 +240,7 @@ class MainGame(Page):
                             self.score += 10
                     if self.game.music_is_playing:
                         pygame.mixer.music.pause()
-                        track2.play()
+                        self.game.music_files[1].play()
                     self.last_x_time = current_time
 
                 if keys[pygame.K_RSHIFT]:
@@ -234,7 +258,7 @@ class MainGame(Page):
                     ball.x, ball.y, ball.dx, ball.dy = ball.move_ball(dt, player)
 
                 if all(ball.y >= self.height - 60 for ball in balls):
-                    # All balls have fallen below the bottom boundary
+                    
                     user_exited = self.game_over(self.score, color, self.data)
                     if user_exited:
                         return True
@@ -328,10 +352,10 @@ class MainGame(Page):
                         not self.special_balls
                         or current_time - self.last_special_ball_time >= 2
                     ):
-                        track1.stop()
+                        self.game.music_files[0].stop()
                         pygame.mixer.music.unpause()
                     if current_time - self.last_x_time >= 3:
-                        track2.stop()
+                        self.game.music_files[1].stop()
                         pygame.mixer.music.unpause()
                 for i, ball in enumerate(balls):
                     if ball.y < self.height - 60:

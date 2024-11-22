@@ -39,9 +39,11 @@ class Game:
         ]
         # game variables
         self.clock = pygame.time.Clock()
-        self.music_files = track_path, track1, track2, track3
+        self._music_files = track_path, track1, track2, track3
+
         self.music_is_playing = False
         self.is_main_menu = True
+        self.volume = 0.0
         # entity variables
         self.trails = {}
         # pages
@@ -60,10 +62,18 @@ class Game:
             self.screen, self.height, self.width, self.scale, self
         )
 
+    @property
+    def music_files(self):
+        music_files = []
+        for music_file in self._music_files[1:]:
+            music_files.append(music_file)
+            music_file.set_volume(self.volume)
+        return music_files
+
     def gameloop(self):
         while True:
             if self.music_is_playing:
-                pygame.mixer.music.load(self.music_files[0])
+                pygame.mixer.music.load(self._music_files[0])
                 pygame.mixer.music.play(-1)
             else:
                 pygame.mixer.music.stop()
