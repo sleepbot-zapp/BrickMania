@@ -15,7 +15,7 @@ from pygame import (
 from pygame.draw import line
 from pygame.display import flip
 from sys import exit
-from helpers.constants import screen, WIDTH, HEIGHT, font, bottom_font, clock
+from helpers.constants import screen, WIDTH, HEIGHT, bottom_font, clock
 from models import Color
 from pygame import MOUSEWHEEL
 from helpers.loading_combinations import combs
@@ -173,7 +173,6 @@ def loading_screen():
                     )
                     rotation_angle_y += e.rel[0] * 0.5
             if e.type == MOUSEWHEEL:
-
                 spinner_speed = 2 if e.y > 0 else -2
 
         flip()

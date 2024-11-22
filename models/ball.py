@@ -1,7 +1,6 @@
 from helpers.constants import ball_radius, ball_speed_x, ball_speed_y, trail_length
 from models.player import Player
 import random
-from models import Color
 import pygame
 
 

@@ -14,16 +14,46 @@ from math import (
     expm1,
 )
 
-sec = lambda x: 1 / cos(x)
-cosec = lambda x: 1 / sin(x)
-cot = lambda x: 1 / tan(x)
-inv_sinh = lambda x: 1 / sinh(x)
-inv_cosh = lambda x: 1 / cosh(x)
-inv_tanh = lambda x: 1 / tanh(x)
-inv_asin = lambda x: 1 / asin(x)
-inv_acos = lambda x: 1 / acos(x)
-inv_atan = lambda x: 1 / atan(x)
-identity = lambda x: x
+
+def sec(x):
+    return 1 / cos(x)
+
+
+def cosec(x):
+    return 1 / sin(x)
+
+
+def cot(x):
+    return 1 / tan(x)
+
+
+def inv_sinh(x):
+    return 1 / sinh(x)
+
+
+def inv_cosh(x):
+    return 1 / cosh(x)
+
+
+def inv_tanh(x):
+    return 1 / tanh(x)
+
+
+def inv_asin(x):
+    return 1 / asin(x)
+
+
+def inv_acos(x):
+    return 1 / acos(x)
+
+
+def inv_atan(x):
+    return 1 / atan(x)
+
+
+def identity(x):
+    return x
+
 
 combs = [
     (sin, cos),

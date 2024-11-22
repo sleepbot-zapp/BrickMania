@@ -1,12 +1,12 @@
-from models.brick import *
-from models.color import *
-from models.falling_tile import *
-from models.power_up import *
-from models.special_ball import *
-from models.player import *
-from models.ball import *
+from models.brick import Brick, create_new_bricks, draw_bricks
+from models.color import Color, ColorType
+from models.falling_tile import FallingTile
+from models.power_up import PowerUp, drop_powerup
+from models.special_ball import SpecialBall
+from models.player import Player
+from models.ball import Ball
 
-__all__ = {
+__all__ = (
     # Classes
     "Brick",
     "Color",
@@ -17,7 +17,8 @@ __all__ = {
     "Ball",
     # Functions
     "create_new_bricks",
-    "drop_powerup"
+    "draw_bricks",
+    "drop_powerup",
     # Types
     "ColorType",
-}
+)

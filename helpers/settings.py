@@ -28,7 +28,6 @@ class Settings(BaseModel):
     @classmethod
     @verify_files
     def open(cls) -> "Settings":
-
         with open(
             path.join(
                 user_data_dir(appauthor="brickmania", appname="brickmania"), "data.json"
@@ -39,7 +38,6 @@ class Settings(BaseModel):
 
     @verify_files
     def flush(self):
-
         with open(
             path.join(
                 user_data_dir(appauthor="brickmania", appname="brickmania"), "data.json"

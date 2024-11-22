@@ -1,6 +1,5 @@
 import helpers.settings as settings
 from helpers.constants import (
-    track3,
     screen,
     SCALE,
     WIDTH,
@@ -12,7 +11,6 @@ from helpers.constants import (
     brick_rows,
     bottom_font,
 )
-import time
 from models import Color, PowerUp, Brick
 from random import random, choice
 from pygame import (
@@ -31,7 +29,6 @@ from pygame import (
     K_RCTRL,
     K_LCTRL,
 )
-from pygame.mixer import music
 from pygame.display import flip
 import sys
 

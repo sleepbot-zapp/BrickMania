@@ -6,7 +6,6 @@ from helpers.constants import (
     track1,
     track2,
     track3,
-    track3,
     font,
     bottom_font,
 )
@@ -117,7 +116,6 @@ class MainGame(Page):
         self, color: Color, player, balls, brick_height, brick_width, trails, clock
     ):
         while True:
-
             self.score = 0
             self.bricks = create_new_bricks()
             self.powerups = []

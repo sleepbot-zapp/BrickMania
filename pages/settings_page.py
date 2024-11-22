@@ -1,7 +1,6 @@
 import typing
 import pygame
 from pages.pages import Page
-from models import Color
 import sys
 
 

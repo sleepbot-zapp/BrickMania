@@ -1,7 +1,5 @@
 from helpers.constants import (
-    HEIGHT,
     WIDTH,
-    SCALE,
     player_height,
     player_width,
     player_speed,
@@ -49,5 +47,5 @@ class Player:
         if (
             keys[pygame.K_d] or keys[pygame.K_RIGHT]
         ) and self.x_start < WIDTH - self.player_width - max_limit:
-            player_x += self.player_speed * dt
+            self.x_start += self.player_speed * dt
         return time.time()
