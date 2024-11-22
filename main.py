@@ -33,22 +33,9 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height))
         # colors
         self.colors = Color()
-        # entities
-        self.player = Player(
-            screen=self.screen, height=self.height, width=self.width, scale=self.scale
-        )
-        self.balls = [
-            Ball(
-                screen=self.screen,
-                height=self.height,
-                width=self.width,
-                scale=self.scale,
-            )
-        ]
         # game variables
         self.clock = pygame.time.Clock()
         self._music_files = track_path, track1, track2, track3
-
         self.music_is_playing = False
         self.is_main_menu = True
         self.volume = 0.0
@@ -99,8 +86,6 @@ class Game:
                 loading_screen()
                 self.is_main_menu = self.game_page.runner(
                     self.colors,
-                    self.player,
-                    self.balls,
                     brick_height,
                     brick_width,
                     self.trails,

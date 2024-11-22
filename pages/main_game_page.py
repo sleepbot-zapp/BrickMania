@@ -31,7 +31,17 @@ class MainGame(Page):
         self.last_move_time = self.last_brick_move_time = (
             self.last_special_ball_time
         ) = self.last_x_time = time.time()
-
+        self.balls = [
+            Ball(
+                screen=self.screen,
+                height=self.height,
+                width=self.width,
+                scale=self.scale,
+            )
+        ]
+        self.player = Player(
+            screen=self.screen, height=self.height, width=self.width, scale=self.scale
+        )
     def pause_game(self, clock):
         paused = True
         pause_text = self.fonts[0].render(
@@ -146,7 +156,7 @@ class MainGame(Page):
                         return True
 
     def runner(
-        self, color: Color, player, balls, brick_height, brick_width, trails, clock
+        self, color: Color, brick_height, brick_width, trails, clock
     ):
             self.score = 0
             self.bricks = create_new_bricks()
@@ -156,13 +166,7 @@ class MainGame(Page):
                 self.last_special_ball_time
             ) = self.last_x_time = time.time()
 
-            player = Player(
-                screen=self.screen,
-                height=self.height,
-                width=self.width,
-                scale=self.scale,
-            )
-            balls = [
+            self.balls = [
                 Ball(
                     screen=self.screen,
                     height=self.height,
@@ -189,22 +193,22 @@ class MainGame(Page):
                 keys = pygame.key.get_pressed()
 
                 if current_time - self.last_move_time > self.inactivity_threshold:
-                    if player.x_start <= self.width // 2:
-                        player.x_start += 5 * player.player_speed * dt
+                    if self.player.x_start <= self.width // 2:
+                        self.player.x_start += 5 * self.player.player_speed * dt
                     else:
-                        player.x_start -= 5 * player.player_speed * dt
+                        self.player.x_start -= 5 * self.player.player_speed * dt
                     self.last_move_time = current_time
 
                 if keys[pygame.K_RCTRL]:
                     self.pause_game(clock)
 
-                if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and player.x_start > 10:
-                    player.x_start -= player.player_speed * dt
+                if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and self.player.x_start > 10:
+                    self.player.x_start -= self.player.player_speed * dt
                     self.last_move_time = current_time
                 if (
                     keys[pygame.K_d] or keys[pygame.K_RIGHT]
-                ) and player.x_start < self.width - player.player_width - 10:
-                    player.x_start += player.player_speed * dt
+                ) and self.player.x_start < self.width - self.player.player_width - 10:
+                    self.player.x_start += self.player.player_speed * dt
                     self.last_move_time = current_time
 
                 if (
@@ -216,8 +220,8 @@ class MainGame(Page):
                     dy = random.randint(-300, -120)
                     self.special_balls.append(
                         SpecialBall(
-                            player.x_start + player.player_width // 2,
-                            player.y_start - ball_radius,
+                            self.player.x_start + self.player.player_width // 2,
+                            self.player.y_start - ball_radius,
                             dx,
                             dy,
                         )
@@ -253,10 +257,10 @@ class MainGame(Page):
                     ]
                     return True
 
-                for ball in balls:
-                    ball.x, ball.y, ball.dx, ball.dy = ball.move_ball(dt, player)
+                for ball in self.balls:
+                    ball.x, ball.y, ball.dx, ball.dy = ball.move_ball(dt, self.player)
 
-                if all(ball.y >= self.height - 60 for ball in balls):
+                if all(ball.y >= self.height - 60 for ball in self.balls):
                     user_exited = self.game_over(self.score, color, self.data)
                     if user_exited:
                         return True
@@ -276,7 +280,7 @@ class MainGame(Page):
 
                 bricks_to_remove = []
                 for brick in self.bricks:
-                    for ball in balls:
+                    for ball in self.balls:
                         if (
                             brick.x < ball.x < brick.x + brick.width
                             and brick.y < ball.y < brick.y + brick.height
@@ -313,14 +317,14 @@ class MainGame(Page):
                         powerup.draw(self.screen)
 
                     if (
-                        player.x_start < powerup.x + powerup.width
-                        and player.x_start + player.player_width > powerup.x
-                        and player.y_start < powerup.y + powerup.height
-                        and player.y_start + player.player_height > powerup.y
+                        self.player.x_start < powerup.x + powerup.width
+                        and self.player.x_start + self.player.player_width > powerup.x
+                        and self.player.y_start < powerup.y + powerup.height
+                        and self.player.y_start + self.player.player_height > powerup.y
                     ):
                         self.powerups.remove(powerup)
                         if powerup.type == "extra_ball":
-                            balls.append(
+                            self.balls.append(
                                 Ball(
                                     screen=self.screen,
                                     height=self.height,
@@ -343,7 +347,7 @@ class MainGame(Page):
                         self.special_balls.remove(special_ball)
 
                 draw_bricks(self.bricks, self.screen, brick_width, brick_height)
-                player.draw_player()
+                self.player.draw_player()
 
                 if self.game.music_is_playing:
                     if (
@@ -355,7 +359,7 @@ class MainGame(Page):
                     if current_time - self.last_x_time >= 3:
                         self.game.music_files[1].stop()
                         pygame.mixer.music.unpause()
-                for i, ball in enumerate(balls):
+                for i, ball in enumerate(self.balls):
                     if ball.y < self.height - 60:
                         ball.draw_ball(
                             self.screen, color.GREEN, i, ball.x, ball.y, trails
