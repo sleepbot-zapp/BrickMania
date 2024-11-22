@@ -49,6 +49,14 @@ class MainGame(Page):
         )
 
     def game_over(self, score, color, settings: settings.Settings):
+        self.balls = [
+            Ball(
+                screen=self.screen,
+                height=self.height,
+                width=self.width,
+                scale=self.scale,
+            )
+        ]
         curr = time.time()
         if self.game.music_is_playing:
             pygame.mixer.music.pause()
@@ -212,12 +220,21 @@ class MainGame(Page):
                     self.last_x_time = current_time
 
                 if keys[pygame.K_RSHIFT]:
+                    self.balls = [
+                        Ball(
+                            screen=self.screen,
+                            height=self.height,
+                            width=self.width,
+                            scale=self.scale,
+                        )
+                    ]
                     return True
 
                 for ball in balls:
                     ball.x, ball.y, ball.dx, ball.dy = ball.move_ball(dt, player)
 
-                if all(ball.ball_crossed_line for ball in balls):
+                if all(ball.y >= self.height - 60 for ball in balls):
+                    # All balls have fallen below the bottom boundary
                     user_exited = self.game_over(self.score, color, self.data)
                     if user_exited:
                         return True
