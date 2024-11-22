@@ -139,7 +139,6 @@ class MainGame(Page):
                     sys.exit()
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_RETURN:
-                        loading_screen()
                         return False
                     if e.key in (pygame.K_RSHIFT, pygame.K_LCTRL):
                         return True
@@ -147,8 +146,6 @@ class MainGame(Page):
     def runner(
         self, color: Color, player, balls, brick_height, brick_width, trails, clock
     ):
-        while True:
-
             self.score = 0
             self.bricks = create_new_bricks()
             self.powerups = []
