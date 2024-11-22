@@ -1,4 +1,4 @@
-from helpers.constants import HEIGHT, WIDTH, SCALE, track_path, track1, track2, track3
+from helpers.constants import HEIGHT, WIDTH, SCALE, track_path, track1, track2, track3, brick_width, brick_height
 from models import Player, Ball, Color
 import sys
 from pages.main_menu_page import MainMenu
@@ -70,7 +70,7 @@ class Game:
             self.screen.fill(self.colors.BLACK)
             if self.is_main_menu:
                 selected_option = self.main_menu.generate(
-                    self.colors, 80, 20, self.clock
+                    self.colors, brick_width, brick_height, self.clock
                 )
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -83,8 +83,8 @@ class Game:
                     self.colors,
                     self.player,
                     self.balls,
-                    20,
-                    80,
+                    brick_height,
+                    brick_width,
                     self.trails,
                     self.clock,
                 )
