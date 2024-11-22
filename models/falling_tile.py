@@ -1,6 +1,8 @@
-from random import randint, choice
-from .color import Color
+from random import choice, randint
+
 from pygame.draw import rect
+
+from .color import Color
 
 
 class FallingTile:

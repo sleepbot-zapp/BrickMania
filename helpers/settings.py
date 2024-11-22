@@ -1,6 +1,7 @@
-from pydantic import BaseModel
-from appdirs import user_data_dir
 from os import makedirs, path
+
+from appdirs import user_data_dir
+from pydantic import BaseModel
 
 
 def verify_files(func):
@@ -28,7 +29,6 @@ class Settings(BaseModel):
     @classmethod
     @verify_files
     def open(cls) -> "Settings":
-
         with open(
             path.join(
                 user_data_dir(appauthor="brickmania", appname="brickmania"), "data.json"
@@ -39,7 +39,6 @@ class Settings(BaseModel):
 
     @verify_files
     def flush(self):
-
         with open(
             path.join(
                 user_data_dir(appauthor="brickmania", appname="brickmania"), "data.json"

@@ -1,8 +1,8 @@
 import typing
+
 import pygame
-from pages.pages import Page
-from models import Color
-import sys
+
+from .pages import Page
 
 
 class Settings(Page):
@@ -19,19 +19,19 @@ class Settings(Page):
         super().__init__(screen, height, width, scale, fonts)
 
         self.fonts = fonts or (
-            pygame.font.SysFont(None, int(72 * self.scale)),  
-            pygame.font.SysFont(None, int(32 * self.scale)),  
+            pygame.font.SysFont(None, int(72 * self.scale)),
+            pygame.font.SysFont(None, int(32 * self.scale)),
         )
         self.selected_option: int = 0
         self.game = game
-        self.expanded_option = -1  
+        self.expanded_option = -1
         self.settings_options = settings_options or ["Music"]
 
     def display(self, color) -> bool:
-        bar_width = int(300 * self.scale)  
-        bar_height = int(20 * self.scale)  
-        bar_x = self.width // 2  
-        bar_y = self.height // 2  
+        bar_width = int(300 * self.scale)
+        bar_height = int(20 * self.scale)
+        bar_x = self.width // 2
+        bar_y = self.height // 2
 
         while True:
             self.screen.fill(color.BLACK)
@@ -42,7 +42,6 @@ class Settings(Page):
             )
             self.screen.blit(header_text, header_rect)
 
-            
             options_font = self.fonts[1]
             for i, option in enumerate(self.settings_options):
                 c = color.YELLOW if i == self.selected_option else color.WHITE
@@ -52,12 +51,9 @@ class Settings(Page):
                 )
                 self.screen.blit(option_text, option_rect)
 
-                
                 if i == self.expanded_option and option == "Music":
-                    
-                    bar_y = option_rect.bottom + 20  
+                    bar_y = option_rect.bottom + 20
 
-                    
                     volume_label_text = options_font.render(
                         "Volume:", True, color.WHITE
                     )
@@ -66,14 +62,12 @@ class Settings(Page):
                     )
                     self.screen.blit(volume_label_text, volume_label_rect)
 
-                    
                     pygame.draw.rect(
                         self.screen,
                         color.GREY,
                         (bar_x - bar_width // 2, bar_y, bar_width, bar_height),
                     )
 
-                    
                     filled_width = int(bar_width * self.game.volume)
                     pygame.draw.rect(
                         self.screen,
@@ -81,17 +75,16 @@ class Settings(Page):
                         (bar_x - bar_width // 2, bar_y, filled_width, bar_height),
                     )
 
-            
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     quit()
                     exit()
                 if e.type == pygame.KEYDOWN:
-                    if e.key == pygame.K_RSHIFT:  
-                        if self.expanded_option == -1:  
+                    if e.key == pygame.K_RSHIFT:
+                        if self.expanded_option == -1:
                             return True
                         else:
-                            self.expanded_option = -1  
+                            self.expanded_option = -1
                     elif e.key == pygame.K_DOWN:
                         self.selected_option = (self.selected_option + 1) % len(
                             self.settings_options
@@ -101,13 +94,11 @@ class Settings(Page):
                             self.settings_options
                         )
                     elif e.key == pygame.K_RETURN:
-                        
                         if self.selected_option == 0 and self.expanded_option == -1:
-                            self.expanded_option = 0  
+                            self.expanded_option = 0
                         else:
-                            self.expanded_option = -1  
+                            self.expanded_option = -1
 
-                    
                     elif self.expanded_option == 0:
                         if e.key == pygame.K_RIGHT:
                             self.game.volume = min(self.game.volume + 0.1, 1.0)
