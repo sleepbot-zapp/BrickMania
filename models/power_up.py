@@ -1,6 +1,8 @@
-from .color import Color
-import pygame
 import random
+
+import pygame
+
+from .color import Color
 
 
 class PowerUp:
@@ -18,7 +20,9 @@ class PowerUp:
 
     def draw(self, screen):
         # Draw the rectangle
-        pygame.draw.rect(screen, self.color[0], (self.x, self.y, self.width, self.height))
+        pygame.draw.rect(
+            screen, self.color[0], (self.x, self.y, self.width, self.height)
+        )
 
         # Calculate the center of the rectangle
         center_x = self.x + self.width // 2
@@ -29,7 +33,6 @@ class PowerUp:
 
         # Draw the circle in the center of the rectangle
         pygame.draw.circle(screen, self.color[1], (center_x, center_y), circle_radius)
-
 
 
 def drop_powerup(brick_x, brick_y, powerups, scale):

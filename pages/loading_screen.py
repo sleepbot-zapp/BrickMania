@@ -1,25 +1,27 @@
 import math
-from random import choice, uniform
-from pygame.font import SysFont
-from pygame import (
-    KEYDOWN,
-    K_q,
-    K_LSHIFT,
-    K_RSHIFT,
-    K_RETURN,
-    quit,
-    QUIT,
-    event,
-    MOUSEMOTION,
-)
-from pygame.draw import line
-from pygame.display import flip
-from sys import exit
-from helpers.constants import screen, WIDTH, HEIGHT, font, bottom_font, clock
-from models import Color
-from pygame import MOUSEWHEEL
-from helpers.loading_combinations import combs
 import random
+from random import choice, uniform
+from sys import exit
+
+from pygame import (
+    K_LSHIFT,
+    K_RETURN,
+    K_RSHIFT,
+    KEYDOWN,
+    MOUSEMOTION,
+    MOUSEWHEEL,
+    QUIT,
+    K_q,
+    event,
+    quit,
+)
+from pygame.display import flip
+from pygame.draw import line
+from pygame.font import SysFont
+
+from helpers.constants import HEIGHT, WIDTH, bottom_font, clock, screen
+from helpers.loading_combinations import combs
+from models import Color
 
 
 def loading_screen():
@@ -173,7 +175,6 @@ def loading_screen():
                     )
                     rotation_angle_y += e.rel[0] * 0.5
             if e.type == MOUSEWHEEL:
-
                 spinner_speed = 2 if e.y > 0 else -2
 
         flip()

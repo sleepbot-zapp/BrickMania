@@ -1,12 +1,20 @@
-from helpers.constants import HEIGHT, WIDTH, SCALE, track_path, track1, track2, track3, brick_width, brick_height
-from models import Player, Ball, Color
 import sys
-from pages.main_menu_page import MainMenu
-from pages.main_game_page import MainGame
-from pages.settings_page import Settings
-from pages.info_page import Info
-from pages.loading_screen import loading_screen
+
 import pygame
+
+from helpers import (
+    HEIGHT,
+    SCALE,
+    WIDTH,
+    brick_height,
+    brick_width,
+    track1,
+    track2,
+    track3,
+    track_path,
+)
+from models import Ball, Color, Player
+from pages import Info, MainGame, MainMenu, Settings, loading_screen
 
 
 class Game:

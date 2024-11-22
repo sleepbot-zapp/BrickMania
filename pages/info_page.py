@@ -1,8 +1,10 @@
-import pygame
-from pages.pages import Page
 import os
 import sys
 import textwrap
+
+import pygame
+
+from .pages import Page
 
 long_text = """
 **BrickMania**

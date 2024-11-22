@@ -1,7 +1,8 @@
+import os
+from typing import List
+
 import pygame
 from pydantic import BaseModel
-from typing import List
-import os
 
 
 class Screen(BaseModel):
@@ -117,8 +118,9 @@ pygame.init()
 
 
 SCALE = constants.screen.scale
-WIDTH, HEIGHT = int(constants.screen.width * SCALE), int(
-    constants.screen.height * SCALE
+WIDTH, HEIGHT = (
+    int(constants.screen.width * SCALE),
+    int(constants.screen.height * SCALE),
 )
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -152,10 +154,12 @@ trail_length = constants.ball.trail_length
 ball_trails = {}
 
 
-get_music_path = lambda constants, n: os.path.join(
-    constants.game_constants.tracks.path,
-    f"{constants.game_constants.tracks.files[n]}.{constants.game_constants.tracks.extension}",
-)
+def get_music_path(constants, n):
+    return os.path.join(
+        constants.game_constants.tracks.path,
+        f"{constants.game_constants.tracks.files[n]}.{constants.game_constants.tracks.extension}",
+    )
+
 
 track_path = get_music_path(constants, 0)
 track = pygame.mixer.music.load(get_music_path(constants, 0))
