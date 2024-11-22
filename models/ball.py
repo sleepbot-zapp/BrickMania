@@ -30,12 +30,9 @@ class Ball:
         self.dy = self.ball_speed_y
         self.ball_crossed_line = False
         self.trail = []
+        self.x = random.randrange(self.width)
+        self.y = self.height
 
-        self.reset_ball_position()
-
-    def reset_ball_position(self):
-        self.x = self.width // 2
-        self.y = self.height - 100
 
     def draw_ball(self, screen, color, ball_id, x, y, ball_trails):
         max_alpha = 50
