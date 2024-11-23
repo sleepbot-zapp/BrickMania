@@ -45,14 +45,14 @@ class Game:
         
         self.trails = {}
 
-        # Initialize page objects lazily
+        
         self.main_menu = None
         self.settings_page = None
         self.info_page = None
         self.game_page = None
 
     def pre_load_music(self):
-        # Pre-load music files and set their volume
+        
         for music_file in self._music_files[1:]:
             music_file.set_volume(self.volume)
 
@@ -74,14 +74,14 @@ class Game:
 
     @property
     def music_files(self):
-        return self._music_files[1:]  # Avoid modifying the original list
+        return self._music_files[1:]  
 
     def run_loading_screen(self):
         """Call the dynamic loading screen function."""
-        return loading_screen(self.colors)  # Simplified call
+        return loading_screen(self.colors)  
 
     def gameloop(self):
-        self.pre_load_music()  # Pre-load music to avoid delay in the loop
+        self.pre_load_music()  
 
         while True:
             if self.music_is_playing:
@@ -94,7 +94,7 @@ class Game:
 
             if self.is_main_menu:
                 if not self.main_menu:
-                    self.initialize_pages()  # Initialize pages when needed
+                    self.initialize_pages()  
                 selected_option = self.main_menu.generate(
                     self.colors, brick_width, brick_height, self.clock
                 )
