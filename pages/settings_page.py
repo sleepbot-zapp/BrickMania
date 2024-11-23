@@ -1,7 +1,6 @@
 import typing
 import pygame
 from .pages import Page
-from models import Color
 
 
 class Settings(Page):
@@ -143,7 +142,7 @@ class Settings(Page):
         while True:
             self.screen.fill(self.game.colors.BLACK)  
 
-            
+            # Header
             header_font = self.fonts[0]
             header_text = header_font.render("Color Settings", True, self.game.colors.WHITE)
             header_rect = header_text.get_rect(center=(self.width // 2, int(50 * self.scale)))
@@ -151,37 +150,45 @@ class Settings(Page):
 
             options_font = self.fonts[1]
 
-            
+            # Iterate through all colors
             for i, color_name in enumerate(self.color_keys):
                 color_value = getattr(self.game.colors, color_name)
                 highlight = self.game.colors.YELLOW if i == self.selected_color_index else self.game.colors.WHITE
 
-                
+                # Render the color name and RGB values
                 color_label_text = options_font.render(
                     f"{color_name} (R: {color_value[0]}, G: {color_value[1]}, B: {color_value[2]})", True, highlight
                 )
                 color_label_rect = color_label_text.get_rect(center=(self.width // 2 - 100, 150 + i * 50))
                 self.screen.blit(color_label_text, color_label_rect)
 
-                
+                # Draw a rectangle showing the actual color beside the text
                 pygame.draw.rect(
                     self.screen,
-                    color_value,
+                    color_value,  # Fill the rectangle with the color
                     (self.width // 2 + 200, 140 + i * 50, 40, 40)
                 )
 
-                
+                # Draw a border around the color preview rectangle
+                pygame.draw.rect(
+                    self.screen,
+                    (0, 0, 0),  # Border color (can be any color)
+                    (self.width // 2 + 200, 140 + i * 50, 40, 40),
+                    2  # Border width (2 pixels)
+                )
+
+                # Draw an arrow on the left side of the selected color
                 if i == self.selected_color_index:
-                    arrow_text = options_font.render("→", True, self.game.colors.YELLOW)
+                    arrow_text = options_font.render(">>", True, self.game.colors.YELLOW)
                     arrow_rect = arrow_text.get_rect(center=(self.width // 2 - 300, 150 + i * 50))
                     self.screen.blit(arrow_text, arrow_rect)
 
-            
+            # If editing mode, display RGB edit UI
             if editing_mode:
                 selected_color_name = self.color_keys[self.selected_color_index]
                 selected_color = list(getattr(self.game.colors, selected_color_name))
 
-                
+                # Display RGB component being edited
                 for j, component in enumerate(["R", "G", "B"]):
                     highlight = self.game.colors.YELLOW if j == self.color_edit_component else self.game.colors.WHITE
                     component_text = options_font.render(
@@ -190,7 +197,7 @@ class Settings(Page):
                     component_rect = component_text.get_rect(center=(self.width // 2 + (j - 1) * 100, 525))
                     self.screen.blit(component_text, component_rect)
 
-                
+                # Display the numeric input below the RGB components if the user is typing
                 if numeric_input:
                     numeric_input_text = options_font.render(
                         f"Input: {numeric_input}", True, self.game.colors.YELLOW
@@ -200,7 +207,7 @@ class Settings(Page):
                     )
                     self.screen.blit(numeric_input_text, numeric_input_rect)
 
-            
+            # Handle user input
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     quit()
@@ -209,24 +216,20 @@ class Settings(Page):
                 if event.type == pygame.KEYDOWN:
                     if event.key in [pygame.K_LSHIFT, pygame.K_RSHIFT]:
                         if editing_mode:
-                            
+                            # Exit editing mode and return to color selection
                             editing_mode = False
                             numeric_input = ""
-                            print("Exited editing mode, back to navigation mode.")
                         else:
                             return
-                    elif not editing_mode:  
+                    elif not editing_mode:  # Navigation Mode
                         if event.key == pygame.K_DOWN:
                             self.selected_color_index = (self.selected_color_index + 1) % len(self.color_keys)
-                            print(f"Selected color: {self.color_keys[self.selected_color_index]}")
                         elif event.key == pygame.K_UP:
                             self.selected_color_index = (self.selected_color_index - 1) % len(self.color_keys)
-                            print(f"Selected color: {self.color_keys[self.selected_color_index]}")
                         elif event.key == pygame.K_RETURN:
-                            editing_mode = True  
-                            print("Entered editing mode.")
+                            editing_mode = True  # Enter editing mode
 
-                    elif editing_mode:  
+                    elif editing_mode:  # Editing Mode
                         selected_color_name = self.color_keys[self.selected_color_index]
                         selected_color = list(getattr(self.game.colors, selected_color_name))
 
@@ -241,15 +244,14 @@ class Settings(Page):
                             selected_color[self.color_edit_component] = max(0, selected_color[self.color_edit_component] - 1)
                             setattr(self.game.colors, selected_color_name, tuple(selected_color))
                         elif event.key == pygame.K_RETURN:
-                            
+                            # Apply numeric input if provided
                             if numeric_input:
                                 value = min(255, max(0, int(numeric_input)))
                                 selected_color[self.color_edit_component] = value
                                 setattr(self.game.colors, selected_color_name, tuple(selected_color))
-                                numeric_input = ""  
+                                numeric_input = ""  # Clear numeric input
                             else:
-                                editing_mode = False  
-                                print("Exited editing mode, back to navigation mode.")
+                                editing_mode = False  # Exit editing mode
                         elif event.key == pygame.K_BACKSPACE:
                             numeric_input = numeric_input[:-1]
                         elif event.unicode.isdigit():
