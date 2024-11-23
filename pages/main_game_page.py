@@ -24,10 +24,9 @@ class MainGame(Page):
     random_destruction_time = 60
 
     def __init__(self, screen, height, width, scale, game, color, fonts=None) -> None:
-        super().__init__(screen, height, width, scale, fonts)
+        super().__init__(screen, height, width, scale, game)
         self.fonts = (pygame.font.SysFont(None, int(42 * self.scale)),)
         self.data = settings.Settings.open()
-        self.game = game
         self.score = 0
         self.powerups = []
         self.special_balls = []

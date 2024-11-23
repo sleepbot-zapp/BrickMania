@@ -42,16 +42,16 @@ class Game:
         # entity variables
         self.trails = {}
         # pages
-        self.main_menu = MainMenu(self.screen, self.height, self.width, self.scale)
+        self.main_menu = MainMenu(self.screen, self.height, self.width, self.scale, self)
         self.settings_page = Settings(
             self.screen,
-            self,
             self.height,
             self.width,
             self.scale,
+            self
         )
         self.info_page = Info(
-            self.screen, self, self.height, self.width, self.scale, self.colors
+            self.screen, self.height, self.width, self.scale, self
         )
         self.game_page = MainGame(
             self.screen, self.height, self.width, self.scale, self, self.colors
@@ -111,7 +111,7 @@ class Game:
                     self.is_main_menu = True
             elif selected_option == 1:  # Settings
                 self.is_main_menu = False
-                self.is_main_menu = self.settings_page.display(self.colors)
+                self.is_main_menu = self.settings_page.display()#self.colors)
             elif selected_option == 2:  # Info
                 self.is_main_menu = False
                 self.is_main_menu = self.info_page.scroll(self.colors)
