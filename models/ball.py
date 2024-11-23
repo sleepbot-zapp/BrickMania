@@ -18,7 +18,7 @@ class Ball:
     ) -> None:
         # Initialization of ball properties
         self.screen = screen
-        self.height = height
+        self.height = height - 150
         self.width = width
         self.scale = scale
         self.ball_radius = ball_radius
