@@ -1,7 +1,5 @@
 __all__ = [
-    
     "Settings",
-    
     "SCALE",
     "WIDTH",
     "HEIGHT",

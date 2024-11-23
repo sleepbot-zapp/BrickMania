@@ -1,11 +1,9 @@
 __all__ = [
-    
     "Info",
     "MainGame",
     "MainMenu",
     "Page",
     "Settings",
-    
     "loading_screen",
 ]
 

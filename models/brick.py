@@ -11,9 +11,7 @@ class Brick:
         self.speed = brick_speed
         self.height = brick_height
         self.width = brick_width
-        self.color = random.choice(
-            [color.RED, color.BLUE, color.GREEN, color.YELLOW]
-        )
+        self.color = random.choice([color.RED, color.BLUE, color.GREEN, color.YELLOW])
         self.black = color.BLACK
 
     def draw(self, screen):

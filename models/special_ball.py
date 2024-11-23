@@ -22,21 +22,14 @@ class SpecialBall:
 
     def draw(self, screen, ball_radius, color):
         """Draw the ball on the screen with a 3D-like gradient effect."""
-        gradient_steps = 10  
+        gradient_steps = 10
         base_color = color.RED
-        
-        
+
         for i in range(gradient_steps):
-            
+
             shade_factor = i / gradient_steps
             r = int(base_color[0] * (1 - shade_factor))
             g = int(base_color[1] * (1 - shade_factor))
             b = int(base_color[2] * (1 - shade_factor))
 
-            
-            circle(
-                screen,
-                (r, g, b),  
-                (self.x, self.y),
-                ball_radius - i  
-            )
+            circle(screen, (r, g, b), (self.x, self.y), ball_radius - i)

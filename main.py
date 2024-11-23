@@ -20,6 +20,7 @@ from pages import loading_screen
 import pygame
 import sys
 
+
 class Game:
     def __init__(
         self,
@@ -29,59 +30,54 @@ class Game:
         scale=SCALE,
     ) -> None:
         pygame.init()
-        
+
         self.height = height
         self.width = width
         self.scale = scale
         self.screen = pygame.display.set_mode((self.width, self.height))
-        
+
         self.colors = Color()
-        
+
         self.clock = pygame.time.Clock()
         self._music_files = track_path, track1, track2, track3
         self.music_is_playing = False
         self.is_main_menu = True
         self.volume = 0.0
-        
+
         self.trails = {}
 
-        
         self.main_menu = None
         self.settings_page = None
         self.info_page = None
         self.game_page = None
 
     def pre_load_music(self):
-        
+
         for music_file in self._music_files[1:]:
             music_file.set_volume(self.volume)
 
     def initialize_pages(self):
-        self.main_menu = MainMenu(self.screen, self.height, self.width, self.scale, self)
-        self.settings_page = Settings(
-            self.screen,
-            self.height,
-            self.width,
-            self.scale,
-            self
-        )
-        self.info_page = Info(
+        self.main_menu = MainMenu(
             self.screen, self.height, self.width, self.scale, self
         )
+        self.settings_page = Settings(
+            self.screen, self.height, self.width, self.scale, self
+        )
+        self.info_page = Info(self.screen, self.height, self.width, self.scale, self)
         self.game_page = MainGame(
             self.screen, self.height, self.width, self.scale, self, self.colors
         )
 
     @property
     def music_files(self):
-        return self._music_files[1:]  
+        return self._music_files[1:]
 
     def run_loading_screen(self):
         """Call the dynamic loading screen function."""
-        return loading_screen(self.colors)  
+        return loading_screen(self.colors)
 
     def gameloop(self):
-        self.pre_load_music()  
+        self.pre_load_music()
 
         while True:
             if self.music_is_playing:
@@ -94,7 +90,7 @@ class Game:
 
             if self.is_main_menu:
                 if not self.main_menu:
-                    self.initialize_pages()  
+                    self.initialize_pages()
                 selected_option = self.main_menu.generate(
                     self.colors, brick_width, brick_height, self.clock
                 )

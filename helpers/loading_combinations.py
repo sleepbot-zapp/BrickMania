@@ -15,7 +15,6 @@ from math import (
 )
 
 
-
 def sec(x):
     """Secant of x."""
     return 1 / cos(x)
@@ -29,7 +28,6 @@ def cosec(x):
 def cot(x):
     """Cotangent of x."""
     return 1 / tan(x)
-
 
 
 def inv_sinh(x):
@@ -47,7 +45,6 @@ def inv_tanh(x):
     return 1 / tanh(x)
 
 
-
 def inv_asin(x):
     """Inverse sine of x."""
     return 1 / asin(x)
@@ -61,7 +58,6 @@ def inv_acos(x):
 def inv_atan(x):
     """Inverse tangent of x."""
     return 1 / atan(x)
-
 
 
 combs = (

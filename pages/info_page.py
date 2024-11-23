@@ -50,10 +50,10 @@ class Info(Page):
     def __init__(self, screen, height, width, scale, game):
         super().__init__(screen, height, width, scale, game)
         self.fonts = (
-            pygame.font.Font(None, 20),  
-            pygame.font.Font(None, 30),  
-            pygame.font.Font(None, 24),  
-            pygame.font.Font(None, 26),  
+            pygame.font.Font(None, 20),
+            pygame.font.Font(None, 30),
+            pygame.font.Font(None, 24),
+            pygame.font.Font(None, 26),
         )
         self.sprite_width = self.sprite_height = 50
         self.top_margin = 50

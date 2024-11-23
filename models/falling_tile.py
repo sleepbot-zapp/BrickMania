@@ -5,7 +5,13 @@ from .color import Color
 
 class FallingTile:
     def __init__(
-        self, brick_width: int, brick_height: int, width: int, height: int, scale: int, color
+        self,
+        brick_width: int,
+        brick_height: int,
+        width: int,
+        height: int,
+        scale: int,
+        color,
     ) -> None:
         """Initializes a falling tile with random position, speed, and color."""
         self.width = brick_width

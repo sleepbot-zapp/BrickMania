@@ -248,7 +248,7 @@ class MainGame(Page):
                 self.last_x_time = current_time
 
             if keys[pygame.K_RSHIFT]:
-                
+
                 self.balls = [
                     Ball(
                         screen=self.screen,
@@ -258,10 +258,12 @@ class MainGame(Page):
                     )
                 ]
                 self.player = Player(
-                    screen=self.screen, height=self.height, width=self.width, scale=self.scale
+                    screen=self.screen,
+                    height=self.height,
+                    width=self.width,
+                    scale=self.scale,
                 )
                 return True
-
 
             for ball in self.balls:
                 ball.x, ball.y, ball.dx, ball.dy = ball.move_ball(dt, self.player)
@@ -269,7 +271,7 @@ class MainGame(Page):
             if all(ball.y >= self.height - 60 for ball in self.balls):
                 user_exited = self.game_over(self.score, color, self.data)
                 if user_exited:
-                    
+
                     self.balls = [
                         Ball(
                             screen=self.screen,
@@ -279,11 +281,14 @@ class MainGame(Page):
                         )
                     ]
                     self.player = Player(
-                        screen=self.screen, height=self.height, width=self.width, scale=self.scale
+                        screen=self.screen,
+                        height=self.height,
+                        width=self.width,
+                        scale=self.scale,
                     )
                     return True
                 else:
-                    
+
                     self.balls = [
                         Ball(
                             screen=self.screen,
@@ -293,7 +298,10 @@ class MainGame(Page):
                         )
                     ]
                     self.player = Player(
-                        screen=self.screen, height=self.height, width=self.width, scale=self.scale
+                        screen=self.screen,
+                        height=self.height,
+                        width=self.width,
+                        scale=self.scale,
                     )
                     break
 

@@ -16,7 +16,7 @@ class Ball:
         ball_speed_x=ball_speed_x,
         ball_speed_y=ball_speed_y,
     ) -> None:
-        
+
         self.screen = screen
         self.height = height - 150
         self.width = width
@@ -36,15 +36,12 @@ class Ball:
         """Draw the ball and its trail."""
         max_alpha = 50
 
-        
         trail = ball_trails.setdefault(ball_id, [])
         trail.append((x, y))
 
-        
         if len(trail) > trail_length:
             trail.pop(0)
 
-        
         for i, (tx, ty) in enumerate(trail):
             alpha = max_alpha - int(max_alpha * (i / trail_length))
             trail_surface = pygame.Surface(
@@ -58,7 +55,6 @@ class Ball:
             )
             screen.blit(trail_surface, (tx - self.ball_radius, ty - self.ball_radius))
 
-        
         for depth in range(self.ball_radius, 0, -1):
             shade_factor = depth / self.ball_radius
             shaded_color = (
@@ -68,7 +64,6 @@ class Ball:
             )
             pygame.draw.circle(screen, shaded_color, (int(x), int(y)), depth)
 
-        
         highlight_color = (
             min(color[0] + 80, 255),
             min(color[1] + 80, 255),
@@ -86,7 +81,6 @@ class Ball:
         self.x += self.dx * dt
         self.y += self.dy * dt
 
-        
         if self.x <= self.ball_radius or self.x >= self.width - self.ball_radius:
             self.dx = -self.dx
             self.x = max(self.ball_radius, min(self.x, self.width - self.ball_radius))
@@ -95,11 +89,9 @@ class Ball:
             self.dy = abs(self.dy)
             self.y = self.ball_radius
 
-        
         if self.y >= self.height - self.ball_radius - 60 and not self.ball_crossed_line:
             self.ball_crossed_line = True
 
-        
         self._handle_paddle_collision(player)
 
         return self.x, self.y, self.dx, self.dy
@@ -114,7 +106,7 @@ class Ball:
             < self.y + self.ball_radius
             < player.y_start + player.player_height
         ):
-            
+
             paddle_center = player.x_start + player.player_width / 2
             self.dx = self.ball_speed_x * (
                 (self.x - paddle_center) / (player.player_width / 2)

@@ -21,9 +21,9 @@ class MainMenu(Page):
     ) -> None:
         super().__init__(screen, height, width, scale, game)
         self.fonts = fonts or (
-            pygame.font.SysFont(None, int(72 * self.scale)),  
-            pygame.font.SysFont(None, int(25 * self.scale)),  
-            pygame.font.SysFont(None, int(48 * self.scale)),  
+            pygame.font.SysFont(None, int(72 * self.scale)),
+            pygame.font.SysFont(None, int(25 * self.scale)),
+            pygame.font.SysFont(None, int(48 * self.scale)),
         )
         self.selected_option: int = 0
         self.options = options or ("Main Game", "Settings", "Info")
@@ -37,7 +37,9 @@ class MainMenu(Page):
         clock,
     ) -> int:
         tiles = [
-            FallingTile(brick_width, brick_height, self.width, self.height, self.scale, color)
+            FallingTile(
+                brick_width, brick_height, self.width, self.height, self.scale, color
+            )
             for _ in range(20)
         ]
         while True:
@@ -46,7 +48,6 @@ class MainMenu(Page):
                 tile.move(self.height, self.width)
                 tile.draw(self.screen)
 
-            
             title_text = self.fonts[0].render(self.texts[0], True, color.YELLOW)
             self.screen.blit(
                 title_text,
@@ -56,7 +57,6 @@ class MainMenu(Page):
                 ),
             )
 
-            
             quit_text = self.fonts[1].render(self.texts[1], True, color.GREY)
             bottom_text = self.fonts[1].render(self.texts[2], True, color.GREY)
             self.screen.blit(
@@ -79,7 +79,6 @@ class MainMenu(Page):
                 ),
             )
 
-            
             for i, option in enumerate(self.options):
                 c = [color.YELLOW, color.BLUE][i != self.selected_option]
                 option_text = self.fonts[2].render(option, True, c)
