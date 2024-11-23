@@ -6,10 +6,15 @@ import pygame
 
 from helpers import settings
 from helpers.constants import ball_radius, bottom_font, font
-from helpers.game_control import create_new_bricks
-from models import Ball, Color, Player, SpecialBall, draw_bricks, drop_powerup
-
-from .loading_screen import loading_screen
+from models import (
+    Ball,
+    Color,
+    Player,
+    SpecialBall,
+    draw_bricks,
+    drop_powerup,
+    create_new_bricks,
+)
 from .pages import Page
 
 
@@ -42,6 +47,7 @@ class MainGame(Page):
         self.player = Player(
             screen=self.screen, height=self.height, width=self.width, scale=self.scale
         )
+
     def pause_game(self, clock):
         paused = True
         pause_text = self.fonts[0].render(
@@ -155,283 +161,273 @@ class MainGame(Page):
                     if e.key in (pygame.K_RSHIFT, pygame.K_LCTRL):
                         return True
 
-    def runner(
-        self, color: Color, brick_height, brick_width, trails, clock
-    ):
-            self.score = 0
-            self.bricks = create_new_bricks()
-            self.powerups = []
-            self.special_balls = []
-            self.last_move_time = self.last_brick_move_time = (
-                self.last_special_ball_time
-            ) = self.last_x_time = time.time()
+    def runner(self, color: Color, brick_height, brick_width, trails, clock):
+        self.score = 0
+        self.bricks = create_new_bricks()
+        self.powerups = []
+        self.special_balls = []
+        self.last_move_time = self.last_brick_move_time = (
+            self.last_special_ball_time
+        ) = self.last_x_time = time.time()
 
-            self.balls = [
-                Ball(
-                    screen=self.screen,
-                    height=self.height,
-                    width=self.width,
-                    scale=self.scale,
-                )
-            ]
+        self.balls = [
+            Ball(
+                screen=self.screen,
+                height=self.height,
+                width=self.width,
+                scale=self.scale,
+            )
+        ]
 
-            self.running = True
+        self.running = True
 
-            while self.running:
-                self.screen.fill(color.BLACK)
-                dt = clock.tick(60) / 1000
-                current_time = time.time()
+        while self.running:
+            self.screen.fill(color.BLACK)
+            dt = clock.tick(60) / 1000
+            current_time = time.time()
 
-                if len(self.bricks) == 0:
-                    self.bricks = create_new_bricks()
+            if len(self.bricks) == 0:
+                self.bricks = create_new_bricks()
 
-                for e in pygame.event.get():
-                    if e.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
 
-                keys = pygame.key.get_pressed()
+            keys = pygame.key.get_pressed()
 
-                if current_time - self.last_move_time > self.inactivity_threshold:
-                    if self.player.x_start <= self.width // 2:
-                        self.player.x_start += 5 * self.player.player_speed * dt
-                    else:
-                        self.player.x_start -= 5 * self.player.player_speed * dt
-                    self.last_move_time = current_time
+            if current_time - self.last_move_time > self.inactivity_threshold:
+                if self.player.x_start <= self.width // 2:
+                    self.player.x_start += 5 * self.player.player_speed * dt
+                else:
+                    self.player.x_start -= 5 * self.player.player_speed * dt
+                self.last_move_time = current_time
 
-                if keys[pygame.K_RCTRL]:
-                    self.pause_game(clock)
+            if keys[pygame.K_RCTRL]:
+                self.pause_game(clock)
 
-                if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and self.player.x_start > 10:
-                    self.player.x_start -= self.player.player_speed * dt
-                    self.last_move_time = current_time
-                if (
-                    keys[pygame.K_d] or keys[pygame.K_RIGHT]
-                ) and self.player.x_start < self.width - self.player.player_width - 10:
-                    self.player.x_start += self.player.player_speed * dt
-                    self.last_move_time = current_time
+            if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and self.player.x_start > 10:
+                self.player.x_start -= self.player.player_speed * dt
+                self.last_move_time = current_time
+            if (
+                keys[pygame.K_d] or keys[pygame.K_RIGHT]
+            ) and self.player.x_start < self.width - self.player.player_width - 10:
+                self.player.x_start += self.player.player_speed * dt
+                self.last_move_time = current_time
 
-                if (
-                    (keys[pygame.K_w] or keys[pygame.K_UP])
-                    and current_time - self.last_special_ball_time
-                    > self.special_ball_time - 1
-                ):
-                    dx = random.choice([-500, 500])
-                    dy = random.randint(-300, -120)
-                    self.special_balls.append(
-                        SpecialBall(
-                            self.player.x_start + self.player.player_width // 2,
-                            self.player.y_start - ball_radius,
-                            dx,
-                            dy,
-                        )
+            if (
+                (keys[pygame.K_w] or keys[pygame.K_UP])
+                and current_time - self.last_special_ball_time
+                > self.special_ball_time - 1
+            ):
+                dx = random.choice([-500, 500])
+                dy = random.randint(-300, -120)
+                self.special_balls.append(
+                    SpecialBall(
+                        self.player.x_start + self.player.player_width // 2,
+                        self.player.y_start - ball_radius,
+                        dx,
+                        dy,
                     )
-                    if self.game.music_is_playing:
-                        pygame.mixer.music.pause()
-                        self.game.music_files[0].play()
-                    self.last_special_ball_time = current_time
+                )
+                if self.game.music_is_playing:
+                    pygame.mixer.music.pause()
+                    self.game.music_files[0].play()
+                self.last_special_ball_time = current_time
 
-                if (
-                    (keys[pygame.K_DOWN] or keys[pygame.K_s])
-                    and current_time - self.last_x_time
-                    > self.random_destruction_time - 1
-                ):
-                    for _ in range(5):
-                        if self.bricks:
-                            random_brick = random.choice(self.bricks)
-                            self.bricks.remove(random_brick)
-                            self.score += 10
-                    if self.game.music_is_playing:
-                        pygame.mixer.music.pause()
-                        self.game.music_files[1].play()
-                    self.last_x_time = current_time
+            if (
+                keys[pygame.K_DOWN] or keys[pygame.K_s]
+            ) and current_time - self.last_x_time > self.random_destruction_time - 1:
+                for _ in range(5):
+                    if self.bricks:
+                        random_brick = random.choice(self.bricks)
+                        self.bricks.remove(random_brick)
+                        self.score += 10
+                if self.game.music_is_playing:
+                    pygame.mixer.music.pause()
+                    self.game.music_files[1].play()
+                self.last_x_time = current_time
 
-                if keys[pygame.K_RSHIFT]:
-                    self.balls = [
-                        Ball(
-                            screen=self.screen,
-                            height=self.height,
-                            width=self.width,
-                            scale=self.scale,
-                        )
-                    ]
+            if keys[pygame.K_RSHIFT]:
+                self.balls = [
+                    Ball(
+                        screen=self.screen,
+                        height=self.height,
+                        width=self.width,
+                        scale=self.scale,
+                    )
+                ]
+                return True
+
+            for ball in self.balls:
+                ball.x, ball.y, ball.dx, ball.dy = ball.move_ball(dt, self.player)
+
+            if all(ball.y >= self.height - 60 for ball in self.balls):
+                user_exited = self.game_over(self.score, color, self.data)
+                if user_exited:
                     return True
+                else:
+                    break
 
-                for ball in self.balls:
-                    ball.x, ball.y, ball.dx, ball.dy = ball.move_ball(dt, self.player)
-
-                if all(ball.y >= self.height - 60 for ball in self.balls):
-                    user_exited = self.game_over(self.score, color, self.data)
-                    if user_exited:
-                        return True
-                    else:
-                        break
-
-                if current_time - self.last_brick_move_time > 1:
-                    for brick in self.bricks:
-                        brick.y += brick.speed * dt
-                        if brick.y + brick.height >= self.height:
-                            user_exited = self.game_over(self.score, color, self.data)
-                            if user_exited:
-                                return True
-                            else:
-                                break
-                    self.last_brick_move_time = current_time
-
-                bricks_to_remove = []
+            if current_time - self.last_brick_move_time > 1:
                 for brick in self.bricks:
-                    for ball in self.balls:
-                        if (
-                            brick.x < ball.x < brick.x + brick.width
-                            and brick.y < ball.y < brick.y + brick.height
-                        ):
-                            bricks_to_remove.append(brick)
-                            self.score += 10
-                            powerup = drop_powerup(
-                                brick.x, brick.y, self.powerups, self.scale
-                            )
-                            if powerup:
-                                self.powerups.append(powerup)
-                            ball.dy = -ball.dy
+                    brick.y += brick.speed * dt
+                    if brick.y + brick.height >= self.height:
+                        user_exited = self.game_over(self.score, color, self.data)
+                        if user_exited:
+                            return True
+                        else:
+                            break
+                self.last_brick_move_time = current_time
 
-                    for special_ball in self.special_balls:
-                        if (
-                            brick.x < special_ball.x < brick.x + brick_width
-                            and brick.y < special_ball.y < brick.y + brick_height
-                        ):
-                            bricks_to_remove.append(brick)
-                            self.score += 10
-                            powerup = drop_powerup(
-                                brick.x, brick.y, self.powerups, self.scale
-                            )
-                            if powerup:
-                                self.powerups.append(powerup)
-
-                for brick in bricks_to_remove:
-                    if brick in self.bricks:
-                        self.bricks.remove(brick)
-
-                for powerup in self.powerups:
-                    if powerup.y < self.height - 70:
-                        powerup.move(dt)
-                        powerup.draw(self.screen)
-
+            bricks_to_remove = []
+            for brick in self.bricks:
+                for ball in self.balls:
                     if (
-                        self.player.x_start < powerup.x + powerup.width
-                        and self.player.x_start + self.player.player_width > powerup.x
-                        and self.player.y_start < powerup.y + powerup.height
-                        and self.player.y_start + self.player.player_height > powerup.y
+                        brick.x < ball.x < brick.x + brick.width
+                        and brick.y < ball.y < brick.y + brick.height
                     ):
-                        self.powerups.remove(powerup)
-                        if powerup.type == "extra_ball":
-                            self.balls.append(
-                                Ball(
-                                    screen=self.screen,
-                                    height=self.height,
-                                    width=self.width,
-                                    scale=self.scale,
-                                )
-                            )
+                        bricks_to_remove.append(brick)
+                        self.score += 10
+                        powerup = drop_powerup(
+                            brick.x, brick.y, self.powerups, self.scale
+                        )
+                        if powerup:
+                            self.powerups.append(powerup)
+                        ball.dy = -ball.dy
 
                 for special_ball in self.special_balls:
-                    if special_ball.y < self.height - 70:
-                        special_ball.move(ball_radius, self.width, dt)
-                        special_ball.draw(self.screen, ball_radius)
-
                     if (
-                        special_ball.x < 0
-                        or special_ball.x > self.width
-                        or special_ball.y < 0
-                        or special_ball.y > self.height
+                        brick.x < special_ball.x < brick.x + brick_width
+                        and brick.y < special_ball.y < brick.y + brick_height
                     ):
-                        self.special_balls.remove(special_ball)
-
-                draw_bricks(self.bricks, self.screen, brick_width, brick_height)
-                self.player.draw_player()
-
-                if self.game.music_is_playing:
-                    if (
-                        not self.special_balls
-                        or current_time - self.last_special_ball_time >= 2
-                    ):
-                        self.game.music_files[0].stop()
-                        pygame.mixer.music.unpause()
-                    if current_time - self.last_x_time >= 3:
-                        self.game.music_files[1].stop()
-                        pygame.mixer.music.unpause()
-                for i, ball in enumerate(self.balls):
-                    if ball.y < self.height - 60:
-                        ball.draw_ball(
-                            self.screen, color.GREEN, i, ball.x, ball.y, trails
+                        bricks_to_remove.append(brick)
+                        self.score += 10
+                        powerup = drop_powerup(
+                            brick.x, brick.y, self.powerups, self.scale
                         )
+                        if powerup:
+                            self.powerups.append(powerup)
 
-                self.show_score(color)
+            for brick in bricks_to_remove:
+                if brick in self.bricks:
+                    self.bricks.remove(brick)
+
+            for powerup in self.powerups:
+                if powerup.y < self.height - 70:
+                    powerup.move(dt)
+                    powerup.draw(self.screen)
 
                 if (
-                    current_time - self.last_special_ball_time
-                    > self.special_ball_time - 1
+                    self.player.x_start < powerup.x + powerup.width
+                    and self.player.x_start + self.player.player_width > powerup.x
+                    and self.player.y_start < powerup.y + powerup.height
+                    and self.player.y_start + self.player.player_height > powerup.y
                 ):
-                    special_ball_text = font.render(
-                        "Special Ball Ready (UP)", True, color.GREEN
-                    )
-                else:
-                    remaining_time = max(
-                        0,
-                        self.special_ball_time
-                        - (current_time - self.last_special_ball_time),
-                    )
-                    special_ball_text = font.render(
-                        f"Special Ball in {int(remaining_time)}s", True, color.WHITE
-                    )
+                    self.powerups.remove(powerup)
+                    if powerup.type == "extra_ball":
+                        self.balls.append(
+                            Ball(
+                                screen=self.screen,
+                                height=self.height,
+                                width=self.width,
+                                scale=self.scale,
+                            )
+                        )
 
-                if current_time - self.last_x_time > self.random_destruction_time - 1:
-                    countdown_text = font.render(
-                        "Brick Destruction Ready (DOWN)", True, color.GREEN
-                    )
-                    self.screen.blit(
-                        countdown_text,
-                        (
-                            (self.width - countdown_text.get_width() - 20) * self.scale,
-                            (self.height - 30) * self.scale,
-                        ),
-                    )
-                else:
-                    time_until_destruction = max(
-                        0,
-                        self.random_destruction_time
-                        - (current_time - self.last_x_time),
-                    )
-                    countdown_text = font.render(
-                        f"Brick Destruction in {int(time_until_destruction)}s",
-                        True,
-                        color.WHITE,
-                    )
-                    self.screen.blit(
-                        countdown_text,
-                        (
-                            (self.width - countdown_text.get_width() - 20) * self.scale,
-                            (self.height - 30) * self.scale,
-                        ),
-                    )
+            for special_ball in self.special_balls:
+                if special_ball.y < self.height - 70:
+                    special_ball.move(ball_radius, self.width, dt)
+                    special_ball.draw(self.screen, ball_radius)
 
-                pygame.draw.line(
-                    self.screen,
-                    color.WHITE,
-                    (0, self.height - 50),
-                    (self.width, self.height - 50),
-                    2,
+                if (
+                    special_ball.x < 0
+                    or special_ball.x > self.width
+                    or special_ball.y < 0
+                    or special_ball.y > self.height
+                ):
+                    self.special_balls.remove(special_ball)
+
+            draw_bricks(self.bricks, self.screen)
+            self.player.draw_player()
+
+            if self.game.music_is_playing:
+                if (
+                    not self.special_balls
+                    or current_time - self.last_special_ball_time >= 2
+                ):
+                    self.game.music_files[0].stop()
+                    pygame.mixer.music.unpause()
+                if current_time - self.last_x_time >= 3:
+                    self.game.music_files[1].stop()
+                    pygame.mixer.music.unpause()
+            for i, ball in enumerate(self.balls):
+                if ball.y < self.height - 60:
+                    ball.draw_ball(self.screen, color.GREEN, i, ball.x, ball.y, trails)
+
+            self.show_score(color)
+
+            if current_time - self.last_special_ball_time > self.special_ball_time - 1:
+                special_ball_text = font.render(
+                    "Special Ball Ready (UP)", True, color.GREEN
+                )
+            else:
+                remaining_time = max(
+                    0,
+                    self.special_ball_time
+                    - (current_time - self.last_special_ball_time),
+                )
+                special_ball_text = font.render(
+                    f"Special Ball in {int(remaining_time)}s", True, color.WHITE
+                )
+
+            if current_time - self.last_x_time > self.random_destruction_time - 1:
+                countdown_text = font.render(
+                    "Brick Destruction Ready (DOWN)", True, color.GREEN
                 )
                 self.screen.blit(
-                    special_ball_text,
-                    (20 * self.scale, (self.height - 30) * self.scale),
+                    countdown_text,
+                    (
+                        (self.width - countdown_text.get_width() - 20) * self.scale,
+                        (self.height - 30) * self.scale,
+                    ),
                 )
-
-                pygame.draw.line(
-                    self.screen,
+            else:
+                time_until_destruction = max(
+                    0,
+                    self.random_destruction_time - (current_time - self.last_x_time),
+                )
+                countdown_text = font.render(
+                    f"Brick Destruction in {int(time_until_destruction)}s",
+                    True,
                     color.WHITE,
-                    (0, self.height - 50),
-                    (self.width, self.height - 50),
-                    2,
+                )
+                self.screen.blit(
+                    countdown_text,
+                    (
+                        (self.width - countdown_text.get_width() - 20) * self.scale,
+                        (self.height - 30) * self.scale,
+                    ),
                 )
 
-                pygame.display.flip()
+            pygame.draw.line(
+                self.screen,
+                color.WHITE,
+                (0, self.height - 50),
+                (self.width, self.height - 50),
+                2,
+            )
+            self.screen.blit(
+                special_ball_text,
+                (20 * self.scale, (self.height - 30) * self.scale),
+            )
+
+            pygame.draw.line(
+                self.screen,
+                color.WHITE,
+                (0, self.height - 50),
+                (self.width, self.height - 50),
+                2,
+            )
+
+            pygame.display.flip()

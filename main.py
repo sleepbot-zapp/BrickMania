@@ -1,5 +1,4 @@
 import sys
-
 import pygame
 
 from helpers import (
@@ -13,8 +12,9 @@ from helpers import (
     track3,
     track_path,
 )
-from models import Ball, Color, Player
-from pages import Info, MainGame, MainMenu, Settings, loading_screen
+from models import Color
+from pages import Info, MainGame, MainMenu, Settings
+from pages import loading_screen
 
 
 class Game:
@@ -65,6 +65,13 @@ class Game:
             music_file.set_volume(self.volume)
         return music_files
 
+    def run_loading_screen(self):
+        """Call the dynamic loading screen function."""
+        result = (
+            loading_screen()
+        )  # The loading screen runs until user presses Enter or Shift
+        return result  # Return value determines the next action (e.g., continue or go back)
+
     def gameloop(self):
         while True:
             if self.music_is_playing:
@@ -72,29 +79,40 @@ class Game:
                 pygame.mixer.music.play(-1)
             else:
                 pygame.mixer.music.stop()
+
             self.screen.fill(self.colors.BLACK)
+
+            # Handle main menu and get selected option
             if self.is_main_menu:
                 selected_option = self.main_menu.generate(
                     self.colors, brick_width, brick_height, self.clock
                 )
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            if selected_option == 0:
+
+            # Process selected option
+            if selected_option == 0:  # Start the game
                 self.is_main_menu = False
-                loading_screen()
-                self.is_main_menu = self.game_page.runner(
-                    self.colors,
-                    brick_height,
-                    brick_width,
-                    self.trails,
-                    self.clock,
-                )
-            if selected_option == 1:
+                back_to_main_menu = (
+                    self.run_loading_screen()
+                )  # Show the animated loading screen
+                if not back_to_main_menu:  # User pressed Enter to continue
+                    self.is_main_menu = self.game_page.runner(
+                        self.colors,
+                        brick_height,
+                        brick_width,
+                        self.trails,
+                        self.clock,
+                    )
+                else:  # User pressed Shift to return to the main menu
+                    self.is_main_menu = True
+            elif selected_option == 1:  # Settings
                 self.is_main_menu = False
                 self.is_main_menu = self.settings_page.display(self.colors)
-            elif selected_option == 2:
+            elif selected_option == 2:  # Info
                 self.is_main_menu = False
                 self.is_main_menu = self.info_page.scroll(self.colors)
 

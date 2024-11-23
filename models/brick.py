@@ -1,9 +1,6 @@
 import random
-
 import pygame
-
 from helpers import brick_cols, brick_height, brick_rows, brick_speed, brick_width
-
 from .color import Color
 
 
@@ -18,47 +15,56 @@ class Brick:
             [Color().RED, Color().BLUE, Color().GREEN, Color().YELLOW]
         )
 
-    def draw(self, screen, brick_width, brick_height):
-        gradient_surface = pygame.Surface((brick_width, brick_height))
-
-        light_color = (
-            min(self.color[0] + 50, 255),
-            min(self.color[1] + 50, 255),
-            min(self.color[2] + 50, 255),
-        )
-        dark_color = (
-            max(self.color[0] - 50, 0),
-            max(self.color[1] - 50, 0),
-            max(self.color[2] - 50, 0),
-        )
-
-        for y in range(brick_height):
-            ratio = y / brick_height
-            r = int(dark_color[0] * (1 - ratio) + light_color[0] * ratio)
-            g = int(dark_color[1] * (1 - ratio) + light_color[1] * ratio)
-            b = int(dark_color[2] * (1 - ratio) + light_color[2] * ratio)
-
-            r = max(0, min(r, 255))
-            g = max(0, min(g, 255))
-            b = max(0, min(b, 255))
-
-            pygame.draw.line(gradient_surface, (r, g, b), (0, y), (brick_width, y))
-
+    def draw(self, screen):
+        """Draw the brick with a gradient color."""
+        gradient_surface = self._create_gradient_surface()
         screen.blit(gradient_surface, (self.x, self.y))
-
         pygame.draw.rect(
-            screen, Color().BLACK, (self.x, self.y, brick_width, brick_height), 2
+            screen, Color().BLACK, (self.x, self.y, self.width, self.height), 2
         )
+
+    def _create_gradient_surface(self):
+        """Create the gradient surface for brick."""
+        gradient_surface = pygame.Surface((self.width, self.height))
+
+        light_color = self._adjust_color(self.color, 50)
+        dark_color = self._adjust_color(self.color, -50)
+
+        for y in range(self.height):
+            ratio = y / self.height
+            r, g, b = self._calculate_gradient_color(dark_color, light_color, ratio)
+            pygame.draw.line(gradient_surface, (r, g, b), (0, y), (self.width, y))
+
+        return gradient_surface
+
+    @staticmethod
+    def _adjust_color(color, delta):
+        """Adjust the color by a delta value."""
+        return (
+            max(0, min(color[0] + delta, 255)),
+            max(0, min(color[1] + delta, 255)),
+            max(0, min(color[2] + delta, 255)),
+        )
+
+    @staticmethod
+    def _calculate_gradient_color(dark_color, light_color, ratio):
+        """Calculate the gradient color based on the ratio."""
+        r = int(dark_color[0] * (1 - ratio) + light_color[0] * ratio)
+        g = int(dark_color[1] * (1 - ratio) + light_color[1] * ratio)
+        b = int(dark_color[2] * (1 - ratio) + light_color[2] * ratio)
+        return r, g, b
 
 
 def create_new_bricks():
-    bricks = []
-    for col in range(brick_cols):
-        for row in range(brick_rows):
-            bricks.append(Brick(col * brick_width, row * brick_height))
-    return bricks
+    """Create a list of new bricks based on the grid size."""
+    return [
+        Brick(col * brick_width, row * brick_height)
+        for col in range(brick_cols)
+        for row in range(brick_rows)
+    ]
 
 
-def draw_bricks(bricks: Brick, screen, brick_width, brick_height):
+def draw_bricks(bricks, screen):
+    """Draw all bricks on the screen."""
     for brick in bricks:
-        brick.draw(screen, brick_width, brick_height)
+        brick.draw(screen)

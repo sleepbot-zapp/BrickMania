@@ -11,7 +11,6 @@ from pygame import (
     MOUSEMOTION,
     MOUSEWHEEL,
     QUIT,
-    K_q,
     event,
     quit,
 )
@@ -25,6 +24,8 @@ from models import Color
 
 
 def loading_screen():
+    """Display a dynamic loading screen with animations and tips."""
+    # Randomly select functions for animation
     func1, func2 = random.choice(combs)
     radius = 30
     spinner_segments = 12
@@ -36,6 +37,7 @@ def loading_screen():
     time = 0
     move_speed = 2
 
+    # Fonts and tips
     tip_font = SysFont("Arial", 24)
     tips = [
         "Use the paddle to deflect the ball!",
@@ -46,35 +48,40 @@ def loading_screen():
     ]
     tip = choice(tips)
 
+    # Rotation angles
     rotation_angle_x = 30
     rotation_angle_y = 45
 
     while True:
+        # Clear screen and set background color
         screen.fill(Color().BLACK)
         clock.tick(60)
 
+        # Display game title
         loading_text = tip_font.render("BrickMania", True, Color().WHITE)
         screen.blit(
             loading_text,
             (WIDTH // 2 - loading_text.get_width() // 2, HEIGHT // 2 - 123),
         )
 
+        # Display random tip
         tip_text = tip_font.render("Tip: " + tip, True, Color().WHITE)
         screen.blit(
             tip_text, (WIDTH // 2 - tip_text.get_width() // 2, HEIGHT // 2 + 123)
         )
 
+        # Animate spinner movement
         spinner_center[0] = WIDTH // 2 + 100 * math.sin(time * 0.02) + uniform(-2, 2)
         spinner_center[1] = HEIGHT // 2 + 50 * math.cos(time * 0.03) + uniform(-2, 2)
 
+        # Calculate spinner scale factor
         scale_factor_x = 1 + (spinner_center[0] - WIDTH // 2) / WIDTH
         scale_factor_y = 1 - (spinner_center[1] - HEIGHT // 2) / HEIGHT
         scale_factor = max(0.5, min(2, scale_factor_x * scale_factor_y))
 
-        current_center = spinner_center
-
         def rotate_3d(x, y, z, angle_x, angle_y):
-            """Rotate a 2D spinner in 3D space."""
+            """Rotate a point in 3D space around X and Y axes."""
+            # Rotate around the X-axis
             new_y = y * math.cos(math.radians(angle_x)) - z * math.sin(
                 math.radians(angle_x)
             )
@@ -83,6 +90,7 @@ def loading_screen():
             )
             y, z = new_y, new_z
 
+            # Rotate around the Y-axis
             new_x = x * math.cos(math.radians(angle_y)) + z * math.sin(
                 math.radians(angle_y)
             )
@@ -93,10 +101,12 @@ def loading_screen():
 
             return x, y, z
 
+        # Draw spinner segments
         for i in range(spinner_segments):
             segment_angle_start = angle + (i * angle_per_segment)
             segment_angle_end = segment_angle_start + angle_per_segment
 
+            # Compute segment start and end points in 3D
             x1 = (
                 radius
                 * scale_factor
@@ -117,34 +127,39 @@ def loading_screen():
             )
             z2 = 0
 
-            start_x1, start_y1, start_z1 = rotate_3d(
+            # Rotate points in 3D space
+            start_x1, start_y1, _ = rotate_3d(
                 x1, y1, z1, rotation_angle_x, rotation_angle_y
             )
-            end_x1, end_y1, end_z1 = rotate_3d(
+            end_x1, end_y1, _ = rotate_3d(
                 -x1, -y1, z1, rotation_angle_x, rotation_angle_y
             )
-            start_x2, start_y2, start_z2 = rotate_3d(
+            start_x2, start_y2, _ = rotate_3d(
                 x2, y2, z2, rotation_angle_x, rotation_angle_y
             )
-            end_x2, end_y2, end_z2 = rotate_3d(
+            end_x2, end_y2, _ = rotate_3d(
                 -x2, -y2, z2, rotation_angle_x, rotation_angle_y
             )
 
-            start_x1 += current_center[0]
-            start_y1 += current_center[1]
-            end_x1 += current_center[0]
-            end_y1 += current_center[1]
-            start_x2 += current_center[0]
-            start_y2 += current_center[1]
-            end_x2 += current_center[0]
-            end_y2 += current_center[1]
+            # Adjust to spinner center
+            start_x1 += spinner_center[0]
+            start_y1 += spinner_center[1]
+            end_x1 += spinner_center[0]
+            end_y1 += spinner_center[1]
+            start_x2 += spinner_center[0]
+            start_y2 += spinner_center[1]
+            end_x2 += spinner_center[0]
+            end_y2 += spinner_center[1]
 
+            # Draw lines for spinner segments
             line(screen, Color().BLUE, (end_x1, end_y1), (end_x2, end_y2), 3)
             line(screen, Color().RED, (start_x1, start_y1), (start_x2, start_y2), 3)
 
+        # Update angles and time
         angle += spinner_speed
         time += move_speed
 
+        # Display bottom instructions
         bottom_text = bottom_font.render("Press Enter to Continue", True, (92, 95, 119))
         screen.blit(
             bottom_text,
@@ -153,28 +168,26 @@ def loading_screen():
                 HEIGHT - bottom_text.get_height() - 10,
             ),
         )
-        bottom_text = bottom_font.render("Press Shift to go back ", True, (92, 95, 119))
+        bottom_text = bottom_font.render("Press Shift to go back", True, (92, 95, 119))
         screen.blit(bottom_text, (10, HEIGHT - bottom_text.get_height() - 10))
 
+        # Handle events
         for e in event.get():
             if e.type == QUIT:
                 quit()
                 exit()
             if e.type == KEYDOWN:
                 if e.key == K_RETURN:
-                    return
-                if e.key == K_q:
-                    quit()
-                    exit()
+                    return  # Proceed to the next screen
                 if e.key in (K_RSHIFT, K_LSHIFT):
-                    return True
-            if e.type == MOUSEMOTION:
-                if e.buttons[0]:
-                    rotation_angle_x = max(
-                        0, min(90, rotation_angle_x + e.rel[1] * 0.5)
-                    )
-                    rotation_angle_y += e.rel[0] * 0.5
+                    return True  # Return to the previous screen
+            if e.type == MOUSEMOTION and e.buttons[0]:
+                # Adjust rotation angles with mouse drag
+                rotation_angle_x = max(0, min(90, rotation_angle_x + e.rel[1] * 0.5))
+                rotation_angle_y += e.rel[0] * 0.5
             if e.type == MOUSEWHEEL:
+                # Adjust spinner speed with mouse wheel
                 spinner_speed = 2 if e.y > 0 else -2
 
+        # Update the display
         flip()

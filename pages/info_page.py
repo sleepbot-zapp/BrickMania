@@ -1,9 +1,7 @@
 import os
 import sys
 import textwrap
-
 import pygame
-
 from .pages import Page
 
 long_text = """
@@ -49,15 +47,7 @@ long_text = """
 
 
 class Info(Page):
-    def __init__(
-        self,
-        screen,
-        game,
-        height,
-        width,
-        scale,
-        fonts=None,
-    ) -> None:
+    def __init__(self, screen, game, height, width, scale, fonts=None):
         super().__init__(screen, height, width, scale, fonts)
         self.fonts = (
             pygame.font.Font(None, 20),  # Font
@@ -70,6 +60,7 @@ class Info(Page):
         self.top_margin = 50
 
     def make_circular_icon(self, sprite):
+        """Creates a circular icon with a given sprite."""
         icon_surface = pygame.Surface(
             (self.sprite_width, self.sprite_height), pygame.SRCALPHA
         )
@@ -84,6 +75,7 @@ class Info(Page):
 
     @property
     def sprites(self):
+        """Load and return all sprites from the assets folder."""
         sprites = []
         for filename in os.listdir("./assets/sprites"):
             sprite = pygame.image.load(f"./assets/sprites/{filename}").convert_alpha()
@@ -94,11 +86,13 @@ class Info(Page):
         return sprites
 
     def wrap_text(self, line, font):
+        """Wrap the text to fit within the screen width."""
         max_text_width = int(self.width * 0.8)
         words = textwrap.wrap(line, width=max_text_width // font.size(" ")[0])
         return words
 
     def parse_markdown(self, line, color):
+        """Parse and format markdown-like syntax."""
         if line.startswith("**") and line.endswith("**"):
             wrapped_lines = self.wrap_text(line[2:-2], self.fonts[1])
             return [
@@ -126,13 +120,15 @@ class Info(Page):
             ]
 
     def scroll(self, color):
+        """Handle scrolling through the information page."""
         rendered_lines = []
         for line in long_text.split("\n"):
             rendered_lines.extend(self.parse_markdown(line, color))
+
         auto_scroll = True
         line_height = self.fonts[0].get_linesize()
         scroll_y = self.top_margin
-        total_text_height = self.fonts[0].get_linesize() * len(rendered_lines)
+        total_text_height = line_height * len(rendered_lines)
         running = True
         scroll_speed = 1
         tooltips = ["Saad", "Zapp", "Aarthex"]

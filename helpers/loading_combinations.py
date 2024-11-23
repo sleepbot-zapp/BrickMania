@@ -15,50 +15,58 @@ from math import (
 )
 
 
+# Trigonometric and Hyperbolic Functions
 def sec(x):
+    """Secant of x."""
     return 1 / cos(x)
 
 
 def cosec(x):
+    """Cosecant of x."""
     return 1 / sin(x)
 
 
 def cot(x):
+    """Cotangent of x."""
     return 1 / tan(x)
 
 
+# Inverse Hyperbolic Functions
 def inv_sinh(x):
+    """Inverse hyperbolic sine of x."""
     return 1 / sinh(x)
 
 
 def inv_cosh(x):
+    """Inverse hyperbolic cosine of x."""
     return 1 / cosh(x)
 
 
 def inv_tanh(x):
+    """Inverse hyperbolic tangent of x."""
     return 1 / tanh(x)
 
 
+# Inverse Trigonometric Functions
 def inv_asin(x):
+    """Inverse sine of x."""
     return 1 / asin(x)
 
 
 def inv_acos(x):
+    """Inverse cosine of x."""
     return 1 / acos(x)
 
 
 def inv_atan(x):
+    """Inverse tangent of x."""
     return 1 / atan(x)
 
 
-def identity(x):
-    return x
-
-
-combs = [
+# Combinations of functions
+combs = (
     (sin, cos),
     (sin, tan),
-    (sin, sinh),
     (sin, sinh),
     (sin, tanh),
     (sin, exp),
@@ -69,7 +77,7 @@ combs = [
     (sin, asinh),
     (cos, sin),
     (cos, tan),
-    ((cos, sinh)),
+    (cos, sinh),
     (cos, tanh),
     (cos, expm1),
     (cos, asin),
@@ -120,4 +128,4 @@ combs = [
     (inv_cosh, sinh),
     (inv_cosh, tanh),
     (inv_cosh, expm1),
-]
+)

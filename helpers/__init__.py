@@ -30,12 +30,6 @@ __all__ = [
     "track3",
     "track4",
     "combs",
-    # Functions
-    "pause_game",
-    "game_over",
-    "drop_powerup",
-    "create_new_bricks",
-    "show_score",
 ]
 
 from helpers.constants import (
@@ -66,13 +60,6 @@ from helpers.constants import (
     track4,
     track_path,
     trail_length,
-)
-from helpers.game_control import (
-    create_new_bricks,
-    drop_powerup,
-    game_over,
-    pause_game,
-    show_score,
 )
 from helpers.loading_combinations import combs
 from helpers.settings import Settings
