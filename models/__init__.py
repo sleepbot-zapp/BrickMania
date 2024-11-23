@@ -1,5 +1,5 @@
 __all__ = [
-    # Classes
+    
     "Ball",
     "Brick",
     "Color",
@@ -7,11 +7,11 @@ __all__ = [
     "Player",
     "PowerUp",
     "SpecialBall",
-    # Functions
+    
     "create_new_bricks",
     "draw_bricks",
     "drop_powerup",
-    # Types
+    
     "ColorType",
 ]
 

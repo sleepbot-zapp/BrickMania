@@ -1,11 +1,11 @@
 __all__ = [
-    # Classes
+    
     "Info",
     "MainGame",
     "MainMenu",
     "Page",
     "Settings",
-    # Functions
+    
     "loading_screen",
 ]
 

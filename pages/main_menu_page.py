@@ -21,9 +21,9 @@ class MainMenu(Page):
     ) -> None:
         super().__init__(screen, height, width, scale, game)
         self.fonts = fonts or (
-            pygame.font.SysFont(None, int(72 * self.scale)),  # Title
-            pygame.font.SysFont(None, int(25 * self.scale)),  # Bottom
-            pygame.font.SysFont(None, int(48 * self.scale)),  # Menu
+            pygame.font.SysFont(None, int(72 * self.scale)),  
+            pygame.font.SysFont(None, int(25 * self.scale)),  
+            pygame.font.SysFont(None, int(48 * self.scale)),  
         )
         self.selected_option: int = 0
         self.options = options or ("Main Game", "Settings", "Info")
@@ -46,7 +46,7 @@ class MainMenu(Page):
                 tile.move(self.height, self.width)
                 tile.draw(self.screen)
 
-            # BrickMania Text
+            
             title_text = self.fonts[0].render(self.texts[0], True, color.YELLOW)
             self.screen.blit(
                 title_text,
@@ -56,7 +56,7 @@ class MainMenu(Page):
                 ),
             )
 
-            # Bottom Text
+            
             quit_text = self.fonts[1].render(self.texts[1], True, color.GREY)
             bottom_text = self.fonts[1].render(self.texts[2], True, color.GREY)
             self.screen.blit(
@@ -79,7 +79,7 @@ class MainMenu(Page):
                 ),
             )
 
-            # Menu Text
+            
             for i, option in enumerate(self.options):
                 c = [color.YELLOW, color.BLUE][i != self.selected_option]
                 option_text = self.fonts[2].render(option, True, c)

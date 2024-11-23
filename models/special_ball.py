@@ -22,21 +22,21 @@ class SpecialBall:
 
     def draw(self, screen, ball_radius, color):
         """Draw the ball on the screen with a 3D-like gradient effect."""
-        gradient_steps = 10  # Number of gradient steps to create the depth effect
+        gradient_steps = 10  
         base_color = color.RED
         
-        # Create the gradient effect by drawing multiple circles
+        
         for i in range(gradient_steps):
-            # Calculate the shading for each circle, giving the effect of light direction
+            
             shade_factor = i / gradient_steps
             r = int(base_color[0] * (1 - shade_factor))
             g = int(base_color[1] * (1 - shade_factor))
             b = int(base_color[2] * (1 - shade_factor))
 
-            # Draw each circle slightly smaller and with darker color for the 3D effect
+            
             circle(
                 screen,
-                (r, g, b),  # Adjusted color for each layer
+                (r, g, b),  
                 (self.x, self.y),
-                ball_radius - i  # Each layer gets progressively smaller
+                ball_radius - i  
             )

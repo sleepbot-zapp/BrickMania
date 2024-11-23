@@ -248,7 +248,7 @@ class MainGame(Page):
                 self.last_x_time = current_time
 
             if keys[pygame.K_RSHIFT]:
-                # Reset the balls and the player
+                
                 self.balls = [
                     Ball(
                         screen=self.screen,
@@ -269,7 +269,7 @@ class MainGame(Page):
             if all(ball.y >= self.height - 60 for ball in self.balls):
                 user_exited = self.game_over(self.score, color, self.data)
                 if user_exited:
-                    # Reset the balls and the player
+                    
                     self.balls = [
                         Ball(
                             screen=self.screen,
@@ -283,7 +283,7 @@ class MainGame(Page):
                     )
                     return True
                 else:
-                    # Reset the balls and the player
+                    
                     self.balls = [
                         Ball(
                             screen=self.screen,

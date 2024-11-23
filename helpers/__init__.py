@@ -1,7 +1,7 @@
 __all__ = [
-    # Classes
+    
     "Settings",
-    # Constants
+    
     "SCALE",
     "WIDTH",
     "HEIGHT",

@@ -26,22 +26,22 @@ class Game:
         scale=SCALE,
     ) -> None:
         pygame.init()
-        # window
+        
         self.height = height
         self.width = width
         self.scale = scale
         self.screen = pygame.display.set_mode((self.width, self.height))
-        # colors
+        
         self.colors = Color()
-        # game variables
+        
         self.clock = pygame.time.Clock()
         self._music_files = track_path, track1, track2, track3
         self.music_is_playing = False
         self.is_main_menu = True
         self.volume = 0.0
-        # entity variables
+        
         self.trails = {}
-        # pages
+        
         self.main_menu = MainMenu(self.screen, self.height, self.width, self.scale, self)
         self.settings_page = Settings(
             self.screen,
@@ -69,8 +69,8 @@ class Game:
         """Call the dynamic loading screen function."""
         result = (
             loading_screen(self.colors)
-        )  # The loading screen runs until user presses Enter or Shift
-        return result  # Return value determines the next action (e.g., continue or go back)
+        )  
+        return result  
 
     def gameloop(self):
         while True:
@@ -82,7 +82,7 @@ class Game:
 
             self.screen.fill(self.colors.BLACK)
 
-            # Handle main menu and get selected option
+            
             if self.is_main_menu:
                 selected_option = self.main_menu.generate(
                     self.colors, brick_width, brick_height, self.clock
@@ -93,13 +93,13 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
-            # Process selected option
-            if selected_option == 0:  # Start the game
+            
+            if selected_option == 0:  
                 self.is_main_menu = False
                 back_to_main_menu = (
                     self.run_loading_screen()
-                )  # Show the animated loading screen
-                if not back_to_main_menu:  # User pressed Enter to continue
+                )  
+                if not back_to_main_menu:  
                     self.is_main_menu = self.game_page.runner(
                         self.colors,
                         brick_height,
@@ -107,12 +107,12 @@ class Game:
                         self.trails,
                         self.clock,
                     )
-                else:  # User pressed Shift to return to the main menu
+                else:  
                     self.is_main_menu = True
-            elif selected_option == 1:  # Settings
+            elif selected_option == 1:  
                 self.is_main_menu = False
-                self.is_main_menu = self.settings_page.display()#self.colors)
-            elif selected_option == 2:  # Info
+                self.is_main_menu = self.settings_page.display()
+            elif selected_option == 2:  
                 self.is_main_menu = False
                 self.is_main_menu = self.info_page.scroll(self.colors)
 
