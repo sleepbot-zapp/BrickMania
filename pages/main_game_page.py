@@ -110,7 +110,7 @@ class MainGame(Page):
             True,
             [color.GREEN, color.YELLOW][highscore > score],
         )
-        text3 = font_for_game_over.render(f"Your Score = {score}", True, color.BLUE)
+        text3 = font_for_game_over.render(f"Your Score = {score}", True, color.YELLOW)
 
         if highscore < score:
             settings.highscore = score

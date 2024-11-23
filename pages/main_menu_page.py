@@ -80,7 +80,7 @@ class MainMenu(Page):
             )
 
             for i, option in enumerate(self.options):
-                c = [color.YELLOW, color.BLUE][i != self.selected_option]
+                c = [color.WHITE, Color.GREEN][i == self.selected_option]
                 option_text = self.fonts[2].render(option, True, c)
                 self.screen.blit(
                     option_text,

@@ -29,12 +29,11 @@ class Game:
         width=WIDTH,
         scale=SCALE,
     ) -> None:
-        pygame.init()
+        
 
         self.height = height
         self.width = width
         self.scale = scale
-        self.screen = pygame.display.set_mode((self.width, self.height))
 
         self.colors = Color()
 
@@ -52,7 +51,6 @@ class Game:
         self.game_page = None
 
     def pre_load_music(self):
-
         for music_file in self._music_files[1:]:
             music_file.set_volume(self.volume)
 
@@ -78,22 +76,23 @@ class Game:
 
     def gameloop(self):
         self.pre_load_music()
-
+        pygame.init()
+        self.screen = pygame.display.set_mode((self.width, self.height))
+        self.screen.fill(self.colors.BLACK)
         while True:
-            if self.music_is_playing:
-                pygame.mixer.music.load(self._music_files[0])
-                pygame.mixer.music.play(-1)
-            else:
-                pygame.mixer.music.stop()
-
-            self.screen.fill(self.colors.BLACK)
-
             if self.is_main_menu:
                 if not self.main_menu:
                     self.initialize_pages()
                 selected_option = self.main_menu.generate(
                     self.colors, brick_width, brick_height, self.clock
                 )
+
+            if self.music_is_playing:
+                pygame.mixer.music.load(self._music_files[0])
+                pygame.mixer.music.play(-1)
+            else:
+                pygame.mixer.music.stop()
+
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

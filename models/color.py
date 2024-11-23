@@ -4,6 +4,14 @@ ColorType = typing.Tuple[int, int, int]
 
 
 class Color:
+    BLACK = (32, 32, 45)
+    BLUE = (137, 180, 250)
+    GREEN = (142, 227, 131)
+    GREY = (92, 95, 119)
+    RED = (232, 134, 135)
+    WHITE = (227, 231, 255)
+    YELLOW = (249, 226, 175)
+    
     def __init__(
         self,
         BLACK=None,

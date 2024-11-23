@@ -1,7 +1,7 @@
 import typing
 import pygame
 from .pages import Page
-
+from models import Color
 
 class Settings(Page):
     def __init__(
@@ -27,6 +27,7 @@ class Settings(Page):
 
     def display(self) -> bool:
         """Main settings menu where options are displayed."""
+        self.selected_option = 0
         while True:
             self.screen.fill(self.game.colors.BLACK)
 
@@ -37,16 +38,16 @@ class Settings(Page):
             )
             self.screen.blit(header_text, header_rect)
 
-            options_font = self.fonts[1]
+            options_font = self.fonts[0]
             for i, option in enumerate(self.settings_options):
                 c = (
-                    self.game.colors.YELLOW
+                    self.game.colors.GREEN
                     if i == self.selected_option
                     else self.game.colors.WHITE
                 )
                 option_text = options_font.render(option, True, c)
                 option_rect = option_text.get_rect(
-                    center=(self.width // 2, int(150 * self.scale) + i * 50)
+                    center=(self.width // 2, int(150 * self.scale) + (i+1) * 100)
                 )
                 self.screen.blit(option_text, option_rect)
 
@@ -159,7 +160,7 @@ class Settings(Page):
             for i, color_name in enumerate(self.color_keys):
                 color_value = getattr(self.game.colors, color_name)
                 highlight = (
-                    self.game.colors.YELLOW
+                    self.game.colors.GREEN
                     if i == self.selected_color_index
                     else self.game.colors.WHITE
                 )
@@ -177,19 +178,19 @@ class Settings(Page):
                 pygame.draw.rect(
                     self.screen,
                     color_value,
-                    (self.width // 2 + 200, 140 + i * 50, 40, 40),
+                    (self.width // 2 + 200, 130 + i * 50, 40, 40),
                 )
 
                 pygame.draw.rect(
                     self.screen,
                     (0, 0, 0),
-                    (self.width // 2 + 200, 140 + i * 50, 40, 40),
+                    (self.width // 2 + 200, 130 + i * 50, 40, 40),
                     2,
                 )
 
                 if i == self.selected_color_index:
                     arrow_text = options_font.render(
-                        ">>", True, self.game.colors.YELLOW
+                        "*", True, self.game.colors.GREEN
                     )
                     arrow_rect = arrow_text.get_rect(
                         center=(self.width // 2 - 300, 150 + i * 50)
@@ -202,7 +203,7 @@ class Settings(Page):
 
                 for j, component in enumerate(["R", "G", "B"]):
                     highlight = (
-                        self.game.colors.YELLOW
+                        self.game.colors.GREEN
                         if j == self.color_edit_component
                         else self.game.colors.WHITE
                     )
@@ -216,7 +217,7 @@ class Settings(Page):
 
                 if numeric_input:
                     numeric_input_text = options_font.render(
-                        f"Input: {numeric_input}", True, self.game.colors.YELLOW
+                        f"Input: {numeric_input}", True, self.game.colors.RED
                     )
                     numeric_input_rect = numeric_input_text.get_rect(
                         center=(self.width // 2, 575)
@@ -231,12 +232,13 @@ class Settings(Page):
                 if event.type == pygame.KEYDOWN:
                     if event.key in [pygame.K_LSHIFT, pygame.K_RSHIFT]:
                         if editing_mode:
-
                             editing_mode = False
                             numeric_input = ""
                         else:
                             return
                     elif not editing_mode:
+                        if event.key == pygame.K_r:
+                            self.game.colors = Color()
                         if event.key == pygame.K_DOWN:
                             self.selected_color_index = (
                                 self.selected_color_index + 1
@@ -253,7 +255,8 @@ class Settings(Page):
                         selected_color = list(
                             getattr(self.game.colors, selected_color_name)
                         )
-
+                        if event.key == pygame.K_r:
+                            self.game.colors.__dict__[selected_color_name] = Color.__dict__[selected_color_name]
                         if event.key == pygame.K_RIGHT:
                             self.color_edit_component = (
                                 self.color_edit_component + 1
@@ -281,7 +284,6 @@ class Settings(Page):
                                 tuple(selected_color),
                             )
                         elif event.key == pygame.K_RETURN:
-
                             if numeric_input:
                                 value = min(255, max(0, int(numeric_input)))
                                 selected_color[self.color_edit_component] = value
@@ -299,5 +301,6 @@ class Settings(Page):
                             numeric_input += event.unicode
                             if int(numeric_input) > 255:
                                 numeric_input = "255"
+
 
             pygame.display.flip()
