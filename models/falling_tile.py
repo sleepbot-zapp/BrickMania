@@ -5,7 +5,7 @@ from .color import Color
 
 class FallingTile:
     def __init__(
-        self, brick_width: int, brick_height: int, width: int, height: int, scale: int
+        self, brick_width: int, brick_height: int, width: int, height: int, scale: int, color
     ) -> None:
         """Initializes a falling tile with random position, speed, and color."""
         self.width = brick_width
@@ -13,7 +13,7 @@ class FallingTile:
         self.x = randint(0, width * scale - self.width)
         self.y = randint(-height * scale, 0)
         self.speed = randint(2, 7) * scale
-        self.color = choice([Color().RED, Color().BLUE, Color().GREEN])
+        self.color = choice([color.RED, color.BLUE, color.GREEN])
 
     def move(self, height: int, width: int) -> None:
         """Moves the tile down and resets its position if it moves off-screen."""

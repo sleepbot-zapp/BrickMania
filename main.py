@@ -54,7 +54,7 @@ class Game:
             self.screen, self, self.height, self.width, self.scale, self.colors
         )
         self.game_page = MainGame(
-            self.screen, self.height, self.width, self.scale, self
+            self.screen, self.height, self.width, self.scale, self, self.colors
         )
 
     @property
@@ -68,7 +68,7 @@ class Game:
     def run_loading_screen(self):
         """Call the dynamic loading screen function."""
         result = (
-            loading_screen()
+            loading_screen(self.colors)
         )  # The loading screen runs until user presses Enter or Shift
         return result  # Return value determines the next action (e.g., continue or go back)
 

@@ -23,7 +23,7 @@ class MainGame(Page):
     special_ball_time = 20
     random_destruction_time = 60
 
-    def __init__(self, screen, height, width, scale, game, fonts=None) -> None:
+    def __init__(self, screen, height, width, scale, game, color, fonts=None) -> None:
         super().__init__(screen, height, width, scale, fonts)
         self.fonts = (pygame.font.SysFont(None, int(42 * self.scale)),)
         self.data = settings.Settings.open()
@@ -32,7 +32,7 @@ class MainGame(Page):
         self.powerups = []
         self.special_balls = []
         self.running = True
-        self.bricks = create_new_bricks()
+        self.bricks = create_new_bricks(color)
         self.last_move_time = self.last_brick_move_time = (
             self.last_special_ball_time
         ) = self.last_x_time = time.time()
@@ -48,10 +48,10 @@ class MainGame(Page):
             screen=self.screen, height=self.height, width=self.width, scale=self.scale
         )
 
-    def pause_game(self, clock):
+    def pause_game(self, clock, color):
         paused = True
         pause_text = self.fonts[0].render(
-            "Game Paused. Press 'P' to Resume.", True, Color().WHITE
+            "Game Paused. Press 'P' to Resume.", True, color.WHITE
         )
         dim_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         dim_surface.fill((0, 0, 0, 180))
@@ -163,7 +163,7 @@ class MainGame(Page):
 
     def runner(self, color: Color, brick_height, brick_width, trails, clock):
         self.score = 0
-        self.bricks = create_new_bricks()
+        self.bricks = create_new_bricks(color)
         self.powerups = []
         self.special_balls = []
         self.last_move_time = self.last_brick_move_time = (
@@ -187,7 +187,7 @@ class MainGame(Page):
             current_time = time.time()
 
             if len(self.bricks) == 0:
-                self.bricks = create_new_bricks()
+                self.bricks = create_new_bricks(color)
 
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
@@ -319,7 +319,7 @@ class MainGame(Page):
                         bricks_to_remove.append(brick)
                         self.score += 10
                         powerup = drop_powerup(
-                            brick.x, brick.y, self.powerups, self.scale
+                            brick.x, brick.y, self.powerups, self.scale, color
                         )
                         if powerup:
                             self.powerups.append(powerup)
@@ -333,7 +333,7 @@ class MainGame(Page):
                         bricks_to_remove.append(brick)
                         self.score += 10
                         powerup = drop_powerup(
-                            brick.x, brick.y, self.powerups, self.scale
+                            brick.x, brick.y, self.powerups, self.scale, color
                         )
                         if powerup:
                             self.powerups.append(powerup)
@@ -367,7 +367,7 @@ class MainGame(Page):
             for special_ball in self.special_balls:
                 if special_ball.y < self.height - 70:
                     special_ball.move(ball_radius, self.width, dt)
-                    special_ball.draw(self.screen, ball_radius)
+                    special_ball.draw(self.screen, ball_radius, color)
 
                 if (
                     special_ball.x < 0
@@ -378,7 +378,7 @@ class MainGame(Page):
                     self.special_balls.remove(special_ball)
 
             draw_bricks(self.bricks, self.screen)
-            self.player.draw_player()
+            self.player.draw_player(color)
 
             if self.game.music_is_playing:
                 if (

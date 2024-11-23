@@ -20,10 +20,10 @@ class SpecialBall:
         if self.y <= ball_radius:
             self.dy = -self.dy
 
-    def draw(self, screen, ball_radius):
+    def draw(self, screen, ball_radius, color):
         """Draw the ball on the screen with a 3D-like gradient effect."""
         gradient_steps = 10  # Number of gradient steps to create the depth effect
-        base_color = Color().RED
+        base_color = color.RED
         
         # Create the gradient effect by drawing multiple circles
         for i in range(gradient_steps):

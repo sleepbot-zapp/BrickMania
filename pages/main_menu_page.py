@@ -36,7 +36,7 @@ class MainMenu(Page):
         clock,
     ) -> int:
         tiles = [
-            FallingTile(brick_width, brick_height, self.width, self.height, self.scale)
+            FallingTile(brick_width, brick_height, self.width, self.height, self.scale, color)
             for _ in range(20)
         ]
         while True:

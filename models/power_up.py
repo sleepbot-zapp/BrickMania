@@ -4,13 +4,13 @@ from .color import Color
 
 
 class PowerUp:
-    def __init__(self, x, y, type, scale):
+    def __init__(self, x, y, type, scale, color):
         self.x = x
         self.y = y
         self.width = 40 * scale
         self.height = 20 * scale
         self.type = type
-        self.color = [Color().GREEN, Color().RED]
+        self.color = [color.GREEN, color.RED]
         self.fall_speed = 120 * scale
 
     def move(self, dt):
@@ -28,9 +28,9 @@ class PowerUp:
         )
 
 
-def drop_powerup(brick_x, brick_y, powerups, scale):
+def drop_powerup(brick_x, brick_y, powerups, scale, color):
     """Drop a power-up with a 10% chance when there are fewer than 2 active power-ups."""
     if len(powerups) < 2 and random.random() < 0.1:
         powerup_type = "extra_ball"
-        return PowerUp(brick_x, brick_y, powerup_type, scale)
+        return PowerUp(brick_x, brick_y, powerup_type, scale, color)
     return None

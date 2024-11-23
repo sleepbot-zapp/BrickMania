@@ -23,7 +23,7 @@ from helpers.loading_combinations import combs
 from models import Color
 
 
-def loading_screen():
+def loading_screen(color):
     """Display a dynamic loading screen with animations and tips."""
     # Randomly select functions for animation
     func1, func2 = random.choice(combs)
@@ -54,18 +54,18 @@ def loading_screen():
 
     while True:
         # Clear screen and set background color
-        screen.fill(Color().BLACK)
+        screen.fill(color.BLACK)
         clock.tick(60)
 
         # Display game title
-        loading_text = tip_font.render("BrickMania", True, Color().WHITE)
+        loading_text = tip_font.render("BrickMania", True, color.WHITE)
         screen.blit(
             loading_text,
             (WIDTH // 2 - loading_text.get_width() // 2, HEIGHT // 2 - 123),
         )
 
         # Display random tip
-        tip_text = tip_font.render("Tip: " + tip, True, Color().WHITE)
+        tip_text = tip_font.render("Tip: " + tip, True, color.WHITE)
         screen.blit(
             tip_text, (WIDTH // 2 - tip_text.get_width() // 2, HEIGHT // 2 + 123)
         )
@@ -152,8 +152,8 @@ def loading_screen():
             end_y2 += spinner_center[1]
 
             # Draw lines for spinner segments
-            line(screen, Color().BLUE, (end_x1, end_y1), (end_x2, end_y2), 3)
-            line(screen, Color().RED, (start_x1, start_y1), (start_x2, start_y2), 3)
+            line(screen, color.BLUE, (end_x1, end_y1), (end_x2, end_y2), 3)
+            line(screen, color.RED, (start_x1, start_y1), (start_x2, start_y2), 3)
 
         # Update angles and time
         angle += spinner_speed

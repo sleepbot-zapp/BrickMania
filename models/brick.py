@@ -5,22 +5,23 @@ from .color import Color
 
 
 class Brick:
-    def __init__(self, x, y):
+    def __init__(self, x, y, color):
         self.x = x
         self.y = y
         self.speed = brick_speed
         self.height = brick_height
         self.width = brick_width
         self.color = random.choice(
-            [Color().RED, Color().BLUE, Color().GREEN, Color().YELLOW]
+            [color.RED, color.BLUE, color.GREEN, color.YELLOW]
         )
+        self.black = color.BLACK
 
     def draw(self, screen):
         """Draw the brick with a gradient color."""
         gradient_surface = self._create_gradient_surface()
         screen.blit(gradient_surface, (self.x, self.y))
         pygame.draw.rect(
-            screen, Color().BLACK, (self.x, self.y, self.width, self.height), 2
+            screen, self.black, (self.x, self.y, self.width, self.height), 2
         )
 
     def _create_gradient_surface(self):
@@ -55,10 +56,10 @@ class Brick:
         return r, g, b
 
 
-def create_new_bricks():
+def create_new_bricks(color):
     """Create a list of new bricks based on the grid size."""
     return [
-        Brick(col * brick_width, row * brick_height)
+        Brick(col * brick_width, row * brick_height, color)
         for col in range(brick_cols)
         for row in range(brick_rows)
     ]

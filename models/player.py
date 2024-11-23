@@ -1,7 +1,6 @@
 import time
 import pygame
 from helpers import WIDTH, player_height, player_speed, player_width
-from .color import Color
 
 
 class Player:
@@ -31,10 +30,10 @@ class Player:
         self.y_end = self.y_start - self.player_height  # Unused currently
 
 
-    def draw_player(self):
+    def draw_player(self, color):
         """Draw the player character as a rectangle with a 3D-like gradient effect."""
         gradient_steps = 10  # Number of gradient steps to create depth effect
-        base_color = Color().BLUE
+        base_color = color.BLUE
         for i in range(gradient_steps):
             # Calculate color variations for the gradient effect
             # As `i` increases, the rectangle becomes darker to simulate depth
