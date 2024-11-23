@@ -20,20 +20,12 @@ class PowerUp:
     def draw(self, screen):
         """Draw the power-up as a rectangle with a circle inside it."""
         self._draw_rectangle(screen)
-        self._draw_circle(screen)
 
     def _draw_rectangle(self, screen):
         """Draw the rectangle for the power-up."""
         pygame.draw.rect(
             screen, self.color[0], (self.x, self.y, self.width, self.height)
         )
-
-    def _draw_circle(self, screen):
-        """Draw a circle inside the power-up rectangle."""
-        center_x = self.x + self.width // 2
-        center_y = self.y + self.height // 2
-        circle_radius = min(self.width, self.height) // 3
-        pygame.draw.circle(screen, self.color[1], (center_x, center_y), circle_radius)
 
 
 def drop_powerup(brick_x, brick_y, powerups, scale):
