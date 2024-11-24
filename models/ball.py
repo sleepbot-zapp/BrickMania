@@ -1,7 +1,6 @@
 import random
 import pygame
 from helpers import ball_radius, ball_speed_x, ball_speed_y
-from models import ColorType
 from .player import Player
 import typing
 
@@ -35,7 +34,7 @@ class Ball:
         self.trail: typing.List[typing.Tuple[typing.Union[int, float], typing.Union[int, float]]] = []
 
 
-    def draw_ball(self, screen, color: typing.Tuple[ColorType, ...] , ball_id: int, x: typing.Union[int, float], y: typing.Union[int, float], ball_trails):
+    def draw_ball(self, screen, color, ball_id: int, x: typing.Union[int, float], y: typing.Union[int, float], ball_trails):
         """Draw the ball with a diverging 3D trail effect."""
         max_alpha: typing.Union[int, float] = 50  
         trail_length: typing.Union[int, float] = 10

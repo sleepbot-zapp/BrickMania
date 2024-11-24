@@ -61,7 +61,7 @@ def inv_atan(x: typing.Union[int, float]) -> float:
     return 1 / atan(x)
 
 
-combs: typing.Tuple[typing.Tuple[function, function], ...] = (
+combs: typing.Tuple[typing.Tuple[object, object], ...] = (
     (sin, cos),
     (sin, tan),
     (sin, sinh),
