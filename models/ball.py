@@ -2,7 +2,6 @@ import random
 import pygame
 from helpers import ball_radius, ball_speed_x, ball_speed_y, trail_length
 from .player import Player
-import math
 
 
 class Ball:

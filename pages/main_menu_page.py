@@ -1,10 +1,7 @@
 import sys
 import typing
-
 import pygame
-
 from models import Color, FallingTile
-
 from .pages import Page
 
 
@@ -28,6 +25,7 @@ class MainMenu(Page):
         self.selected_option: int = 0
         self.options = options or ("Play", "Settings", "Info")
         self.texts = ("BRICKMANIA", "Press Q to Quit", "Press Enter to Select")
+
 
     def generate(
         self,
@@ -56,7 +54,6 @@ class MainMenu(Page):
                     (self.height // 2 - 150) * self.scale,
                 ),
             )
-
             quit_text = self.fonts[1].render(self.texts[1], True, color.GREY)
             bottom_text = self.fonts[1].render(self.texts[2], True, color.GREY)
             self.screen.blit(
@@ -70,7 +67,6 @@ class MainMenu(Page):
                     self.width - bottom_text.get_height() - 10,
                 ),
             )
-
             self.screen.blit(
                 bottom_text,
                 (
@@ -78,7 +74,6 @@ class MainMenu(Page):
                     self.height - bottom_text.get_height() - 10,
                 ),
             )
-
             for i, option in enumerate(self.options):
                 c = [color.WHITE, Color.GREEN][i == self.selected_option]
                 option_text = self.fonts[2].render(option, True, c)
@@ -89,9 +84,7 @@ class MainMenu(Page):
                         (self.height // 2 + i * 60) * self.scale,
                     ),
                 )
-
             pygame.display.flip()
-
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     quit()
@@ -110,5 +103,4 @@ class MainMenu(Page):
                     elif e.key == pygame.K_q:
                         pygame.quit()
                         sys.exit()
-
             clock.tick(60)

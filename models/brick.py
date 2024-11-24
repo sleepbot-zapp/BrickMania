@@ -1,7 +1,6 @@
 import random
 import pygame
 from helpers import brick_cols, brick_height, brick_rows, brick_speed, brick_width
-from .color import Color
 
 
 class Brick:

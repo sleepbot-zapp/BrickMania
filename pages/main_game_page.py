@@ -8,7 +8,6 @@ from helpers import settings
 from helpers.constants import ball_radius, bottom_font, font
 from models import (
     Ball,
-    Color,
     Player,
     SpecialBall,
     draw_bricks,

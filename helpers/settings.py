@@ -1,5 +1,4 @@
 from os import makedirs, path
-
 from appdirs import user_data_dir
 from pydantic import BaseModel
 

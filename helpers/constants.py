@@ -1,6 +1,5 @@
 import os
 from typing import List
-
 import pygame
 from pydantic import BaseModel
 

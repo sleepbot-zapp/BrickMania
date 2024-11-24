@@ -1,9 +1,7 @@
 import random
 import sys
 import time
-
 import pygame
-
 from helpers import settings
 from helpers.constants import ball_radius, bottom_font, font
 from models import (

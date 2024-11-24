@@ -2,7 +2,6 @@ import math
 import random
 from random import choice, uniform
 from sys import exit
-
 from pygame import (
     K_LSHIFT,
     K_RETURN,
@@ -20,7 +19,6 @@ from pygame.font import SysFont
 
 from helpers.constants import HEIGHT, WIDTH, bottom_font, clock, screen
 from helpers.loading_combinations import combs
-from models import Color
 
 
 def loading_screen(color):

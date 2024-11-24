@@ -1,6 +1,5 @@
 import random
 import pygame
-from .color import Color
 
 
 class PowerUp:

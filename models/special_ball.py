@@ -1,5 +1,4 @@
 from pygame.draw import circle
-from .color import Color
 
 
 class SpecialBall:
