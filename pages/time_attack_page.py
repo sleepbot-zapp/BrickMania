@@ -96,7 +96,7 @@ class TimeAttack(Page):
         self.screen.blit(
             timer_text,
             (
-                ((self.width // 2 - timer_text.get_width() / 2) + 100)* self.scale,
+                ((self.width // 2 - timer_text.get_width() / 2) + 50)* self.scale,
                 (self.height - 30) * self.scale,
             ),
         )
@@ -210,13 +210,11 @@ class TimeAttack(Page):
                     user_exited = self.game_over(self.score, self.data)
                     if user_exited:
                         return True
-                    break
-                else:  
-                    self.timer += 60
-                    self.bricks = create_new_bricks(self.color)
 
             
             if len(self.bricks) == 0:
+                self.bricks = create_new_bricks(self.color)
+                self.timer += 60
                 self.bricks = create_new_bricks(self.color)
 
             for e in pygame.event.get():
@@ -255,6 +253,7 @@ class TimeAttack(Page):
                 and current_time - self.last_special_ball_time
                 > self.special_ball_time - 1
             ):
+                self.timer -= 10
                 dx = random.choice([-500, 500])
                 dy = random.randint(-300, -120)
                 self.special_balls.append(
@@ -273,6 +272,7 @@ class TimeAttack(Page):
             if (
                 keys[pygame.K_DOWN] or keys[pygame.K_s]
             ) and current_time - self.last_x_time > self.random_destruction_time - 1:
+                self.timer -= 30
                 for _ in range(5):
                     if self.bricks:
                         random_brick = random.choice(self.bricks)
