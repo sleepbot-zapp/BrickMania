@@ -147,7 +147,7 @@ class Settings(Page):
             )
             self.screen.blit(header_text, header_rect)
             options_font = self.fonts[1]
-            
+
             for i, color_name in enumerate(self.color_keys):
                 color_value = getattr(self.game.colors, color_name)
                 highlight = (
@@ -286,3 +286,4 @@ class Settings(Page):
                                 numeric_input = "255"
 
             pygame.display.flip()
+            
