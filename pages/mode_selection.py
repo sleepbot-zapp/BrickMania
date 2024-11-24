@@ -1,9 +1,7 @@
 import pygame
 import sys
-
 from pages.pages import Page
-from helpers import settings
-from helpers.constants import font, brick_height, brick_width
+from helpers.constants import brick_height, brick_width
 from pages.dark_mode_game_page import DarkModeGame
 from pages.loading_screen import loading_screen
 from pages.main_game_page import MainGame  
@@ -21,9 +19,7 @@ class ModeSelection(Page):
 
     def draw_text(self, text, color, y_offset, is_selected=False):
         """Draw a single menu option."""
-        if is_selected:
-            text = f"> {text} <"  
-        label = self.fonts[0].render(text, True, color)
+        label = self.fonts[0].render(text, True, color.GREEN if is_selected else color.WHITE)
         self.screen.blit(
             label,
             ((self.width - label.get_width()) // 2, (self.height // 2) + y_offset),
@@ -38,7 +34,7 @@ class ModeSelection(Page):
             
             for i, option in enumerate(self.options):
                 self.draw_text(
-                    option, color.WHITE, i * 50 - 50, is_selected=(i == self.selected_option)
+                    option, color, i * 50 - 50, is_selected=(i == self.selected_option)
                 )
 
             pygame.display.flip()
@@ -69,7 +65,7 @@ class ModeSelection(Page):
             game_page.runner(brick_height, brick_width, trails, clock)
         elif selected_mode == "Dark Mode":
             loading_screen(color)
-            game_page = DarkModeGame(self.screen, self.height, self.width, self.scale, self.game, color) 
+            game_page = DarkModeGame(self.screen, self.height, self.width, self.scale, self.game) 
             game_page.runner(brick_height, brick_width, trails, clock)
         elif selected_mode == "Time Attack Mode":
             loading_screen(color)

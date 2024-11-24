@@ -26,7 +26,7 @@ class MainMenu(Page):
             pygame.font.SysFont(None, int(48 * self.scale)),
         )
         self.selected_option: int = 0
-        self.options = options or ("Main Game", "Settings", "Info")
+        self.options = options or ("Play", "Settings", "Info")
         self.texts = ("BRICKMANIA", "Press Q to Quit", "Press Enter to Select")
 
     def generate(

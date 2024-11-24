@@ -23,7 +23,7 @@ class DarkModeGame(Page):
     special_ball_time = 20
     random_destruction_time = 60
 
-    def __init__(self, screen, height, width, scale, game, color, fonts=None) -> None:
+    def __init__(self, screen, height, width, scale, game) -> None:
         super().__init__(screen, height, width, scale, game)
         self.fonts = (pygame.font.SysFont(None, int(42 * self.scale)),)
         self.data = settings.Settings.open()
@@ -84,7 +84,7 @@ class DarkModeGame(Page):
 
     def show_score(self):
         score = self.score
-        text = font.render(f"Score: {score}", True, self.color.RED)
+        text = font.render(f"Score: {score}", True, Color.RED)
         self.screen.blit(
             text,
             (
@@ -106,18 +106,18 @@ class DarkModeGame(Page):
         if self.game.music_is_playing:
             pygame.mixer.music.pause()
             self.game.music_files[2].play()
-        self.screen.fill(self.color.BLACK)
+        self.screen.fill(Color.BLACK)
         font_for_game_over = self.fonts[0]
         text = font_for_game_over.render(
-            "Game Over! Press ENTER to restart", True, self.color.RED
+            "Game Over! Press ENTER to restart", True, Color.RED
         )
         highscore = settings.highscore
         text2 = font_for_game_over.render(
             f"High Score = {[score, highscore][highscore > score]}",
             True,
-            [self.color.GREEN, self.color.YELLOW][highscore > score],
+            [Color.GREEN, Color.YELLOW][highscore > score],
         )
-        text3 = font_for_game_over.render(f"Your Score = {score}", True, self.color.YELLOW)
+        text3 = font_for_game_over.render(f"Your Score = {score}", True, Color.YELLOW)
 
         if highscore < score:
             settings.highscore = score
@@ -146,7 +146,7 @@ class DarkModeGame(Page):
         )
 
         quit_text = bottom_font.render(
-            "Press Shift to go to Main Window", True, self.color.GREY
+            "Press Shift to go to Main Window", True, Color.GREY
         )
         self.screen.blit(
             quit_text, (10, (self.height - quit_text.get_height() - 10) * self.scale)
@@ -412,7 +412,7 @@ class DarkModeGame(Page):
 
             if current_time - self.last_special_ball_time > self.special_ball_time - 1:
                 special_ball_text = font.render(
-                    "Special Ball Ready (UP)", True, self.color.GREEN
+                    "Special Ball Ready (UP)", True, Color.GREEN
                 )
             else:
                 remaining_time = max(
@@ -421,12 +421,12 @@ class DarkModeGame(Page):
                     - (current_time - self.last_special_ball_time),
                 )
                 special_ball_text = font.render(
-                    f"Special Ball in {int(remaining_time)}s", True, self.color.WHITE
+                    f"Special Ball in {int(remaining_time)}s", True, Color.WHITE
                 )
 
             if current_time - self.last_x_time > self.random_destruction_time - 1:
                 countdown_text = font.render(
-                    "Brick Destruction Ready (DOWN)", True, self.color.GREEN
+                    "Brick Destruction Ready (DOWN)", True, Color.GREEN
                 )
                 self.screen.blit(
                     countdown_text,
@@ -443,7 +443,7 @@ class DarkModeGame(Page):
                 countdown_text = font.render(
                     f"Brick Destruction in {int(time_until_destruction)}s",
                     True,
-                    self.color.WHITE,
+                    Color.WHITE,
                 )
                 self.screen.blit(
                     countdown_text,
@@ -455,7 +455,7 @@ class DarkModeGame(Page):
 
             pygame.draw.line(
                 self.screen,
-                self.color.WHITE,
+                Color.WHITE,
                 (0, self.height - 50),
                 (self.width, self.height - 50),
                 2,
@@ -467,7 +467,7 @@ class DarkModeGame(Page):
 
             pygame.draw.line(
                 self.screen,
-                self.color.WHITE,
+                Color.WHITE,
                 (0, self.height - 50),
                 (self.width, self.height - 50),
                 2,
