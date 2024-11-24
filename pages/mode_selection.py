@@ -16,7 +16,7 @@ class ModeSelection(Page):
         self.fonts = (pygame.font.SysFont(None, int(50 * self.scale)),)
         self.running = True
         self.selected_option = 0  
-        self.options = ["Normal Mode", "Dark Mode", "Time Attack Mode", "Quit"]
+        self.options = ["Normal Mode", "Dark Mode", "Time Attack Mode",]
 
     def draw_text(self, text, color, y_offset, is_selected=False):
         """Draw a single menu option."""
@@ -53,12 +53,10 @@ class ModeSelection(Page):
                     elif event.key == pygame.K_UP:
                         
                         self.selected_option = (self.selected_option - 1) % len(self.options)
-                    elif event.key == pygame.K_RETURN:  
-                        
+                    elif event.key == pygame.K_RETURN:           
                         return self.options[self.selected_option]
-                    elif event.key == pygame.K_q:  
-                        pygame.quit()
-                        sys.exit()
+                    elif event.key == pygame.K_RSHIFT:
+                        return True
 
     def run(self, color, clock, trails):
         """Run the mode selection and start the appropriate game mode."""
@@ -74,12 +72,5 @@ class ModeSelection(Page):
             game_page.runner(brick_height, brick_width, trails, clock)
         elif selected_mode == "Time Attack Mode":
             loading_screen(color)
-            
-            
-            
-            
-        elif selected_mode == "Quit":
-            pygame.quit()
-            sys.exit()
         else:
             return True  

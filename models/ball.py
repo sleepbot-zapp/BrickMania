@@ -120,7 +120,6 @@ class Ball:
 
         if self.y <= self.ball_radius:
             self.dy = abs(self.dy)
-            self.y = self.ball_radius
 
         if self.y >= self.height - self.ball_radius - 60 and not self.ball_crossed_line:
             self.ball_crossed_line = True
