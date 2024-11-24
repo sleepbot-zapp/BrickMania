@@ -17,10 +17,6 @@ from pages import Info, MainMenu, Settings, ModeSelection
 from pages import loading_screen
 
 
-import pygame
-import sys
-
-
 class Game:
     def __init__(
         self,

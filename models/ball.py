@@ -37,7 +37,7 @@ class Ball:
     def draw_ball(self, screen, color, ball_id, x, y, ball_trails):
         """Draw the ball with a diverging 3D trail effect."""
         max_alpha = 50  
-        trail_length = 20
+        trail_length = 10
         max_trail_width = self.ball_radius * 1.5  
         min_trail_width = self.ball_radius  
         divergence = 0.1 
