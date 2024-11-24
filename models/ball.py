@@ -37,7 +37,7 @@ class Ball:
     def draw_ball(self, screen, color, ball_id, x, y, ball_trails):
         """Draw the ball with a diverging 3D trail effect."""
         max_alpha = 50  
-        trail_length = 5  
+        trail_length = 20
         max_trail_width = self.ball_radius * 1.5  
         min_trail_width = self.ball_radius  
         divergence = 0.1 
@@ -106,9 +106,6 @@ class Ball:
             self.ball_radius // 4,
         )
 
-
-
-
     def move_ball(self, dt, player: Player):
         """Move the ball and handle collisions."""
         self.x += self.dx * dt
@@ -120,6 +117,7 @@ class Ball:
 
         if self.y <= self.ball_radius:
             self.dy = abs(self.dy)
+            self.y = self.ball_radius
 
         if self.y >= self.height - self.ball_radius - 60 and not self.ball_crossed_line:
             self.ball_crossed_line = True
