@@ -1,7 +1,9 @@
 import random
 import pygame
-from helpers import ball_radius, ball_speed_x, ball_speed_y, trail_length
+from helpers import ball_radius, ball_speed_x, ball_speed_y
+from models import ColorType
 from .player import Player
+import typing
 
 
 class Ball:
@@ -9,58 +11,46 @@ class Ball:
         self,
         *,
         screen,
-        height,
-        width,
-        scale,
-        ball_radius=ball_radius,
-        ball_speed_x=ball_speed_x,
-        ball_speed_y=ball_speed_y,
+        height: typing.Union[int, float],
+        width: typing.Union[int, float],
+        scale: typing.Union[int, float],
+        ball_radius: typing.Union[int, float]=ball_radius,
+        ball_speed_x: typing.Union[int, float]=ball_speed_x,
+        ball_speed_y: typing.Union[int, float]=ball_speed_y,
     ) -> None:
 
         self.screen = screen
-        self.height = height - 150
-        self.width = width
-        self.scale = scale
-        self.ball_radius = ball_radius
-        self.ball_speed_x = ball_speed_x
-        self.ball_speed_y = ball_speed_y
+        self.height: typing.Union[int, float] = height - 150
+        self.width: typing.Union[int, float] = width
+        self.scale: typing.Union[int, float] = scale
+        self.ball_radius: typing.Union[int, float] = ball_radius
+        self.ball_speed_x: typing.Union[int, float] = ball_speed_x
+        self.ball_speed_y: typing.Union[int, float] = ball_speed_y
 
-        self.dx = random.choice((-1, 1)) * self.ball_speed_x
-        self.dy = self.ball_speed_y
-        self.x = random.randrange(self.width)
-        self.y = self.height
-        self.ball_crossed_line = False
-        self.trail = []
+        self.dx: typing.Union[int, float] = random.choice((-1, 1)) * self.ball_speed_x
+        self.dy: typing.Union[int, float] = self.ball_speed_y
+        self.x: typing.Union[int, float] = random.randrange(self.width)
+        self.y: typing.Union[int, float] = self.height
+        self.ball_crossed_line: bool = False
+        self.trail: typing.List[typing.Tuple[typing.Union[int, float], typing.Union[int, float]]] = []
 
 
-    def draw_ball(self, screen, color, ball_id, x, y, ball_trails):
+    def draw_ball(self, screen, color: typing.Tuple[ColorType, ...] , ball_id: int, x: typing.Union[int, float], y: typing.Union[int, float], ball_trails):
         """Draw the ball with a diverging 3D trail effect."""
-        max_alpha = 50  
-        trail_length = 10
-        max_trail_width = self.ball_radius * 1.5  
-        min_trail_width = self.ball_radius  
-        divergence = 0.1 
-
-        
+        max_alpha: typing.Union[int, float] = 50  
+        trail_length: typing.Union[int, float] = 10
+        max_trail_width: typing.Union[int, float] = self.ball_radius * 1.5  
+        min_trail_width: typing.Union[int, float] = self.ball_radius  
+        divergence: typing.Union[int, float] = 0.1 
         trail = ball_trails.setdefault(ball_id, [])
         trail.append((x, y))
-
-        
         if len(trail) > trail_length:
             trail.pop(0)
-
-        
+ 
         for i, (tx, ty) in enumerate(trail):
-            
-            alpha = max_alpha - int(max_alpha * (i / trail_length))
-            trail_width = max_trail_width - (max_trail_width - min_trail_width) * (i / trail_length)
-            
-            
-            
-            dx = (i / trail_length) * divergence * self.ball_radius  
-            dy = 0  
-
-            
+            alpha: typing.Union[int, float] = max_alpha - int(max_alpha * (i / trail_length))
+            trail_width: typing.Union[int, float] = max_trail_width - (max_trail_width - min_trail_width) * (i / trail_length)
+            dx: typing.Union[int, float] = (i / trail_length) * divergence * self.ball_radius  
             trail_surface = pygame.Surface(
                 (trail_width * 2, trail_width * 2), pygame.SRCALPHA
             )
@@ -76,13 +66,11 @@ class Ball:
                 (int(trail_width), int(trail_width)),
                 int(trail_width),
             )
-            
             screen.blit(
                 trail_surface,
                 (tx - trail_width + dx, ty - trail_width),
             )
 
-        
         for depth in range(self.ball_radius, self.ball_radius // 2, -1):  
             shade_factor = depth / self.ball_radius
             shaded_color = (
@@ -92,12 +80,12 @@ class Ball:
             )
             pygame.draw.circle(screen, shaded_color, (int(x), int(y)), depth)
 
-        
         highlight_color = (
             min(color[0] + 80, 255),
             min(color[1] + 80, 255),
             min(color[2] + 80, 255),
         )
+
         pygame.draw.circle(
             screen,
             highlight_color,

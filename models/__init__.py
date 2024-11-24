@@ -1,4 +1,6 @@
-__all__ = [
+import typing
+
+__all__: typing.List[str] = (
     "Ball",
     "Brick",
     "Color",
@@ -10,7 +12,7 @@ __all__ = [
     "draw_bricks",
     "drop_powerup",
     "ColorType",
-]
+)
 
 from models.ball import Ball
 from models.brick import Brick, create_new_bricks, draw_bricks

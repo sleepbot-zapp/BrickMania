@@ -13,54 +13,55 @@ from math import (
     tan,
     tanh,
 )
+import typing
 
 
-def sec(x):
+def sec(x: typing.Union[int, float]) -> float:
     """Secant of x."""
     return 1 / cos(x)
 
 
-def cosec(x):
+def cosec(x: typing.Union[int, float]) -> float:
     """Cosecant of x."""
     return 1 / sin(x)
 
 
-def cot(x):
+def cot(x: typing.Union[int, float]) -> float:
     """Cotangent of x."""
     return 1 / tan(x)
 
 
-def inv_sinh(x):
+def inv_sinh(x: typing.Union[int, float]) -> float:
     """Inverse hyperbolic sine of x."""
     return 1 / sinh(x)
 
 
-def inv_cosh(x):
+def inv_cosh(x: typing.Union[int, float]) -> float:
     """Inverse hyperbolic cosine of x."""
     return 1 / cosh(x)
 
 
-def inv_tanh(x):
+def inv_tanh(x: typing.Union[int, float]) -> float:
     """Inverse hyperbolic tangent of x."""
     return 1 / tanh(x)
 
 
-def inv_asin(x):
+def inv_asin(x: typing.Union[int, float]) -> float:
     """Inverse sine of x."""
     return 1 / asin(x)
 
 
-def inv_acos(x):
+def inv_acos(x: typing.Union[int, float]) -> float:
     """Inverse cosine of x."""
     return 1 / acos(x)
 
 
-def inv_atan(x):
+def inv_atan(x: typing.Union[int, float]) -> float:
     """Inverse tangent of x."""
     return 1 / atan(x)
 
 
-combs = (
+combs: typing.Tuple[typing.Tuple[function, function], ...] = (
     (sin, cos),
     (sin, tan),
     (sin, sinh),
