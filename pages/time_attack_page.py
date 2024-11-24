@@ -171,7 +171,7 @@ class TimeAttack(Page):
                     sys.exit()
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_RETURN:
-                        return False
+                        return True
                     if e.key in (pygame.K_RSHIFT, pygame.K_LCTRL):
                         return True
 
@@ -237,7 +237,7 @@ class TimeAttack(Page):
                 self.last_move_time = current_time
 
             if keys[pygame.K_RCTRL]:
-                self.pause_game(clock, self.color)
+                self.pause_game(clock)
 
             if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and self.player.x_start > 10:
                 self.player.x_start -= self.player.player_speed * dt
