@@ -163,7 +163,6 @@ class MainGame(Page):
 
     def runner(self, brick_height, brick_width, trails, clock):
         self.score = 0
-        print(self)
         self.bricks = create_new_bricks(self.color)
         self.powerups = []
         self.special_balls = []

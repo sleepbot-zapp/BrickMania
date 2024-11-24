@@ -70,9 +70,8 @@ class ModeSelection(Page):
             game_page.runner(brick_height, brick_width, trails, clock)
         elif selected_mode == "Dark Mode":
             loading_screen(color)
-            game_page = DarkModeGame(
-                self.screen, self.height, self.width, self.scale, self.game, color=settings.Color()
-            )
+            game_page = DarkModeGame(self.screen, self.height, self.width, self.scale, self.game, color) 
+            game_page.runner(brick_height, brick_width, trails, clock)
         elif selected_mode == "Time Attack Mode":
             loading_screen(color)
             # Uncomment and implement TimeAttackGamePage if required
