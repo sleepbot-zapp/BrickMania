@@ -111,20 +111,25 @@ class Ball:
         self.x += self.dx * dt
         self.y += self.dy * dt
 
+        
         if self.x <= self.ball_radius or self.x >= self.width - self.ball_radius:
             self.dx = -self.dx
             self.x = max(self.ball_radius, min(self.x, self.width - self.ball_radius))
 
+        
         if self.y <= self.ball_radius:
-            self.dy = abs(self.dy)
+            self.dy = abs(self.dy)  
             self.y = self.ball_radius
 
-        if self.y >= self.height - self.ball_radius - 60 and not self.ball_crossed_line:
-            self.ball_crossed_line = True
-
-        self._handle_paddle_collision(player)
-
+        
+        if self.y >= self.height - self.ball_radius - 60:
+            if not self.ball_crossed_line:
+                self.ball_crossed_line = True  
+            else:
+                self._handle_paddle_collision(player)
+            
         return self.x, self.y, self.dx, self.dy
+
 
     def _handle_paddle_collision(self, player: Player):
         """Handle collision with the player's paddle."""
