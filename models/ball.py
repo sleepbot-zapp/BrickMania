@@ -36,32 +36,32 @@ class Ball:
 
     def draw_ball(self, screen, color, ball_id, x, y, ball_trails):
         """Draw the ball with a diverging 3D trail effect."""
-        max_alpha = 50  # Maximum alpha for the trail
-        trail_length = 5  # Length of the trail
-        max_trail_width = self.ball_radius * 1.5  # Maximum width for trail segments
-        min_trail_width = self.ball_radius  # Minimum width for trail segments
-        divergence = 0.1 # Divergence factor for the trail
+        max_alpha = 50  
+        trail_length = 5  
+        max_trail_width = self.ball_radius * 1.5  
+        min_trail_width = self.ball_radius  
+        divergence = 0.1 
 
-        # Fetch or create the trail for the given ball ID
+        
         trail = ball_trails.setdefault(ball_id, [])
         trail.append((x, y))
 
-        # Limit the trail length
+        
         if len(trail) > trail_length:
             trail.pop(0)
 
-        # Draw the diverging 3D trail
+        
         for i, (tx, ty) in enumerate(trail):
-            # Calculate alpha, width, and divergence for each trail segment
+            
             alpha = max_alpha - int(max_alpha * (i / trail_length))
             trail_width = max_trail_width - (max_trail_width - min_trail_width) * (i / trail_length)
             
-            # Horizontal divergence: starting from the middle of the ball
-            # Starting point is the ball center (x), divergence spreads horizontally
-            dx = (i / trail_length) * divergence * self.ball_radius  # Horizontal divergence
-            dy = 0  # No vertical divergence
+            
+            
+            dx = (i / trail_length) * divergence * self.ball_radius  
+            dy = 0  
 
-            # Create a translucent surface for the trail segment
+            
             trail_surface = pygame.Surface(
                 (trail_width * 2, trail_width * 2), pygame.SRCALPHA
             )
@@ -77,14 +77,14 @@ class Ball:
                 (int(trail_width), int(trail_width)),
                 int(trail_width),
             )
-            # Offset trail position to create divergence
+            
             screen.blit(
                 trail_surface,
                 (tx - trail_width + dx, ty - trail_width),
             )
 
-        # Draw the ball itself with a shaded 3D effect
-        for depth in range(self.ball_radius, self.ball_radius // 2, -1):  # Start shading from the midpoint
+        
+        for depth in range(self.ball_radius, self.ball_radius // 2, -1):  
             shade_factor = depth / self.ball_radius
             shaded_color = (
                 int(color[0] * shade_factor),
@@ -93,7 +93,7 @@ class Ball:
             )
             pygame.draw.circle(screen, shaded_color, (int(x), int(y)), depth)
 
-        # Add a highlight for the ball
+        
         highlight_color = (
             min(color[0] + 80, 255),
             min(color[1] + 80, 255),

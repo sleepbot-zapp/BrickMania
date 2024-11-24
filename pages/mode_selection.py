@@ -6,8 +6,8 @@ from helpers import settings
 from helpers.constants import font, brick_height, brick_width
 from pages.dark_mode_game_page import DarkModeGame
 from pages.loading_screen import loading_screen
-from pages.main_game_page import MainGame  # Normal mode game page
-# from pages.time_attack_game_page import TimeAttackGamePage
+from pages.main_game_page import MainGame  
+
 
 
 class ModeSelection(Page):
@@ -15,13 +15,13 @@ class ModeSelection(Page):
         super().__init__(screen, height, width, scale, game)
         self.fonts = (pygame.font.SysFont(None, int(50 * self.scale)),)
         self.running = True
-        self.selected_option = 0  # Track the currently selected option
+        self.selected_option = 0  
         self.options = ["Normal Mode", "Dark Mode", "Time Attack Mode", "Quit"]
 
     def draw_text(self, text, color, y_offset, is_selected=False):
         """Draw a single menu option."""
         if is_selected:
-            text = f"> {text} <"  # Add arrows to indicate selection
+            text = f"> {text} <"  
         label = self.fonts[0].render(text, True, color)
         self.screen.blit(
             label,
@@ -34,7 +34,7 @@ class ModeSelection(Page):
         while running:
             self.screen.fill(color.BLACK)
 
-            # Draw the options dynamically
+            
             for i, option in enumerate(self.options):
                 self.draw_text(
                     option, color.WHITE, i * 50 - 50, is_selected=(i == self.selected_option)
@@ -48,15 +48,15 @@ class ModeSelection(Page):
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_DOWN:
-                        # Move selection down
+                        
                         self.selected_option = (self.selected_option + 1) % len(self.options)
                     elif event.key == pygame.K_UP:
-                        # Move selection up
+                        
                         self.selected_option = (self.selected_option - 1) % len(self.options)
-                    elif event.key == pygame.K_RETURN:  # Confirm selection with ENTER
-                        # Return the selected mode
+                    elif event.key == pygame.K_RETURN:  
+                        
                         return self.options[self.selected_option]
-                    elif event.key == pygame.K_q:  # Allow immediate quit with Q
+                    elif event.key == pygame.K_q:  
                         pygame.quit()
                         sys.exit()
 
@@ -74,12 +74,12 @@ class ModeSelection(Page):
             game_page.runner(brick_height, brick_width, trails, clock)
         elif selected_mode == "Time Attack Mode":
             loading_screen(color)
-            # Uncomment and implement TimeAttackGamePage if required
-            # game_page = TimeAttackGamePage(
-            #     self.screen, self.height, self.width, self.scale, self.game
-            # )
+            
+            
+            
+            
         elif selected_mode == "Quit":
             pygame.quit()
             sys.exit()
         else:
-            return True  # Return to the main menu if no valid selection
+            return True  

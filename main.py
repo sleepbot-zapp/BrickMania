@@ -13,7 +13,7 @@ from helpers import (
     track_path,
 )
 from models import Color
-from pages import Info, MainGame, MainMenu, Settings, DarkModeGame, ModeSelection
+from pages import Info, MainMenu, Settings, ModeSelection
 from pages import loading_screen
 
 
@@ -64,12 +64,12 @@ class Game:
             self.screen, self.height, self.width, self.scale, self
         )
         self.info_page = Info(self.screen, self.height, self.width, self.scale, self)
-        # self.game_page = MainGame(
-        #     self.screen, self.height, self.width, self.scale, self, self.colors
-        # )
-        # self.dark_mode_page = DarkModeGame(
-        #     self.screen, self.height, self.width, self.scale, self, self.colors
-        # )
+        
+        
+        
+        
+        
+        
 
     @property
     def music_files(self):
