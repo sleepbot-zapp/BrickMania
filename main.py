@@ -64,12 +64,6 @@ class Game:
             self.screen, self.height, self.width, self.scale, self
         )
         self.info_page = Info(self.screen, self.height, self.width, self.scale, self)
-        
-        
-        
-        
-        
-        
 
     @property
     def music_files(self):
