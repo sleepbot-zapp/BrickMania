@@ -31,7 +31,8 @@ class MainGame(Page):
         self.powerups = []
         self.special_balls = []
         self.running = True
-        self.bricks = create_new_bricks(color)
+        self.color = color
+        self.bricks = create_new_bricks(self.color)
         self.last_move_time = self.last_brick_move_time = (
             self.last_special_ball_time
         ) = self.last_x_time = time.time()
@@ -47,10 +48,10 @@ class MainGame(Page):
             screen=self.screen, height=self.height, width=self.width, scale=self.scale
         )
 
-    def pause_game(self, clock, color):
+    def pause_game(self, clock):
         paused = True
         pause_text = self.fonts[0].render(
-            "Game Paused. Press 'P' to Resume.", True, color.WHITE
+            "Game Paused. Press 'P' to Resume.", True, self.color.WHITE
         )
         dim_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         dim_surface.fill((0, 0, 0, 180))
@@ -75,9 +76,9 @@ class MainGame(Page):
 
             clock.tick(10)
 
-    def show_score(self, color):
+    def show_score(self):
         score = self.score
-        text = font.render(f"Score: {score}", True, color.RED)
+        text = font.render(f"Score: {score}", True, self.color.RED)
         self.screen.blit(
             text,
             (
@@ -86,7 +87,7 @@ class MainGame(Page):
             ),
         )
 
-    def game_over(self, score, color, settings: settings.Settings):
+    def game_over(self, score, settings: settings.Settings):
         self.balls = [
             Ball(
                 screen=self.screen,
@@ -99,18 +100,18 @@ class MainGame(Page):
         if self.game.music_is_playing:
             pygame.mixer.music.pause()
             self.game.music_files[2].play()
-        self.screen.fill(color.BLACK)
+        self.screen.fill(self.color.BLACK)
         font_for_game_over = self.fonts[0]
         text = font_for_game_over.render(
-            "Game Over! Press ENTER to restart", True, color.RED
+            "Game Over! Press ENTER to restart", True, self.color.RED
         )
         highscore = settings.highscore
         text2 = font_for_game_over.render(
             f"High Score = {[score, highscore][highscore > score]}",
             True,
-            [color.GREEN, color.YELLOW][highscore > score],
+            [self.color.GREEN, self.color.YELLOW][highscore > score],
         )
-        text3 = font_for_game_over.render(f"Your Score = {score}", True, color.YELLOW)
+        text3 = font_for_game_over.render(f"Your Score = {score}", True, self.color.YELLOW)
 
         if highscore < score:
             settings.highscore = score
@@ -139,7 +140,7 @@ class MainGame(Page):
         )
 
         quit_text = bottom_font.render(
-            "Press Shift to go to Main Window", True, color.GREY
+            "Press Shift to go to Main Window", True, self.color.GREY
         )
         self.screen.blit(
             quit_text, (10, (self.height - quit_text.get_height() - 10) * self.scale)
@@ -160,9 +161,10 @@ class MainGame(Page):
                     if e.key in (pygame.K_RSHIFT, pygame.K_LCTRL):
                         return True
 
-    def runner(self, color: Color, brick_height, brick_width, trails, clock):
+    def runner(self, brick_height, brick_width, trails, clock):
         self.score = 0
-        self.bricks = create_new_bricks(color)
+        print(self)
+        self.bricks = create_new_bricks(self.color)
         self.powerups = []
         self.special_balls = []
         self.last_move_time = self.last_brick_move_time = (
@@ -181,12 +183,12 @@ class MainGame(Page):
         self.running = True
 
         while self.running:
-            self.screen.fill(color.BLACK)
+            self.screen.fill(self.color.BLACK)
             dt = clock.tick(60) / 1000
             current_time = time.time()
 
             if len(self.bricks) == 0:
-                self.bricks = create_new_bricks(color)
+                self.bricks = create_new_bricks(self.color)
 
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
@@ -203,7 +205,7 @@ class MainGame(Page):
                 self.last_move_time = current_time
 
             if keys[pygame.K_RCTRL]:
-                self.pause_game(clock)
+                self.pause_game(clock, self.color)
 
             if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and self.player.x_start > 10:
                 self.player.x_start -= self.player.player_speed * dt
@@ -269,7 +271,7 @@ class MainGame(Page):
                 ball.x, ball.y, ball.dx, ball.dy = ball.move_ball(dt, self.player)
 
             if all(ball.y >= self.height - 60 for ball in self.balls):
-                user_exited = self.game_over(self.score, color, self.data)
+                user_exited = self.game_over(self.score, self.data)
                 if user_exited:
 
                     self.balls = [
@@ -309,7 +311,7 @@ class MainGame(Page):
                 for brick in self.bricks:
                     brick.y += brick.speed * dt
                     if brick.y + brick.height >= self.height:
-                        user_exited = self.game_over(self.score, color, self.data)
+                        user_exited = self.game_over(self.score, self.data)
                         if user_exited:
                             return True
                         else:
@@ -326,7 +328,7 @@ class MainGame(Page):
                         bricks_to_remove.append(brick)
                         self.score += 10
                         powerup = drop_powerup(
-                            brick.x, brick.y, self.powerups, self.scale, color
+                            brick.x, brick.y, self.powerups, self.scale, self.color
                         )
                         if powerup:
                             self.powerups.append(powerup)
@@ -340,7 +342,7 @@ class MainGame(Page):
                         bricks_to_remove.append(brick)
                         self.score += 10
                         powerup = drop_powerup(
-                            brick.x, brick.y, self.powerups, self.scale, color
+                            brick.x, brick.y, self.powerups, self.scale, self.color
                         )
                         if powerup:
                             self.powerups.append(powerup)
@@ -374,7 +376,7 @@ class MainGame(Page):
             for special_ball in self.special_balls:
                 if special_ball.y < self.height - 70:
                     special_ball.move(ball_radius, self.width, dt)
-                    special_ball.draw(self.screen, ball_radius, color)
+                    special_ball.draw(self.screen, ball_radius, self.color)
 
                 if (
                     special_ball.x < 0
@@ -385,7 +387,7 @@ class MainGame(Page):
                     self.special_balls.remove(special_ball)
 
             draw_bricks(self.bricks, self.screen)
-            self.player.draw_player(color)
+            self.player.draw_player(self.color)
 
             if self.game.music_is_playing:
                 if (
@@ -399,13 +401,13 @@ class MainGame(Page):
                     pygame.mixer.music.unpause()
             for i, ball in enumerate(self.balls):
                 if ball.y < self.height - 60:
-                    ball.draw_ball(self.screen, color.GREEN, i, ball.x, ball.y, trails)
+                    ball.draw_ball(self.screen, self.color.GREEN, i, ball.x, ball.y, trails)
 
-            self.show_score(color)
+            self.show_score()
 
             if current_time - self.last_special_ball_time > self.special_ball_time - 1:
                 special_ball_text = font.render(
-                    "Special Ball Ready (UP)", True, color.GREEN
+                    "Special Ball Ready (UP)", True, self.color.GREEN
                 )
             else:
                 remaining_time = max(
@@ -414,12 +416,12 @@ class MainGame(Page):
                     - (current_time - self.last_special_ball_time),
                 )
                 special_ball_text = font.render(
-                    f"Special Ball in {int(remaining_time)}s", True, color.WHITE
+                    f"Special Ball in {int(remaining_time)}s", True, self.color.WHITE
                 )
 
             if current_time - self.last_x_time > self.random_destruction_time - 1:
                 countdown_text = font.render(
-                    "Brick Destruction Ready (DOWN)", True, color.GREEN
+                    "Brick Destruction Ready (DOWN)", True, self.color.GREEN
                 )
                 self.screen.blit(
                     countdown_text,
@@ -436,7 +438,7 @@ class MainGame(Page):
                 countdown_text = font.render(
                     f"Brick Destruction in {int(time_until_destruction)}s",
                     True,
-                    color.WHITE,
+                    self.color.WHITE,
                 )
                 self.screen.blit(
                     countdown_text,
@@ -448,7 +450,7 @@ class MainGame(Page):
 
             pygame.draw.line(
                 self.screen,
-                color.WHITE,
+                self.color.WHITE,
                 (0, self.height - 50),
                 (self.width, self.height - 50),
                 2,
@@ -460,7 +462,7 @@ class MainGame(Page):
 
             pygame.draw.line(
                 self.screen,
-                color.WHITE,
+                self.color.WHITE,
                 (0, self.height - 50),
                 (self.width, self.height - 50),
                 2,

@@ -11,7 +11,7 @@ class Color:
     RED = (232, 134, 135)
     WHITE = (227, 231, 255)
     YELLOW = (249, 226, 175)
-    
+
     def __init__(
         self,
         BLACK=None,

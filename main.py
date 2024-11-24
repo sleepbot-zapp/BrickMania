@@ -13,7 +13,7 @@ from helpers import (
     track_path,
 )
 from models import Color
-from pages import Info, MainGame, MainMenu, Settings
+from pages import Info, MainGame, MainMenu, Settings, DarkModeGame, ModeSelection
 from pages import loading_screen
 
 
@@ -29,7 +29,6 @@ class Game:
         width=WIDTH,
         scale=SCALE,
     ) -> None:
-        
 
         self.height = height
         self.width = width
@@ -55,6 +54,9 @@ class Game:
             music_file.set_volume(self.volume)
 
     def initialize_pages(self):
+        self.mode_selection = ModeSelection(
+            self.screen, self.height, self.width, self.scale, self
+        )
         self.main_menu = MainMenu(
             self.screen, self.height, self.width, self.scale, self
         )
@@ -62,9 +64,12 @@ class Game:
             self.screen, self.height, self.width, self.scale, self
         )
         self.info_page = Info(self.screen, self.height, self.width, self.scale, self)
-        self.game_page = MainGame(
-            self.screen, self.height, self.width, self.scale, self, self.colors
-        )
+        # self.game_page = MainGame(
+        #     self.screen, self.height, self.width, self.scale, self, self.colors
+        # )
+        # self.dark_mode_page = DarkModeGame(
+        #     self.screen, self.height, self.width, self.scale, self, self.colors
+        # )
 
     @property
     def music_files(self):
@@ -93,7 +98,6 @@ class Game:
             else:
                 pygame.mixer.music.stop()
 
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -101,11 +105,9 @@ class Game:
 
             if selected_option == 0:
                 self.is_main_menu = False
-                back_to_main_menu = self.run_loading_screen()
+                back_to_main_menu = self.mode_selection.run(self.colors, self.clock, self.trails)
                 if not back_to_main_menu:
-                    self.is_main_menu = self.game_page.runner(
-                        self.colors, brick_height, brick_width, self.trails, self.clock
-                    )
+                    self.is_main_menu = self.mode_selection.run(self.colors, self.clock, self.trails)
                 else:
                     self.is_main_menu = True
             elif selected_option == 1:

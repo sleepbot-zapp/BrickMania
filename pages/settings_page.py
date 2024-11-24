@@ -3,6 +3,7 @@ import pygame
 from .pages import Page
 from models import Color
 
+
 class Settings(Page):
     def __init__(
         self,
@@ -24,6 +25,7 @@ class Settings(Page):
         self.color_keys = list(self.game.colors.__dict__.keys())
         self.selected_color_index = 0
         self.color_edit_component = 0
+
 
     def display(self) -> bool:
         """Main settings menu where options are displayed."""
@@ -47,7 +49,7 @@ class Settings(Page):
                 )
                 option_text = options_font.render(option, True, c)
                 option_rect = option_text.get_rect(
-                    center=(self.width // 2, int(150 * self.scale) + (i+1) * 100)
+                    center=(self.width // 2, int(150 * self.scale) + (i + 1) * 100)
                 )
                 self.screen.blit(option_text, option_rect)
 
@@ -189,9 +191,7 @@ class Settings(Page):
                 )
 
                 if i == self.selected_color_index:
-                    arrow_text = options_font.render(
-                        "*", True, self.game.colors.GREEN
-                    )
+                    arrow_text = options_font.render("*", True, self.game.colors.GREEN)
                     arrow_rect = arrow_text.get_rect(
                         center=(self.width // 2 - 300, 150 + i * 50)
                     )
@@ -256,7 +256,9 @@ class Settings(Page):
                             getattr(self.game.colors, selected_color_name)
                         )
                         if event.key == pygame.K_r:
-                            self.game.colors.__dict__[selected_color_name] = Color.__dict__[selected_color_name]
+                            self.game.colors.__dict__[selected_color_name] = (
+                                Color.__dict__[selected_color_name]
+                            )
                         if event.key == pygame.K_RIGHT:
                             self.color_edit_component = (
                                 self.color_edit_component + 1
@@ -301,6 +303,5 @@ class Settings(Page):
                             numeric_input += event.unicode
                             if int(numeric_input) > 255:
                                 numeric_input = "255"
-
 
             pygame.display.flip()
