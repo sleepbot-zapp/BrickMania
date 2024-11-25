@@ -1,3 +1,10 @@
-pygame==2.5.0
-pydantic==2.9.2
+annotated-types==0.7.0
 appdirs==1.4.4
+cffi==1.17.1
+cryptography==43.0.3
+database @ git+https://github.com/sleepbot-zapp/FileBased-Database.git@3cb9b969b2b6e872b8e17350bbc144a85351729b
+pycparser==2.22
+pydantic==2.9.2
+pydantic_core==2.23.4
+pygame==2.5.0
+typing_extensions==4.12.2
