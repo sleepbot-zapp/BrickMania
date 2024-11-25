@@ -252,7 +252,7 @@ class TimeAttack(Page):
                 and current_time - self.last_special_ball_time
                 > self.special_ball_time - 1
             ):
-                self.timer -= 10
+                self.timer -= 20
                 dx = random.choice([-500, 500])
                 dy = random.randint(-300, -120)
                 self.special_balls.append(
@@ -271,7 +271,7 @@ class TimeAttack(Page):
             if (
                 keys[pygame.K_DOWN] or keys[pygame.K_s]
             ) and current_time - self.last_x_time > self.random_destruction_time - 1:
-                self.timer -= 30
+                self.timer -= 40
                 for _ in range(5):
                     if self.bricks:
                         random_brick = random.choice(self.bricks)
@@ -378,8 +378,10 @@ class TimeAttack(Page):
                             brick.x, brick.y, self.powerups, self.scale, self.color
                         )
                         if powerup:
+                            self.timer += 1
                             self.powerups.append(powerup)
-
+            if bricks_to_remove:
+                self.timer += 3
             for brick in bricks_to_remove:
                 if brick in self.bricks:
                     self.bricks.remove(brick)
