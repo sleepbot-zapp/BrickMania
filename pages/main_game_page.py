@@ -203,7 +203,7 @@ class MainGame(Page):
                 self.last_move_time = current_time
 
             if keys[pygame.K_RCTRL]:
-                self.pause_game(clock, self.color)
+                self.pause_game(clock)
 
             if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and self.player.x_start > 10:
                 self.player.x_start -= self.player.player_speed * dt
