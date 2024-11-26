@@ -187,7 +187,7 @@ class DarkModeGame(Page):
 
         while self.running:
             self.screen.fill(self.color.BLACK)
-            dt = clock.tick(60) / 1000
+            dt = min(1, clock.tick(60) / 1000)
             current_time = time.time()
 
             if len(self.bricks) == 0:

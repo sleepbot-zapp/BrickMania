@@ -17,7 +17,7 @@ class FallingTile:
         self.height = brick_height
         self.x = randint(0, width * scale - self.width)
         self.y = randint(-height * scale, 0)
-        self.speed = randint(2, 7) * scale
+        self.speed = 0.5
         self.color = choice([color.RED, color.BLUE, color.GREEN])
 
     def move(self, height: int, width: int) -> None:

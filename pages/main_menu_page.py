@@ -103,4 +103,3 @@ class MainMenu(Page):
                     elif e.key == pygame.K_q:
                         pygame.quit()
                         sys.exit()
-            clock.tick(60)
