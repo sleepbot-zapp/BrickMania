@@ -73,7 +73,7 @@ class MainGame(Page):
             )
             pygame.display.flip()
 
-            clock.tick(10)
+            clock.tick(60)
 
     def show_score(self):
         score = self.score
@@ -182,7 +182,7 @@ class MainGame(Page):
 
         while self.running:
             self.screen.fill(self.color.BLACK)
-            dt = clock.tick(60) / 1000
+            dt = min(.02, clock.tick(60) / 1000.0)
             current_time = time.time()
 
             if len(self.bricks) == 0:
