@@ -13,11 +13,10 @@ class Ball:
         height: typing.Union[int, float],
         width: typing.Union[int, float],
         scale: typing.Union[int, float],
-        ball_radius: typing.Union[int, float]=ball_radius,
-        ball_speed_x: typing.Union[int, float]=ball_speed_x,
-        ball_speed_y: typing.Union[int, float]=ball_speed_y,
+        ball_radius: typing.Union[int, float] = ball_radius,
+        ball_speed_x: typing.Union[int, float] = ball_speed_x,
+        ball_speed_y: typing.Union[int, float] = ball_speed_y,
     ) -> None:
-
         self.screen = screen
         self.height: typing.Union[int, float] = height - 150
         self.width: typing.Union[int, float] = width
@@ -32,7 +31,6 @@ class Ball:
         self.y: typing.Union[int, float] = self.height
         self.ball_crossed_line: bool = False
         self.trail: typing.List[typing.Tuple[typing.Union[int, float], typing.Union[int, float]]] = []
-
 
     def draw_ball(self, screen, color, ball_id: int, x: typing.Union[int, float], y: typing.Union[int, float], ball_trails):
         """Draw the ball with a diverging 3D trail effect."""
@@ -116,21 +114,15 @@ class Ball:
             
         return self.x, self.y, self.dx, self.dy
 
-
     def _handle_paddle_collision(self, player: Player):
         """Handle collision with the player's paddle."""
         if (
-            player.x_start - self.ball_radius
-            < self.x
-            < player.x_start + player.player_width + self.ball_radius
-            and player.y_start
-            < self.y + self.ball_radius
-            < player.y_start + player.player_height
+            player.x_start - self.ball_radius <= self.x <= player.x_start + player.player_width + self.ball_radius
+            and player.y_start <= self.y + self.ball_radius <= player.y_start + player.player_height
         ):
-
+            
             paddle_center = player.x_start + player.player_width / 2
-            self.dx = self.ball_speed_x * (
-                (self.x - paddle_center) / (player.player_width / 2)
-            )
-            self.dy = -abs(self.dy)
-            self.y = player.y_start - self.ball_radius
+            relative_intersection_x = (self.x - paddle_center) / (player.player_width / 2)
+            self.dx = self.ball_speed_x * relative_intersection_x  
+            self.dy = -abs(self.dy)  
+            self.y = max(self.y, player.y_start - self.ball_radius)  
