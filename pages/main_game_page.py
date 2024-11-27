@@ -180,9 +180,11 @@ class MainGame(Page):
 
         self.running = True
 
+        dt = 0
+        clock.tick(60)
         while self.running:
             self.screen.fill(self.color.BLACK)
-            dt = min(0.02, clock.tick(60) / 1000.0)
+            # dt = min(0.02, clock.tick(60) / 1000.0)
             current_time = time.time()
 
             if len(self.bricks) == 0:
@@ -469,3 +471,4 @@ class MainGame(Page):
             )
 
             pygame.display.flip()
+            dt = clock.tick(60)/1000
