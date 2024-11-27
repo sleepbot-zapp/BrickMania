@@ -202,7 +202,7 @@ class Settings(Page):
             if self.editing_mode == EditingMode.EDITING:
                 selected_color_name = self.color_keys[self.selected_color_index]
                 selected_color = list(getattr(self.game.colors, selected_color_name))
-                rgb_start_y = 525  # Starting Y position for RGB components
+                rgb_start_y = 525  
 
                 for j, component in enumerate([ColorComponent.RED, ColorComponent.GREEN, ColorComponent.BLUE]):
                     highlight = (
@@ -211,7 +211,7 @@ class Settings(Page):
                         else self.game.colors.WHITE
                     )
                     component_text = options_font.render(
-                        f"{component.name[0]}: {selected_color[component.value]}",  # Show R, G, B instead of RED, GREEN, BLUE
+                        f"{component.name[0]}: {selected_color[component.value]}",  
                         True,
                         highlight,
                     )
