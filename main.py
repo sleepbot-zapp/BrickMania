@@ -56,8 +56,6 @@ class Game:
         self.music_is_playing = False
         self.volume = 0.0
         self.trails = {}
-
-        
         self.current_state = GameState.MAIN_MENU
         self.main_menu = None
         self.settings_page = None

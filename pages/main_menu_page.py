@@ -37,66 +37,73 @@ class MainMenu(Page):
             )
             for _ in range(20)
         ]
+
         while True:
             self.screen.fill(color.BLACK)
+
+            # Draw falling tiles
             for tile in tiles:
                 tile.move(self.height, self.width)
                 tile.draw(self.screen)
 
-            title_text = self.fonts[0].render(self.texts[0], True, color.YELLOW)
-            self.screen.blit(
-                title_text,
-                (
-                    (self.width // 2 - title_text.get_width() // 2) * self.scale,
-                    (self.height // 2 - 150) * self.scale,
-                ),
+            # Render the title text
+            self.render_text(
+                text=self.texts[0],
+                font=self.fonts[0],
+                color=color.YELLOW,
+                x=(self.width // 2) * self.scale,
+                y=(self.height // 2 - 150) * self.scale,
+                center=True,
             )
-            quit_text = self.fonts[1].render(self.texts[1], True, color.GREY)
-            bottom_text = self.fonts[1].render(self.texts[2], True, color.GREY)
-            self.screen.blit(
-                quit_text,
-                (10, (self.height - quit_text.get_height() - 10) * self.scale),
+
+            # Render the quit and bottom instruction texts
+            self.render_text(
+                text=self.texts[1],
+                font=self.fonts[1],
+                color=color.GREY,
+                x=10,
+                y=(self.height - 10) * self.scale - self.fonts[1].get_height(),
             )
-            self.screen.blit(
-                bottom_text,
-                (
-                    self.width - bottom_text.get_width() - 10,
-                    self.width - bottom_text.get_height() - 10,
-                ),
+            self.render_text(
+                text=self.texts[2],
+                font=self.fonts[1],
+                color=color.GREY,
+                x=self.width * self.scale - 10,
+                y=(self.height - 10) * self.scale - self.fonts[1].get_height(),
+                center=False,
+                right_align=True,
             )
-            self.screen.blit(
-                bottom_text,
-                (
-                    self.width - bottom_text.get_width() - 10,
-                    self.height - bottom_text.get_height() - 10,
-                ),
-            )
+
+            # Render the menu options
             for i, option in enumerate(self.options):
-                c = [color.WHITE, Color.GREEN][i == self.selected_option]
-                option_text = self.fonts[2].render(option, True, c)
-                self.screen.blit(
-                    option_text,
-                    (
-                        (self.width // 2 - option_text.get_width() // 2) * self.scale,
-                        (self.height // 2 + i * 60) * self.scale,
-                    ),
+                color_option = [color.WHITE, color.GREEN][i == self.selected_option]
+                self.render_text(
+                    text=option,
+                    font=self.fonts[2],
+                    color=color_option,
+                    x=(self.width // 2) * self.scale,
+                    y=(self.height // 2 + i * 60) * self.scale,
+                    center=True,
                 )
+
             pygame.display.flip()
-            for e in pygame.event.get():
-                if e.type == pygame.QUIT:
-                    quit()
-                    exit()
-                if e.type == pygame.KEYDOWN:
-                    if e.key == pygame.K_DOWN:
+
+            # Handle events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN:
                         self.selected_option = (self.selected_option + 1) % len(
                             self.options
                         )
-                    elif e.key == pygame.K_UP:
+                    elif event.key == pygame.K_UP:
                         self.selected_option = (self.selected_option - 1) % len(
                             self.options
                         )
-                    elif e.key == pygame.K_RETURN:
+                    elif event.key == pygame.K_RETURN:
                         return self.selected_option
-                    elif e.key == pygame.K_q:
+                    elif event.key == pygame.K_q:
                         pygame.quit()
                         sys.exit()
