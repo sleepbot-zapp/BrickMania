@@ -26,7 +26,6 @@ class MainMenu(Page):
         self.options = options or ("Play", "Settings", "Info")
         self.texts = ("BRICKMANIA", "Press Q to Quit", "Press Enter to Select")
 
-
     def generate(
         self,
         color: Color,

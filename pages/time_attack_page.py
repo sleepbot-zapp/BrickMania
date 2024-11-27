@@ -17,7 +17,7 @@ from models import (
 from .pages import Page
 
 
-class TimeAttack(Page):  
+class TimeAttack(Page):
     inactivity_threshold = 5
     special_ball_time = 10
     random_destruction_time = 30
@@ -47,8 +47,8 @@ class TimeAttack(Page):
         self.player = Player(
             screen=self.screen, height=self.height, width=self.width, scale=self.scale
         )
-        self.timer = self.initial_timer  
-        self.last_timer_update = time.time()  
+        self.timer = self.initial_timer
+        self.last_timer_update = time.time()
 
     def pause_game(self, clock):
         paused = True
@@ -84,7 +84,7 @@ class TimeAttack(Page):
         self.screen.blit(
             text,
             (
-                ((self.width // 2 - text.get_width() / 2) - 100)* self.scale,
+                ((self.width // 2 - text.get_width() / 2) - 100) * self.scale,
                 (self.height - 30) * self.scale,
             ),
         )
@@ -95,7 +95,7 @@ class TimeAttack(Page):
         self.screen.blit(
             timer_text,
             (
-                ((self.width // 2 - timer_text.get_width() / 2) + 50)* self.scale,
+                ((self.width // 2 - timer_text.get_width() / 2) + 50) * self.scale,
                 (self.height - 30) * self.scale,
             ),
         )
@@ -124,7 +124,9 @@ class TimeAttack(Page):
             True,
             [self.color.GREEN, self.color.YELLOW][highscore > score],
         )
-        text3 = font_for_game_over.render(f"Your Score = {score}", True, self.color.YELLOW)
+        text3 = font_for_game_over.render(
+            f"Your Score = {score}", True, self.color.YELLOW
+        )
 
         if highscore < score:
             settings.highscore = score
@@ -190,27 +192,24 @@ class TimeAttack(Page):
                 scale=self.scale,
             )
         ]
-        self.timer = self.initial_timer  
+        self.timer = self.initial_timer
         self.running = True
 
         while self.running:
             self.screen.fill(self.color.BLACK)
-            dt = min(.02, clock.tick(60) / 1000)
+            dt = min(0.02, clock.tick(60) / 1000)
             current_time = time.time()
 
-            
             if current_time - self.last_timer_update >= 1:
                 self.timer -= 1
                 self.last_timer_update = current_time
 
-            
             if self.timer <= 0:
-                if self.bricks:  
+                if self.bricks:
                     user_exited = self.game_over(self.score, self.data)
                     if user_exited:
                         return True
 
-            
             if len(self.bricks) == 0:
                 self.bricks = create_new_bricks(self.color)
                 self.timer += 60
@@ -436,7 +435,9 @@ class TimeAttack(Page):
                     pygame.mixer.music.unpause()
             for i, ball in enumerate(self.balls):
                 if ball.y < self.height - 60:
-                    ball.draw_ball(self.screen, self.color.GREEN, i, ball.x, ball.y, trails)
+                    ball.draw_ball(
+                        self.screen, self.color.GREEN, i, ball.x, ball.y, trails
+                    )
 
             self.show_score()
 
@@ -503,5 +504,5 @@ class TimeAttack(Page):
                 2,
             )
 
-            self.show_timer()  
+            self.show_timer()
             pygame.display.flip()

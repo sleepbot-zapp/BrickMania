@@ -12,6 +12,7 @@ from pages.time_attack_page import TimeAttack
 
 class GameMode(AutoEnum):
     """Enum to represent game modes."""
+
     CLASSIC: int
     DARK_MODE: int
     TIME_ATTACK: int
@@ -19,13 +20,16 @@ class GameMode(AutoEnum):
 
 def handle_mode(mode):
     """Decorator to handle logic for a specific game mode."""
+
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             if self.selected_mode == mode:
                 return func(self, *args, **kwargs)
             return None
+
         return wrapper
+
     return decorator
 
 
@@ -40,11 +44,13 @@ class ModeSelection(Page):
             GameMode.DARK_MODE: "Dark Mode",
             GameMode.TIME_ATTACK: "Time Attack",
         }
-        self.selected_mode = None  # Stores the currently selected mode as a GameMode
+        self.selected_mode = None  
 
     def draw_text(self, text, color, y_offset, is_selected=False):
         """Draw a single menu option."""
-        label = self.fonts[0].render(text, True, color.GREEN if is_selected else color.WHITE)
+        label = self.fonts[0].render(
+            text, True, color.GREEN if is_selected else color.WHITE
+        )
         self.screen.blit(
             label,
             ((self.width - label.get_width()) // 2, (self.height // 2) + y_offset),
@@ -53,7 +59,7 @@ class ModeSelection(Page):
     def select_mode(self, color):
         """Handle menu navigation and mode selection."""
         running = True
-        mode_keys = list(self.options.keys())  # Get the keys (GameModes) as a list
+        mode_keys = list(self.options.keys())  
         while running:
             self.screen.fill(color.BLACK)
             for i, (mode, option) in enumerate(self.options.items()):
@@ -67,9 +73,13 @@ class ModeSelection(Page):
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_DOWN:
-                        self.selected_option = (self.selected_option + 1) % len(self.options)
+                        self.selected_option = (self.selected_option + 1) % len(
+                            self.options
+                        )
                     elif event.key == pygame.K_UP:
-                        self.selected_option = (self.selected_option - 1) % len(self.options)
+                        self.selected_option = (self.selected_option - 1) % len(
+                            self.options
+                        )
                     elif event.key == pygame.K_RETURN:
                         self.selected_mode = mode_keys[self.selected_option]
                         return self.selected_mode
@@ -80,21 +90,27 @@ class ModeSelection(Page):
     def run_classic_mode(self, color, clock, trails):
         """Run the Classic game mode."""
         loading_screen(color)
-        game_page = MainGame(self.screen, self.height, self.width, self.scale, self.game, color)
+        game_page = MainGame(
+            self.screen, self.height, self.width, self.scale, self.game, color
+        )
         game_page.runner(brick_height, brick_width, trails, clock)
 
     @handle_mode(GameMode.DARK_MODE)
     def run_dark_mode(self, color, clock, trails):
         """Run the Dark Mode game mode."""
         loading_screen(color)
-        game_page = DarkModeGame(self.screen, self.height, self.width, self.scale, self.game)
+        game_page = DarkModeGame(
+            self.screen, self.height, self.width, self.scale, self.game
+        )
         game_page.runner(brick_height, brick_width, trails, clock)
 
     @handle_mode(GameMode.TIME_ATTACK)
     def run_time_attack_mode(self, color, clock, trails):
         """Run the Time Attack game mode."""
         loading_screen(color)
-        game_page = TimeAttack(self.screen, self.height, self.width, self.scale, self.game, color)
+        game_page = TimeAttack(
+            self.screen, self.height, self.width, self.scale, self.game, color
+        )
         game_page.runner(brick_height, brick_width, trails, clock)
 
     def run(self, color, clock, trails):

@@ -28,7 +28,7 @@ __all__ = [
     "track3",
     "track4",
     "combs",
-    "AutoEnum"
+    "AutoEnum",
 ]
 
 from helpers.constants import (

@@ -110,7 +110,9 @@ class MainGame(Page):
             True,
             [self.color.GREEN, self.color.YELLOW][highscore > score],
         )
-        text3 = font_for_game_over.render(f"Your Score = {score}", True, self.color.YELLOW)
+        text3 = font_for_game_over.render(
+            f"Your Score = {score}", True, self.color.YELLOW
+        )
 
         if highscore < score:
             settings.highscore = score
@@ -182,7 +184,7 @@ class MainGame(Page):
 
         while self.running:
             self.screen.fill(self.color.BLACK)
-            dt = min(.02, clock.tick(60) / 1000.0)
+            dt = min(0.02, clock.tick(60) / 1000.0)
             current_time = time.time()
 
             if len(self.bricks) == 0:
@@ -399,7 +401,9 @@ class MainGame(Page):
                     pygame.mixer.music.unpause()
             for i, ball in enumerate(self.balls):
                 if ball.y < self.height - 60:
-                    ball.draw_ball(self.screen, self.color.GREEN, i, ball.x, ball.y, trails)
+                    ball.draw_ball(
+                        self.screen, self.color.GREEN, i, ball.x, ball.y, trails
+                    )
 
             self.show_score()
 

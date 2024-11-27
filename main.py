@@ -1,6 +1,5 @@
 import sys
 import pygame
-from enum import Enum, auto
 from functools import wraps
 from helpers import (
     HEIGHT,
@@ -12,7 +11,7 @@ from helpers import (
     track2,
     track3,
     track_path,
-    AutoEnum
+    AutoEnum,
 )
 from models import Color
 from pages import Info, MainMenu, Settings, ModeSelection
@@ -21,6 +20,7 @@ from pages import loading_screen
 
 class GameState(AutoEnum):
     """Enum to manage game states."""
+
     MAIN_MENU: int
     MODE_SELECTION: int
     SETTINGS: int
@@ -30,13 +30,16 @@ class GameState(AutoEnum):
 
 def handle_event(state):
     """Decorator to handle state-specific events."""
+
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             if self.current_state == state:
                 return func(self, *args, **kwargs)
             return None
+
         return wrapper
+
     return decorator
 
 
@@ -58,7 +61,7 @@ class Game:
         self.volume = 0.0
         self.trails = {}
 
-        # Initialize states and pages
+        
         self.current_state = GameState.MAIN_MENU
         self.main_menu = None
         self.settings_page = None
@@ -72,10 +75,16 @@ class Game:
 
     def initialize_pages(self):
         """Initialize the pages."""
-        self.main_menu = MainMenu(self.screen, self.height, self.width, self.scale, self)
-        self.settings_page = Settings(self.screen, self.height, self.width, self.scale, self)
+        self.main_menu = MainMenu(
+            self.screen, self.height, self.width, self.scale, self
+        )
+        self.settings_page = Settings(
+            self.screen, self.height, self.width, self.scale, self
+        )
         self.info_page = Info(self.screen, self.height, self.width, self.scale, self)
-        self.mode_selection = ModeSelection(self.screen, self.height, self.width, self.scale, self)
+        self.mode_selection = ModeSelection(
+            self.screen, self.height, self.width, self.scale, self
+        )
 
     @property
     def music_files(self):
@@ -105,7 +114,9 @@ class Game:
     @handle_event(GameState.MODE_SELECTION)
     def handle_mode_selection(self):
         """Handle logic for the mode selection page."""
-        back_to_main_menu = self.mode_selection.run(self.colors, self.clock, self.trails)
+        back_to_main_menu = self.mode_selection.run(
+            self.colors, self.clock, self.trails
+        )
         if back_to_main_menu:
             self.current_state = GameState.MAIN_MENU
 
@@ -135,13 +146,13 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.current_state = GameState.EXIT
 
-            # Handle states dynamically
+            
             self.handle_main_menu()
             self.handle_mode_selection()
             self.handle_settings()
             self.handle_info()
 
-            # Music logic
+            
             if self.music_is_playing:
                 pygame.mixer.music.load(self._music_files[0])
                 pygame.mixer.music.play(-1)

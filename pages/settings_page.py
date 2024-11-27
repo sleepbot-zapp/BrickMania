@@ -75,11 +75,13 @@ class Settings(Page):
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_DOWN:
                         self.selected_option = SettingsOption(
-                            (self.selected_option.value + 1) % len(self.settings_options)
+                            (self.selected_option.value + 1)
+                            % len(self.settings_options)
                         )
                     elif e.key == pygame.K_UP:
                         self.selected_option = SettingsOption(
-                            (self.selected_option.value - 1) % len(self.settings_options)
+                            (self.selected_option.value - 1)
+                            % len(self.settings_options)
                         )
                     elif e.key == pygame.K_RETURN:
                         if self.selected_option == SettingsOption.MUSIC:
@@ -200,14 +202,18 @@ class Settings(Page):
             if self.editing_mode == EditingMode.EDITING:
                 selected_color_name = self.color_keys[self.selected_color_index]
                 selected_color = list(getattr(self.game.colors, selected_color_name))
-                for j, component in enumerate([ColorComponent.RED, ColorComponent.GREEN, ColorComponent.BLUE]):
+                for j, component in enumerate(
+                    [ColorComponent.RED, ColorComponent.GREEN, ColorComponent.BLUE]
+                ):
                     highlight = (
                         self.game.colors.GREEN
                         if component == self.color_edit_component
                         else self.game.colors.WHITE
                     )
                     component_text = options_font.render(
-                        f"{component.name}: {selected_color[component.value]}", True, highlight
+                        f"{component.name}: {selected_color[component.value]}",
+                        True,
+                        highlight,
                     )
                     component_rect = component_text.get_rect(
                         center=(self.width // 2 + (j - 1) * 100, 525)

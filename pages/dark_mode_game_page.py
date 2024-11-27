@@ -30,11 +30,31 @@ class DarkModeGame(Page):
         self.special_balls = []
         self.running = True
         self.color = Color(
-            BLACK=(max(Color.BLACK[0] - 25, 0), max(Color.BLACK[1] - 25, 0), max(Color.BLACK[2] - 36, 0)),
-            RED=(min(Color.RED[0]- 225, 0), max(Color.RED[1]- 125, 0), max(Color.RED[2]- 130, 0)),
-            BLUE=(min(Color.BLUE[0] - 120, 0), min(Color.BLUE[1] - 170, 0), max(Color.BLUE[2] - 210, 0)),
-            GREEN=(max(Color.GREEN[0]- 130, 0), max(Color.GREEN[1] - 215, 0), max(Color.GREEN[2]- 120, 0)),
-            YELLOW=(min(Color.YELLOW[0]- 230, 0), min(Color.YELLOW[1]- 215, 0), min(Color.YELLOW[2]- 160, 0)),
+            BLACK=(
+                max(Color.BLACK[0] - 25, 0),
+                max(Color.BLACK[1] - 25, 0),
+                max(Color.BLACK[2] - 36, 0),
+            ),
+            RED=(
+                min(Color.RED[0] - 225, 0),
+                max(Color.RED[1] - 125, 0),
+                max(Color.RED[2] - 130, 0),
+            ),
+            BLUE=(
+                min(Color.BLUE[0] - 120, 0),
+                min(Color.BLUE[1] - 170, 0),
+                max(Color.BLUE[2] - 210, 0),
+            ),
+            GREEN=(
+                max(Color.GREEN[0] - 130, 0),
+                max(Color.GREEN[1] - 215, 0),
+                max(Color.GREEN[2] - 120, 0),
+            ),
+            YELLOW=(
+                min(Color.YELLOW[0] - 230, 0),
+                min(Color.YELLOW[1] - 215, 0),
+                min(Color.YELLOW[2] - 160, 0),
+            ),
         )
         self.bricks = create_new_bricks(self.color)
         self.last_move_time = self.last_brick_move_time = (
@@ -187,7 +207,7 @@ class DarkModeGame(Page):
 
         while self.running:
             self.screen.fill(self.color.BLACK)
-            dt = min(.02, clock.tick(60) / 1000)
+            dt = min(0.02, clock.tick(60) / 1000)
             current_time = time.time()
 
             if len(self.bricks) == 0:
@@ -404,7 +424,9 @@ class DarkModeGame(Page):
                     pygame.mixer.music.unpause()
             for i, ball in enumerate(self.balls):
                 if ball.y < self.height - 60:
-                    ball.draw_ball(self.screen, self.color.GREEN, i, ball.x, ball.y, trails)
+                    ball.draw_ball(
+                        self.screen, self.color.GREEN, i, ball.x, ball.y, trails
+                    )
 
             self.show_score()
 
