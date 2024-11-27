@@ -28,6 +28,7 @@ __all__ = [
     "track3",
     "track4",
     "combs",
+    "AutoEnum"
 ]
 
 from helpers.constants import (
@@ -61,3 +62,4 @@ from helpers.constants import (
 )
 from helpers.loading_combinations import combs
 from helpers.settings import Settings
+from helpers.autoenum import AutoEnum

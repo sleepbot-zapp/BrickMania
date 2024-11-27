@@ -46,7 +46,7 @@ def loading_screen(color):
     tip = choice(tips)
 
     rotation_angle_x = 30
-    rotation_angle_y = 45
+    rotation_angle_y = 30
 
     while True:
 

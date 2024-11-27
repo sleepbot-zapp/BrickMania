@@ -1,7 +1,24 @@
 import typing
 import pygame
+from helpers import AutoEnum
 from .pages import Page
 from models import Color
+
+
+class SettingsOption(AutoEnum):
+    MUSIC = 0
+    COLORS = 1
+
+
+class ColorComponent(AutoEnum):
+    RED = 0
+    GREEN = 1
+    BLUE = 2
+
+
+class EditingMode(AutoEnum):
+    NONE = 0
+    EDITING = 1
 
 
 class Settings(Page):
@@ -20,16 +37,16 @@ class Settings(Page):
             pygame.font.SysFont(None, int(72 * self.scale)),
             pygame.font.SysFont(None, int(32 * self.scale)),
         )
-        self.selected_option: int = 0
+        self.selected_option: SettingsOption = SettingsOption.MUSIC
         self.settings_options = settings_options or ["Music", "Colors"]
         self.color_keys = list(self.game.colors.__dict__.keys())
         self.selected_color_index = 0
-        self.color_edit_component = 0
-
+        self.color_edit_component: ColorComponent = ColorComponent.RED
+        self.editing_mode: EditingMode = EditingMode.NONE
+        self.numeric_input = ""
 
     def display(self) -> bool:
         """Main settings menu where options are displayed."""
-        self.selected_option = 0
         while True:
             self.screen.fill(self.game.colors.BLACK)
             header_font = self.fonts[0]
@@ -42,7 +59,7 @@ class Settings(Page):
             for i, option in enumerate(self.settings_options):
                 c = (
                     self.game.colors.GREEN
-                    if i == self.selected_option
+                    if i == self.selected_option.value
                     else self.game.colors.WHITE
                 )
                 option_text = options_font.render(option, True, c)
@@ -50,28 +67,29 @@ class Settings(Page):
                     center=(self.width // 2, int(150 * self.scale) + (i + 1) * 100)
                 )
                 self.screen.blit(option_text, option_rect)
+
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     quit()
                     exit()
                 if e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_DOWN:
-                        self.selected_option = (self.selected_option + 1) % len(
-                            self.settings_options
+                        self.selected_option = SettingsOption(
+                            (self.selected_option.value + 1) % len(self.settings_options)
                         )
                     elif e.key == pygame.K_UP:
-                        self.selected_option = (self.selected_option - 1) % len(
-                            self.settings_options
+                        self.selected_option = SettingsOption(
+                            (self.selected_option.value - 1) % len(self.settings_options)
                         )
                     elif e.key == pygame.K_RETURN:
-                        if self.selected_option == 0:
+                        if self.selected_option == SettingsOption.MUSIC:
                             self.display_music_settings()
-                        elif self.selected_option == 1:
+                        elif self.selected_option == SettingsOption.COLORS:
                             self.display_color_settings()
                     elif e.key == pygame.K_RSHIFT:
                         return True
-            pygame.display.flip()
 
+            pygame.display.flip()
 
     def display_music_settings(self) -> None:
         """Display the Music settings screen."""
@@ -108,6 +126,7 @@ class Settings(Page):
                 self.game.colors.GREEN,
                 (bar_x - bar_width // 2, bar_y, filled_width, bar_height),
             )
+
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     quit()
@@ -127,15 +146,11 @@ class Settings(Page):
                         if self.game.volume == 0 and self.game.music_is_playing:
                             self.game.music_is_playing = False
                             pygame.mixer.music.stop()
-            pygame.display.flip()
 
+            pygame.display.flip()
 
     def display_color_settings(self) -> None:
         """Display the Color settings screen with RGB values and editing functionality."""
-        editing_mode = False
-        numeric_input = ""
-        self.selected_color_index = 0
-        self.color_edit_component = 0
         while True:
             self.screen.fill(self.game.colors.BLACK)
             header_font = self.fonts[0]
@@ -182,25 +197,26 @@ class Settings(Page):
                     )
                     self.screen.blit(arrow_text, arrow_rect)
 
-            if editing_mode:
+            if self.editing_mode == EditingMode.EDITING:
                 selected_color_name = self.color_keys[self.selected_color_index]
                 selected_color = list(getattr(self.game.colors, selected_color_name))
-                for j, component in enumerate(["R", "G", "B"]):
+                for j, component in enumerate([ColorComponent.RED, ColorComponent.GREEN, ColorComponent.BLUE]):
                     highlight = (
                         self.game.colors.GREEN
-                        if j == self.color_edit_component
+                        if component == self.color_edit_component
                         else self.game.colors.WHITE
                     )
                     component_text = options_font.render(
-                        f"{component}: {selected_color[j]}", True, highlight
+                        f"{component.name}: {selected_color[component.value]}", True, highlight
                     )
                     component_rect = component_text.get_rect(
                         center=(self.width // 2 + (j - 1) * 100, 525)
                     )
                     self.screen.blit(component_text, component_rect)
-                if numeric_input:
+
+                if self.numeric_input:
                     numeric_input_text = options_font.render(
-                        f"Input: {numeric_input}", True, self.game.colors.RED
+                        f"Input: {self.numeric_input}", True, self.game.colors.RED
                     )
                     numeric_input_rect = numeric_input_text.get_rect(
                         center=(self.width // 2, 575)
@@ -213,12 +229,12 @@ class Settings(Page):
                     exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key in [pygame.K_LSHIFT, pygame.K_RSHIFT]:
-                        if editing_mode:
-                            editing_mode = False
-                            numeric_input = ""
+                        if self.editing_mode == EditingMode.EDITING:
+                            self.editing_mode = EditingMode.NONE
+                            self.numeric_input = ""
                         else:
                             return
-                    elif not editing_mode:
+                    elif self.editing_mode == EditingMode.NONE:
                         if event.key == pygame.K_r:
                             self.game.colors = Color()
                         if event.key == pygame.K_DOWN:
@@ -230,8 +246,8 @@ class Settings(Page):
                                 self.selected_color_index - 1
                             ) % len(self.color_keys)
                         elif event.key == pygame.K_RETURN:
-                            editing_mode = True
-                    elif editing_mode:
+                            self.editing_mode = EditingMode.EDITING
+                    elif self.editing_mode == EditingMode.EDITING:
                         selected_color_name = self.color_keys[self.selected_color_index]
                         selected_color = list(
                             getattr(self.game.colors, selected_color_name)
@@ -241,16 +257,16 @@ class Settings(Page):
                                 Color.__dict__[selected_color_name]
                             )
                         if event.key == pygame.K_RIGHT:
-                            self.color_edit_component = (
-                                self.color_edit_component + 1
-                            ) % 3
+                            self.color_edit_component = ColorComponent(
+                                (self.color_edit_component.value + 1) % 3
+                            )
                         elif event.key == pygame.K_LEFT:
-                            self.color_edit_component = (
-                                self.color_edit_component - 1
-                            ) % 3
+                            self.color_edit_component = ColorComponent(
+                                (self.color_edit_component.value - 1) % 3
+                            )
                         elif event.key == pygame.K_UP:
-                            selected_color[self.color_edit_component] = min(
-                                255, selected_color[self.color_edit_component] + 1
+                            selected_color[self.color_edit_component.value] = min(
+                                255, selected_color[self.color_edit_component.value] + 1
                             )
                             setattr(
                                 self.game.colors,
@@ -258,8 +274,8 @@ class Settings(Page):
                                 tuple(selected_color),
                             )
                         elif event.key == pygame.K_DOWN:
-                            selected_color[self.color_edit_component] = max(
-                                0, selected_color[self.color_edit_component] - 1
+                            selected_color[self.color_edit_component.value] = max(
+                                0, selected_color[self.color_edit_component.value] - 1
                             )
                             setattr(
                                 self.game.colors,
@@ -267,23 +283,22 @@ class Settings(Page):
                                 tuple(selected_color),
                             )
                         elif event.key == pygame.K_RETURN:
-                            if numeric_input:
-                                value = min(255, max(0, int(numeric_input)))
-                                selected_color[self.color_edit_component] = value
+                            if self.numeric_input:
+                                value = min(255, max(0, int(self.numeric_input)))
+                                selected_color[self.color_edit_component.value] = value
                                 setattr(
                                     self.game.colors,
                                     selected_color_name,
                                     tuple(selected_color),
                                 )
-                                numeric_input = ""
+                                self.numeric_input = ""
                             else:
-                                editing_mode = False
+                                self.editing_mode = EditingMode.NONE
                         elif event.key == pygame.K_BACKSPACE:
-                            numeric_input = numeric_input[:-1]
+                            self.numeric_input = self.numeric_input[:-1]
                         elif event.unicode.isdigit():
-                            numeric_input += event.unicode
-                            if int(numeric_input) > 255:
-                                numeric_input = "255"
+                            self.numeric_input += event.unicode
+                            if int(self.numeric_input) > 255:
+                                self.numeric_input = "255"
 
             pygame.display.flip()
-            
