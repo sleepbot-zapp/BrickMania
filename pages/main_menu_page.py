@@ -30,7 +30,6 @@ class MainMenu(Page):
         color: Color,
         brick_width: typing.Union[int, float],
         brick_height: typing.Union[int, float],
-        clock,
     ) -> int:
         tiles = [
             FallingTile(

@@ -20,7 +20,6 @@ from pages import loading_screen
 
 class GameState(AutoEnum):
     """Enum to manage game states."""
-
     MAIN_MENU: int
     MODE_SELECTION: int
     SETTINGS: int
@@ -30,16 +29,13 @@ class GameState(AutoEnum):
 
 def handle_event(state):
     """Decorator to handle state-specific events."""
-
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             if self.current_state == state:
                 return func(self, *args, **kwargs)
             return None
-
         return wrapper
-
     return decorator
 
 
@@ -100,7 +96,7 @@ class Game:
         if not self.main_menu:
             self.initialize_pages()
         selected_option = self.main_menu.generate(
-            self.colors, brick_width, brick_height, self.clock
+            self.colors, brick_width, brick_height
         )
         if selected_option == 0:
             self.current_state = GameState.MODE_SELECTION

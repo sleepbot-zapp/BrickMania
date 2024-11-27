@@ -20,16 +20,13 @@ class GameMode(AutoEnum):
 
 def handle_mode(mode):
     """Decorator to handle logic for a specific game mode."""
-
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             if self.selected_mode == mode:
                 return func(self, *args, **kwargs)
             return None
-
         return wrapper
-
     return decorator
 
 
