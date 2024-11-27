@@ -6,10 +6,7 @@ class Page:
         self.scale = scale
         self.game = game
 
-
-    def render_text(
-        self, text, font, color, x, y, center=False, right_align=False
-    ):
+    def render_text(self, text, font, color, x, y, center=False, right_align=False):
         """Render text to the screen with alignment options."""
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()

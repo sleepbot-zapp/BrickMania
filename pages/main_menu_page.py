@@ -41,12 +41,10 @@ class MainMenu(Page):
         while True:
             self.screen.fill(color.BLACK)
 
-            
             for tile in tiles:
                 tile.move(self.height, self.width)
                 tile.draw(self.screen)
 
-            
             self.render_text(
                 text=self.texts[0],
                 font=self.fonts[0],
@@ -56,7 +54,6 @@ class MainMenu(Page):
                 center=True,
             )
 
-            
             self.render_text(
                 text=self.texts[1],
                 font=self.fonts[1],
@@ -74,7 +71,6 @@ class MainMenu(Page):
                 right_align=True,
             )
 
-            
             for i, option in enumerate(self.options):
                 color_option = [color.WHITE, color.GREEN][i == self.selected_option]
                 self.render_text(
@@ -88,7 +84,6 @@ class MainMenu(Page):
 
             pygame.display.flip()
 
-            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()

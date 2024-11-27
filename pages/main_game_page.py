@@ -20,7 +20,15 @@ class MainGame(Page):
     special_ball_time = 20
     random_destruction_time = 60
 
-    def __init__(self, screen, height, width, scale, game, color,) -> None:
+    def __init__(
+        self,
+        screen,
+        height,
+        width,
+        scale,
+        game,
+        color,
+    ) -> None:
         super().__init__(screen, height, width, scale, game)
         self.fonts = (pygame.font.SysFont(None, int(42 * self.scale)),)
         self.data = settings.Settings.open()
@@ -250,7 +258,6 @@ class MainGame(Page):
                 self.last_x_time = current_time
 
             if keys[pygame.K_RSHIFT]:
-
                 self.balls = [
                     Ball(
                         screen=self.screen,
@@ -273,7 +280,6 @@ class MainGame(Page):
             if all(ball.y >= self.height - 60 for ball in self.balls):
                 user_exited = self.game_over(self.score, self.data)
                 if user_exited:
-
                     self.balls = [
                         Ball(
                             screen=self.screen,
@@ -290,7 +296,6 @@ class MainGame(Page):
                     )
                     return True
                 else:
-
                     self.balls = [
                         Ball(
                             screen=self.screen,
@@ -471,4 +476,4 @@ class MainGame(Page):
             )
 
             pygame.display.flip()
-            dt = clock.tick(60)/1000
+            dt = clock.tick(60) / 1000
