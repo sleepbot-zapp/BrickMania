@@ -1,6 +1,4 @@
 from enum import Enum, auto
-from typing import Any
-
 
 class AutoEnum(Enum):
     """Automatically assigns `auto()` values to members based on type annotations."""

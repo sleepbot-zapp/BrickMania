@@ -3,6 +3,7 @@ import sys
 import textwrap
 import pygame
 from .pages import Page
+from enum import Enum
 
 long_text = """
 **BrickMania**
@@ -45,18 +46,17 @@ long_text = """
 ^
 """
 
+class ContentType(Enum):
+    TEXT = "text"
+    SUBTITLE = "subtitle"
+    LINE = "line"
+    LINE2 = "line2"
 
-class Info(Page):
-    def __init__(self, screen, height, width, scale, game):
-        super().__init__(screen, height, width, scale, game)
-        self.fonts = (
-            pygame.font.Font(None, 20),
-            pygame.font.Font(None, 30),
-            pygame.font.Font(None, 24),
-            pygame.font.Font(None, 26),
-        )
-        self.sprite_width = self.sprite_height = 50
-        self.top_margin = 50
+
+class SpriteManager:
+    def __init__(self, sprite_folder, sprite_size=(50, 50)):
+        self.sprite_folder = sprite_folder
+        self.sprite_width, self.sprite_height = sprite_size
 
     def make_circular_icon(self, sprite):
         """Creates a circular icon with a given sprite."""
@@ -72,17 +72,29 @@ class Info(Page):
         icon_surface.blit(sprite, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
         return icon_surface
 
-    @property
-    def sprites(self):
+    def load_sprites(self):
         """Load and return all sprites from the assets folder."""
         sprites = []
-        for filename in os.listdir("./assets/sprites"):
-            sprite = pygame.image.load(f"./assets/sprites/{filename}").convert_alpha()
+        for filename in os.listdir(self.sprite_folder):
+            sprite = pygame.image.load(f"{self.sprite_folder}/{filename}").convert_alpha()
             sprite = pygame.transform.scale(
                 sprite, (self.sprite_width, self.sprite_height)
             )
             sprites.append(self.make_circular_icon(sprite))
         return sprites
+
+
+class Info(Page):
+    def __init__(self, screen, height, width, scale, game):
+        super().__init__(screen, height, width, scale, game)
+        self.fonts = (
+            pygame.font.Font(None, 20),
+            pygame.font.Font(None, 30),
+            pygame.font.Font(None, 24),
+            pygame.font.Font(None, 26),
+        )
+        self.top_margin = 50
+        self.sprite_manager = SpriteManager("./assets/sprites")
 
     def wrap_text(self, line, font):
         """Wrap the text to fit within the screen width."""
@@ -95,26 +107,26 @@ class Info(Page):
         if line.startswith("**") and line.endswith("**"):
             wrapped_lines = self.wrap_text(line[2:-2], self.fonts[1])
             return [
-                {"type": "text", "surface": self.fonts[1].render(w, True, color.WHITE)}
+                {"type": ContentType.TEXT, "surface": self.fonts[1].render(w, True, color.WHITE)}
                 for w in wrapped_lines
             ]
         elif line.startswith("@"):
             wrapped_lines = self.wrap_text(line[1:], self.fonts[2])
             return [
                 {
-                    "type": "subtitle",
+                    "type": ContentType.SUBTITLE,
                     "surface": self.fonts[2].render(w, True, color.GREY),
                 }
                 for w in wrapped_lines
             ]
         elif line.startswith("---"):
-            return [{"type": "line"}]
+            return [{"type": ContentType.LINE}]
         elif line.startswith("^"):
-            return [{"type": "line2"}]
+            return [{"type": ContentType.LINE2}]
         else:
             wrapped_lines = self.wrap_text(line, self.fonts[0])
             return [
-                {"type": "text", "surface": self.fonts[0].render(w, True, color.WHITE)}
+                {"type": ContentType.TEXT, "surface": self.fonts[0].render(w, True, color.WHITE)}
                 for w in wrapped_lines
             ]
 
@@ -166,19 +178,19 @@ class Info(Page):
 
             current_y = scroll_y
             for line in rendered_lines:
-                if line["type"] == "text":
+                if line["type"] == ContentType.TEXT:
                     line_surface = line["surface"]
                     line_x = (self.width - line_surface.get_width()) // 2
                     if -line_height < current_y < self.height:
                         self.screen.blit(line_surface, (line_x, current_y))
                     current_y += line_height
-                elif line["type"] == "subtitle":
+                elif line["type"] == ContentType.SUBTITLE:
                     line_surface = line["surface"]
                     line_x = (self.width - line_surface.get_width()) // 2
                     if -line_height < current_y < self.height:
                         self.screen.blit(line_surface, (line_x, current_y))
                     current_y += line_height + 10
-                elif line["type"] == "line":
+                elif line["type"] == ContentType.LINE:
                     current_y += 15
                     if -line_height < current_y < self.height:
                         line_width = int(self.width * 0.4)
@@ -191,7 +203,7 @@ class Info(Page):
                             2,
                         )
                     current_y += 15
-                elif line["type"] == "line2":
+                elif line["type"] == ContentType.LINE2:
                     current_y += 15
                     if -line_height < current_y < self.height:
                         line_width = int(self.width * 0.8)
@@ -205,10 +217,10 @@ class Info(Page):
                         )
                     current_y += 20
 
-            pos = self.width // (len(self.sprites) + 1)
+            pos = self.width // (len(self.sprite_manager.load_sprites()) + 1)
             icon_y = current_y + 40
             if -line_height < icon_y < self.height:
-                for i, sprite in enumerate(self.sprites):
+                for i, sprite in enumerate(self.sprite_manager.load_sprites()):
                     sprite_x = (i + 1) * pos
                     sprite_rect = sprite.get_rect(center=(sprite_x, icon_y))
                     if sprite_rect.collidepoint(mouse_pos):

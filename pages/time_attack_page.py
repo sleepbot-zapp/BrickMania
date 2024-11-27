@@ -23,7 +23,7 @@ class TimeAttack(Page):
     random_destruction_time = 30
     initial_timer = 60
 
-    def __init__(self, screen, height, width, scale, game, color, fonts=None) -> None:
+    def __init__(self, screen, height, width, scale, game, color) -> None:
         super().__init__(screen, height, width, scale, game)
         self.fonts = (pygame.font.SysFont(None, int(42 * self.scale)),)
         self.data = settings.Settings.open()

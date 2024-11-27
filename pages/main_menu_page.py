@@ -13,11 +13,10 @@ class MainMenu(Page):
         width: typing.Union[int, float],
         scale: typing.Union[int, float],
         game,
-        fonts=None,
         options: typing.Tuple[str] = None,
     ) -> None:
         super().__init__(screen, height, width, scale, game)
-        self.fonts = fonts or (
+        self.fonts = (
             pygame.font.SysFont(None, int(72 * self.scale)),
             pygame.font.SysFont(None, int(25 * self.scale)),
             pygame.font.SysFont(None, int(48 * self.scale)),
