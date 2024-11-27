@@ -50,14 +50,3 @@ class Player:
                 ),
                 border_radius=10,
             )
-
-    def move_player(self, dt, keys, min_limit, max_limit):
-        """Move the player based on input keys while respecting screen boundaries."""
-        if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and self.x_start > min_limit:
-            self.x_start -= self.player_speed * dt
-        elif (
-            keys[pygame.K_d] or keys[pygame.K_RIGHT]
-        ) and self.x_start < WIDTH - self.player_width - max_limit:
-            self.x_start += self.player_speed * dt
-
-        return time.time()
