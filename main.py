@@ -13,15 +13,18 @@ from helpers import (
     track_path,
     AutoEnum,
 )
-from models import Color
+from models import Color, FallingTile
 from pages import Info, MainMenu, Settings, ModeSelection
+from pages.main_game_page import MainGame
 from pages import loading_screen
+import pages.loading_screen as loading_screen
 
 
 class GameState(AutoEnum):
     """Enum to manage game states."""
     MAIN_MENU: int
     MODE_SELECTION: int
+    INGAME: int
     SETTINGS: int
     INFO: int
     EXIT: int
@@ -57,12 +60,14 @@ class Game:
         self.volume = 0.0
         self.trails = {}
 
-        
+        self.event = None
         self.current_state = GameState.MAIN_MENU
         self.main_menu = None
         self.settings_page = None
         self.info_page = None
         self.mode_selection = None
+        self.delay_ms = 20
+        self.current_input_time_ms = 0
 
     def pre_load_music(self):
         """Pre-load music with set volume."""
@@ -95,9 +100,27 @@ class Game:
         """Handle logic for the main menu."""
         if not self.main_menu:
             self.initialize_pages()
+        
         selected_option = self.main_menu.generate(
-            self.colors, brick_width, brick_height
+            self.colors, brick_width, brick_height, self.tiles
         )
+
+        keys = pygame.key.get_pressed()
+
+        # Just a hack, fix later :p
+        if self.event != None:
+            if keys[pygame.K_DOWN]:
+                self.main_menu.selected_option = (self.main_menu.selected_option + 1) % len(
+                    self.main_menu.options
+                )
+            elif keys[pygame.K_UP]:
+                self.main_menu.selected_option = (self.main_menu.selected_option - 1) % len(
+                    self.main_menu.options
+                )
+            elif keys[pygame.K_RETURN]:
+                selected_option = self.main_menu.selected_option
+            self.event = None
+
         if selected_option == 0:
             self.current_state = GameState.MODE_SELECTION
         elif selected_option == 1:
@@ -110,11 +133,47 @@ class Game:
     @handle_event(GameState.MODE_SELECTION)
     def handle_mode_selection(self):
         """Handle logic for the mode selection page."""
-        back_to_main_menu = self.mode_selection.run(
-            self.colors, self.clock, self.trails
-        )
-        if back_to_main_menu:
-            self.current_state = GameState.MAIN_MENU
+
+        mode_keys = list(self.mode_selection.options.values())
+        self.mode_selection.select_mode(self.colors)
+        keys = pygame.key.get_pressed()
+
+        if self.event != None:
+            if keys[pygame.K_DOWN]:
+                self.mode_selection.selected_option = (self.mode_selection.selected_option + 1) % len(
+                    self.mode_selection.options
+                )
+            elif keys[pygame.K_UP]:
+                self.mode_selection.selected_option = (self.mode_selection.selected_option - 1) % len(
+                    self.mode_selection.options
+                )
+            elif keys[pygame.K_RETURN]:
+                self.mode_selection.selected_mode = mode_keys[self.mode_selection.selected_option]
+                self.current_state = GameState.INGAME
+                self.once = True
+            elif keys[pygame.K_ESCAPE]:
+                self.current_state = GameState.MAIN_MENU
+
+            self.event = None
+
+    @handle_event(GameState.INGAME)
+    def handle_ingame(self):
+        if self.mode_selection.selected_mode == 'Classic':
+            if self.once == True:
+                self.run_loading_screen()
+                self.game_page = MainGame(
+                    self.screen, self.height, self.width, self.scale, self.mode_selection.game, self.colors
+                )
+                self.game_page.init_game()
+                self.once = False
+            else:
+                self.mode_selection.run_classic_mode(self.colors, self.clock, self.trails, self.game_page)
+        # Do this for the rest
+        elif self.mode_selection.selected_mode == 'Time Attack':
+            self.mode_selection.run_time_attack_mode(self.colors, self.clock, self.trails)
+        elif self.mode_selection.selected_mode == 'Dark Mode':
+            self.mode_selection.run_dark_mode(self.colors, self.clock, self.trails)
+        pass
 
     @handle_event(GameState.SETTINGS)
     def handle_settings(self):
@@ -137,14 +196,27 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.screen.fill(self.colors.BLACK)
 
+        self.tiles = [
+            FallingTile(
+                brick_width, brick_height, self.width, self.height, self.scale, self.colors
+            )
+            for _ in range(20)
+        ]
+
+        self.current_state = GameState.MAIN_MENU
         while self.current_state != GameState.EXIT:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.current_state = GameState.EXIT
+                elif event.type == pygame.KEYDOWN:
+                    self.event = event
 
-            
-            self.handle_main_menu()
-            self.handle_mode_selection()
+            if self.current_state == GameState.MAIN_MENU:
+                self.handle_main_menu()
+            elif self.current_state == GameState.MODE_SELECTION:
+                self.handle_mode_selection()
+            elif self.current_state == GameState.INGAME:
+                self.handle_ingame()
             self.handle_settings()
             self.handle_info()
 
@@ -156,8 +228,8 @@ class Game:
                 pygame.mixer.music.stop()
 
             pygame.display.update()
+            self.current_input_time_ms = pygame.time.get_ticks()
             self.clock.tick(60)
-
         pygame.quit()
         sys.exit()
 

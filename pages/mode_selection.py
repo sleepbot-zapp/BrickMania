@@ -55,44 +55,17 @@ class ModeSelection(Page):
 
     def select_mode(self, color):
         """Handle menu navigation and mode selection."""
-        running = True
-        mode_keys = list(self.options.keys())  
-        while running:
-            self.screen.fill(color.BLACK)
-            for i, (mode, option) in enumerate(self.options.items()):
-                self.draw_text(
-                    option, color, i * 50 - 50, is_selected=(i == self.selected_option)
-                )
-            pygame.display.flip()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_DOWN:
-                        self.selected_option = (self.selected_option + 1) % len(
-                            self.options
-                        )
-                    elif event.key == pygame.K_UP:
-                        self.selected_option = (self.selected_option - 1) % len(
-                            self.options
-                        )
-                    elif event.key == pygame.K_RETURN:
-                        self.selected_mode = mode_keys[self.selected_option]
-                        return self.selected_mode
-                    elif event.key == pygame.K_RSHIFT:
-                        return None
+        self.screen.fill(color.BLACK)
+        for i, (mode, option) in enumerate(self.options.items()):
+            self.draw_text(
+                option, color, i * 50 - 50, is_selected=(i == self.selected_option)
+            )
 
-    @handle_mode(GameMode.CLASSIC)
-    def run_classic_mode(self, color, clock, trails):
+
+    def run_classic_mode(self, color, clock, trails, game_page):
         """Run the Classic game mode."""
-        loading_screen(color)
-        game_page = MainGame(
-            self.screen, self.height, self.width, self.scale, self.game, color
-        )
         game_page.runner(brick_height, brick_width, trails, clock)
 
-    @handle_mode(GameMode.DARK_MODE)
     def run_dark_mode(self, color, clock, trails):
         """Run the Dark Mode game mode."""
         loading_screen(color)
@@ -101,7 +74,6 @@ class ModeSelection(Page):
         )
         game_page.runner(brick_height, brick_width, trails, clock)
 
-    @handle_mode(GameMode.TIME_ATTACK)
     def run_time_attack_mode(self, color, clock, trails):
         """Run the Time Attack game mode."""
         loading_screen(color)
@@ -111,11 +83,4 @@ class ModeSelection(Page):
         game_page.runner(brick_height, brick_width, trails, clock)
 
     def run(self, color, clock, trails):
-        """Run the mode selection and handle transitions."""
-        selected_mode = self.select_mode(color)
-        if selected_mode:
-            self.run_classic_mode(color, clock, trails)
-            self.run_dark_mode(color, clock, trails)
-            self.run_time_attack_mode(color, clock, trails)
-        else:
-            return True
+        pass # nothing here
