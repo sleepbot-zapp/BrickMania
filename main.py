@@ -20,6 +20,7 @@ from pages import loading_screen
 
 class GameState(AutoEnum):
     """Enum to manage game states."""
+
     MAIN_MENU: int
     MODE_SELECTION: int
     SETTINGS: int
@@ -29,13 +30,16 @@ class GameState(AutoEnum):
 
 def handle_event(state):
     """Decorator to handle state-specific events."""
+
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             if self.current_state == state:
                 return func(self, *args, **kwargs)
             return None
+
         return wrapper
+
     return decorator
 
 
@@ -140,13 +144,11 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.current_state = GameState.EXIT
 
-            
             self.handle_main_menu()
             self.handle_mode_selection()
             self.handle_settings()
             self.handle_info()
 
-            
             if self.music_is_playing:
                 pygame.mixer.music.load(self._music_files[0])
                 pygame.mixer.music.play(-1)

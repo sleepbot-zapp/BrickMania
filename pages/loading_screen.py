@@ -49,7 +49,6 @@ def loading_screen(color):
     rotation_angle_y = 30
 
     while True:
-
         screen.fill(color.BLACK)
         clock.tick(60)
 
@@ -165,11 +164,9 @@ def loading_screen(color):
                 if e.key in (K_RSHIFT, K_LSHIFT):
                     return True
             if e.type == MOUSEMOTION and e.buttons[0]:
-
                 rotation_angle_x = max(0, min(90, rotation_angle_x + e.rel[1] * 0.5))
                 rotation_angle_y += e.rel[0] * 0.5
             if e.type == MOUSEWHEEL:
-
                 spinner_speed = 2 if e.y > 0 else -2
 
         flip()

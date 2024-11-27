@@ -25,7 +25,6 @@ class SpecialBall:
         base_color = color.RED
 
         for i in range(gradient_steps):
-
             shade_factor = i / gradient_steps
             r = int(base_color[0] * (1 - shade_factor))
             g = int(base_color[1] * (1 - shade_factor))

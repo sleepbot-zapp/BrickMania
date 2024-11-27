@@ -4,6 +4,7 @@ from helpers import ball_radius, ball_speed_x, ball_speed_y
 from .player import Player
 import typing
 
+
 class Ball:
     def __init__(
         self,
@@ -28,9 +29,19 @@ class Ball:
         self.x = random.randrange(self.width)
         self.y = self.height
         self.ball_crossed_line = False
-        self.trail: typing.List[typing.Tuple[typing.Union[int, float], typing.Union[int, float]]] = []
+        self.trail: typing.List[
+            typing.Tuple[typing.Union[int, float], typing.Union[int, float]]
+        ] = []
 
-    def draw_ball(self, screen, color, ball_id: int, x: typing.Union[int, float], y: typing.Union[int, float], ball_trails):
+    def draw_ball(
+        self,
+        screen,
+        color,
+        ball_id: int,
+        x: typing.Union[int, float],
+        y: typing.Union[int, float],
+        ball_trails,
+    ):
         """Draw the ball with a diverging 3D trail effect."""
         self._draw_ball_trail(screen, color, ball_id, x, y, ball_trails)
         self._draw_ball_body(screen, color, x, y)
@@ -72,8 +83,12 @@ class Ball:
     def _handle_paddle_collision(self, player: Player):
         """Handle collision with the player's paddle."""
         if (
-            player.x_start - self.ball_radius <= self.x <= player.x_start + player.player_width + self.ball_radius
-            and player.y_start <= self.y + self.ball_radius <= player.y_start + player.player_height
+            player.x_start - self.ball_radius
+            <= self.x
+            <= player.x_start + player.player_width + self.ball_radius
+            and player.y_start
+            <= self.y + self.ball_radius
+            <= player.y_start + player.player_height
         ):
             self._reflect_ball_from_paddle(player)
 
@@ -85,7 +100,15 @@ class Ball:
         self.dy = -abs(self.dy)
         self.y = max(self.y, player.y_start - self.ball_radius)
 
-    def _draw_ball_trail(self, screen, color, ball_id: int, x: typing.Union[int, float], y: typing.Union[int, float], ball_trails):
+    def _draw_ball_trail(
+        self,
+        screen,
+        color,
+        ball_id: int,
+        x: typing.Union[int, float],
+        y: typing.Union[int, float],
+        ball_trails,
+    ):
         """Draw the ball's trail effect."""
         max_alpha = 50
         trail_length = 10
@@ -100,19 +123,30 @@ class Ball:
 
         for i, (tx, ty) in enumerate(trail):
             alpha = max_alpha - int(max_alpha * (i / trail_length))
-            trail_width = max_trail_width - (max_trail_width - min_trail_width) * (i / trail_length)
+            trail_width = max_trail_width - (max_trail_width - min_trail_width) * (
+                i / trail_length
+            )
             dx = (i / trail_length) * divergence * self.ball_radius
-            trail_surface = pygame.Surface((trail_width * 2, trail_width * 2), pygame.SRCALPHA)
+            trail_surface = pygame.Surface(
+                (trail_width * 2, trail_width * 2), pygame.SRCALPHA
+            )
             trail_color = (
                 max(0, color[0] - int((i / trail_length) * 60)),
                 max(0, color[1] - int((i / trail_length) * 60)),
                 max(0, color[2] - int((i / trail_length) * 60)),
                 alpha,
             )
-            pygame.draw.circle(trail_surface, trail_color, (int(trail_width), int(trail_width)), int(trail_width))
+            pygame.draw.circle(
+                trail_surface,
+                trail_color,
+                (int(trail_width), int(trail_width)),
+                int(trail_width),
+            )
             screen.blit(trail_surface, (tx - trail_width + dx, ty - trail_width))
 
-    def _draw_ball_body(self, screen, color, x: typing.Union[int, float], y: typing.Union[int, float]):
+    def _draw_ball_body(
+        self, screen, color, x: typing.Union[int, float], y: typing.Union[int, float]
+    ):
         """Draw the ball's body with shading."""
         for depth in range(self.ball_radius, self.ball_radius // 2, -1):
             shade_factor = depth / self.ball_radius
@@ -123,7 +157,9 @@ class Ball:
             )
             pygame.draw.circle(screen, shaded_color, (int(x), int(y)), depth)
 
-    def _draw_ball_highlight(self, screen, color, x: typing.Union[int, float], y: typing.Union[int, float]):
+    def _draw_ball_highlight(
+        self, screen, color, x: typing.Union[int, float], y: typing.Union[int, float]
+    ):
         """Draw a highlight on the ball."""
         highlight_color = (
             min(color[0] + 80, 255),

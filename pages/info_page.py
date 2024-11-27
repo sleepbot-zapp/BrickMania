@@ -46,6 +46,7 @@ long_text = """
 ^
 """
 
+
 class ContentType(Enum):
     TEXT = "text"
     SUBTITLE = "subtitle"
@@ -76,7 +77,9 @@ class SpriteManager:
         """Load and return all sprites from the assets folder."""
         sprites = []
         for filename in os.listdir(self.sprite_folder):
-            sprite = pygame.image.load(f"{self.sprite_folder}/{filename}").convert_alpha()
+            sprite = pygame.image.load(
+                f"{self.sprite_folder}/{filename}"
+            ).convert_alpha()
             sprite = pygame.transform.scale(
                 sprite, (self.sprite_width, self.sprite_height)
             )
@@ -107,7 +110,10 @@ class Info(Page):
         if line.startswith("**") and line.endswith("**"):
             wrapped_lines = self.wrap_text(line[2:-2], self.fonts[1])
             return [
-                {"type": ContentType.TEXT, "surface": self.fonts[1].render(w, True, color.WHITE)}
+                {
+                    "type": ContentType.TEXT,
+                    "surface": self.fonts[1].render(w, True, color.WHITE),
+                }
                 for w in wrapped_lines
             ]
         elif line.startswith("@"):
@@ -126,7 +132,10 @@ class Info(Page):
         else:
             wrapped_lines = self.wrap_text(line, self.fonts[0])
             return [
-                {"type": ContentType.TEXT, "surface": self.fonts[0].render(w, True, color.WHITE)}
+                {
+                    "type": ContentType.TEXT,
+                    "surface": self.fonts[0].render(w, True, color.WHITE),
+                }
                 for w in wrapped_lines
             ]
 

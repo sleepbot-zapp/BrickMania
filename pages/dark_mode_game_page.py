@@ -205,9 +205,11 @@ class DarkModeGame(Page):
 
         self.running = True
 
+        dt = 0
+        clock.tick(60)
         while self.running:
             self.screen.fill(self.color.BLACK)
-            dt = min(0.02, clock.tick(60) / 1000)
+            # dt = min(0.02, clock.tick(60) / 1000)
             current_time = time.time()
 
             if len(self.bricks) == 0:
@@ -273,7 +275,6 @@ class DarkModeGame(Page):
                 self.last_x_time = current_time
 
             if keys[pygame.K_RSHIFT]:
-
                 self.balls = [
                     Ball(
                         screen=self.screen,
@@ -296,7 +297,6 @@ class DarkModeGame(Page):
             if all(ball.y >= self.height - 60 for ball in self.balls):
                 user_exited = self.game_over(self.score, self.data)
                 if user_exited:
-
                     self.balls = [
                         Ball(
                             screen=self.screen,
@@ -313,7 +313,6 @@ class DarkModeGame(Page):
                     )
                     return True
                 else:
-
                     self.balls = [
                         Ball(
                             screen=self.screen,
@@ -494,3 +493,4 @@ class DarkModeGame(Page):
             )
 
             pygame.display.flip()
+            dt = clock.tick(60) / 1000

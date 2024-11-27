@@ -20,13 +20,16 @@ class GameMode(AutoEnum):
 
 def handle_mode(mode):
     """Decorator to handle logic for a specific game mode."""
+
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             if self.selected_mode == mode:
                 return func(self, *args, **kwargs)
             return None
+
         return wrapper
+
     return decorator
 
 
@@ -41,7 +44,7 @@ class ModeSelection(Page):
             GameMode.DARK_MODE: "Dark Mode",
             GameMode.TIME_ATTACK: "Time Attack",
         }
-        self.selected_mode = None  
+        self.selected_mode = None
 
     def draw_text(self, text, color, y_offset, is_selected=False):
         """Draw a single menu option."""
@@ -56,7 +59,7 @@ class ModeSelection(Page):
     def select_mode(self, color):
         """Handle menu navigation and mode selection."""
         running = True
-        mode_keys = list(self.options.keys())  
+        mode_keys = list(self.options.keys())
         while running:
             self.screen.fill(color.BLACK)
             for i, (mode, option) in enumerate(self.options.items()):

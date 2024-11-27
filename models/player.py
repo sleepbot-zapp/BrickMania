@@ -1,6 +1,5 @@
-import time
 import pygame
-from helpers import WIDTH, player_height, player_speed, player_width
+from helpers import player_height, player_speed, player_width
 
 
 class Player:
@@ -13,7 +12,7 @@ class Player:
         scale,
         player_height=player_height,
         player_width=player_width,
-        player_speed=player_speed
+        player_speed=player_speed,
     ):
         self.screen = screen
         self.width = width
@@ -33,7 +32,6 @@ class Player:
         gradient_steps = 10
         base_color = color.BLUE
         for i in range(gradient_steps):
-
             shade_factor = i / gradient_steps
             r = int(base_color[0] * (1 - shade_factor))
             g = int(base_color[1] * (1 - shade_factor))

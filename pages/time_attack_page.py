@@ -195,9 +195,11 @@ class TimeAttack(Page):
         self.timer = self.initial_timer
         self.running = True
 
+        dt = 0
+        clock.tick(60)
         while self.running:
             self.screen.fill(self.color.BLACK)
-            dt = min(0.02, clock.tick(60) / 1000)
+            # dt = min(0.02, clock.tick(60) / 1000)
             current_time = time.time()
 
             if current_time - self.last_timer_update >= 1:
@@ -282,7 +284,6 @@ class TimeAttack(Page):
                 self.last_x_time = current_time
 
             if keys[pygame.K_RSHIFT]:
-
                 self.balls = [
                     Ball(
                         screen=self.screen,
@@ -305,7 +306,6 @@ class TimeAttack(Page):
             if all(ball.y >= self.height - 60 for ball in self.balls):
                 user_exited = self.game_over(self.score, self.data)
                 if user_exited:
-
                     self.balls = [
                         Ball(
                             screen=self.screen,
@@ -322,7 +322,6 @@ class TimeAttack(Page):
                     )
                     return True
                 else:
-
                     self.balls = [
                         Ball(
                             screen=self.screen,
@@ -506,3 +505,4 @@ class TimeAttack(Page):
 
             self.show_timer()
             pygame.display.flip()
+            dt = clock.tick(60) / 1000
