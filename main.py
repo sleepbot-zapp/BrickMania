@@ -72,8 +72,6 @@ class Game:
         )
         self.session = Session(self.db, "W")
         self.volume = 0.0
-        with self.session as conn:
-            print('poo', conn.search("Volume"))
 
     def pre_load_music(self):
         """Pre-load music with set volume."""
