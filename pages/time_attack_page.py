@@ -11,7 +11,7 @@ from models import (
     draw_bricks,
     drop_powerup,
     create_new_bricks,
-    Session
+    Session,
 )
 from .pages import Page
 
@@ -116,7 +116,7 @@ class TimeAttack(Page):
         text = font_for_game_over.render(
             "Game Over! Press ENTER to restart", True, self.color.RED
         )
-        highscore = self.update_db("Time", score)
+        highscore = self.update_db_highscore("Time", score)
         text2 = font_for_game_over.render(
             f"High Score = {[score, highscore][highscore > score]}",
             True,
@@ -202,7 +202,9 @@ class TimeAttack(Page):
 
             if self.timer <= 0:
                 if self.bricks:
-                    user_exited = self.game_over(self.score,)
+                    user_exited = self.game_over(
+                        self.score,
+                    )
                     if user_exited:
                         return True
 
@@ -298,7 +300,9 @@ class TimeAttack(Page):
                 ball.x, ball.y, ball.dx, ball.dy = ball.move_ball(dt, self.player)
 
             if all(ball.y >= self.height - 60 for ball in self.balls):
-                user_exited = self.game_over(self.score,)
+                user_exited = self.game_over(
+                    self.score,
+                )
                 if user_exited:
                     self.balls = [
                         Ball(

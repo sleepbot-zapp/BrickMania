@@ -8,6 +8,7 @@ from helpers import AutoEnum
 
 class NavigationAction(AutoEnum):
     """Enum to define navigation actions."""
+
     UP: int
     DOWN: int
     SELECT: int
@@ -34,7 +35,7 @@ class MainMenu(Page):
         self.selected_option: int = 0
         self.options = options or ("Play", "Settings", "Info")
         self.texts = ("BRICKMANIA", "Press Q to Quit", "Press Enter to Select")
-        self._tiles = None  
+        self._tiles = None
 
     def generate(
         self,
@@ -49,7 +50,12 @@ class MainMenu(Page):
         if not self._tiles:
             self._tiles = [
                 FallingTile(
-                    brick_width, brick_height, self.width, self.height, self.scale, color
+                    brick_width,
+                    brick_height,
+                    self.width,
+                    self.height,
+                    self.scale,
+                    color,
                 )
                 for _ in range(20)
             ]
@@ -75,7 +81,7 @@ class MainMenu(Page):
                     return NavigationAction.UP
                 elif event.key == pygame.K_RETURN:
                     return NavigationAction.SELECT
-        return NavigationAction.NONE  
+        return NavigationAction.NONE
 
     def _render_menu(self, color: Color) -> None:
         """Render the main menu UI elements on the screen."""

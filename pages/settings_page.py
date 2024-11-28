@@ -2,7 +2,7 @@ import typing
 import pygame
 from helpers import AutoEnum
 from .pages import Page
-from models import Color
+from models import Color, Session
 
 
 class SettingsOption(AutoEnum):
@@ -142,12 +142,14 @@ class Settings(Page):
                         if not self.game.music_is_playing and self.game.volume > 0:
                             self.game.music_is_playing = True
                             pygame.mixer.music.play(-1)
+                            print("zoo", self.update_db_settings("Volume", self.game.volume))
                     elif e.key == pygame.K_LEFT:
                         self.game.volume = max(self.game.volume - 0.1, 0.0)
                         pygame.mixer.music.set_volume(self.game.volume)
                         if self.game.volume == 0 and self.game.music_is_playing:
                             self.game.music_is_playing = False
                             pygame.mixer.music.stop()
+                            print("no", self.update_db_settings("Volume", self.game.volume))
 
             pygame.display.flip()
 

@@ -14,10 +14,10 @@ class ResponseObject:
     def __init__(self, **data: typing.Dict[str, typing.Any]):
         """
         Initializes the object with dynamic attributes based on the keys in data.
-        
+
         :param data: A dictionary of attributes to set as object properties.
         """
-        
+
         for key, value in data.items():
             setattr(self, key, value)
 
@@ -27,13 +27,19 @@ class ResponseObject:
 
     def __repr__(self):
         """Return a string representation of the object excluding the 'data' attribute."""
-        
+
         attributes = {key: value for key, value in self.__dict__.items()}
         return f"{self.__class__.__name__}({', '.join([f'{k}={v!r}' for k, v in attributes.items()])})"
 
 
 class Database:
-    def __init__(self, db_file="database.zdb", key_file="db_key.zkey", iv_file="db_iv.ziv", return_code_message=True):
+    def __init__(
+        self,
+        db_file="database.zdb",
+        key_file="db_key.zkey",
+        iv_file="db_iv.ziv",
+        return_code_message=True,
+    ):
         """
         Initializes the FileDatabase instance.
         :param db_file: The path to the database file (default: "database.zdb")
@@ -46,7 +52,7 @@ class Database:
         self.lock_file = f"{db_file}.lock"
         self.key_file = key_file
         self.iv_file = iv_file
-        self.data = {}  
+        self.data = {}
         self.return_code_message = return_code_message
         self.key = self._load_or_generate_key(self.key_file, 16)
         self.iv = self._load_or_generate_key(self.iv_file, 16)
@@ -102,7 +108,9 @@ class Database:
                     if encrypted_data:
                         decrypted_data = self._decrypt(encrypted_data)
                         self.data = json.loads(decrypted_data)
-                        return self._generate_response(3, "Database integrity check failed.")
+                        return self._generate_response(
+                            3, "Database integrity check failed."
+                        )
                     else:
                         self.data = {}
                 return self._generate_response(1, "Database loaded successfully.")
@@ -115,7 +123,11 @@ class Database:
         """Generates the response object, including or excluding the code/message based on the toggle."""
         response_obj = ResponseObject(**(data if isinstance(data, dict) else {}))
         if self.return_code_message:
-            return {"Response Code": code, "Response Message": message, "Response": response_obj}
+            return {
+                "Response Code": code,
+                "Response Message": message,
+                "Response": response_obj,
+            }
         else:
             return response_obj
 
@@ -129,7 +141,7 @@ class Session:
         """
         self.db = db
         self.session_type = session_type
-        self.staged_data = {}  
+        self.staged_data = {}
         self.db_loaded = False
 
     def __enter__(self):
@@ -153,9 +165,13 @@ class Session:
         """Update a key-value pair in the staging area."""
         if key in self.db.data or key in self.staged_data:
             self.staged_data[key] = value
-            return self.db._generate_response(1, f"Staged update: {key} -> {value}", {key: value})
+            return self.db._generate_response(
+                1, f"Staged update: {key} -> {value}", {key: value}
+            )
         else:
-            return self.db._generate_response(2, f"Key '{key}' not found in the database.", None)
+            return self.db._generate_response(
+                2, f"Key '{key}' not found in the database.", None
+            )
 
     def delete(self, key):
         """Stage the deletion of a key-value pair."""
@@ -163,7 +179,9 @@ class Session:
             self.staged_data[key] = None
             return self.db._generate_response(1, f"Staged deletion: {key}")
         else:
-            return self.db._generate_response(2, f"Key '{key}' not found in the database.", None)
+            return self.db._generate_response(
+                2, f"Key '{key}' not found in the database.", None
+            )
 
     def drop(self):
         """Stage the deletion of all keys and values."""
@@ -179,12 +197,16 @@ class Session:
 
     def show_all(self):
         """Return all committed key-value pairs."""
-        return self.db._generate_response(1, "All committed data retrieved.", self.db.data)
+        return self.db._generate_response(
+            1, "All committed data retrieved.", self.db.data
+        )
 
     def show_staged(self):
         """Return all staged key-value pairs."""
         if self.staged_data:
-            return self.db._generate_response(1, "All staged data retrieved.", self.staged_data)
+            return self.db._generate_response(
+                1, "All staged data retrieved.", self.staged_data
+            )
         else:
             return self.db._generate_response(2, "No staged changes.", None)
 
@@ -193,9 +215,9 @@ class Session:
         try:
             self.db._acquire_lock()
             for key, value in self.staged_data.items():
-                if value is None:  
+                if value is None:
                     self.db.data.pop(key, None)
-                else:  
+                else:
                     self.db.data[key] = value
             self.staged_data.clear()
 

@@ -127,7 +127,7 @@ class DarkModeGame(Page):
         text = font_for_game_over.render(
             "Game Over! Press ENTER to restart", True, Color.RED
         )
-        highscore = self.update_db("Dark", score)
+        highscore = self.update_db_highscore("Dark", score)
         text2 = font_for_game_over.render(
             f"High Score = {[score, highscore][highscore > score]}",
             True,

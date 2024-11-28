@@ -18,8 +18,10 @@ from pages import Info, MainMenu, Settings, ModeSelection
 from pages import loading_screen
 from models import Database, Session
 
+
 class GameState(AutoEnum):
     """Enum to manage game states."""
+
     MAIN_MENU: int
     MODE_SELECTION: int
     SETTINGS: int
@@ -29,13 +31,16 @@ class GameState(AutoEnum):
 
 def handle_event(state):
     """Decorator to handle state-specific events."""
+
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             if self.current_state == state:
                 return func(self, *args, **kwargs)
             return None
+
         return wrapper
+
     return decorator
 
 
@@ -54,7 +59,6 @@ class Game:
         self.clock = pygame.time.Clock()
         self._music_files = track_path, track1, track2, track3
         self.music_is_playing = False
-        self.volume = 0.0
         self.trails = {}
         self.current_state = GameState.MAIN_MENU
         self.main_menu = None
@@ -64,8 +68,12 @@ class Game:
         self.db = Database(
             db_file="BrickMania.zdb",
             key_file="BrickMania_key.zkey",
-            iv_file="Brickmania_iv.ziv"
+            iv_file="Brickmania_iv.ziv",
         )
+        self.session = Session(self.db, "W")
+        self.volume = 0.0
+        with self.session as conn:
+            print('poo', conn.search("Volume"))
 
     def pre_load_music(self):
         """Pre-load music with set volume."""
@@ -101,16 +109,14 @@ class Game:
         selected_option = self.main_menu.generate(
             self.colors, brick_width, brick_height
         )
-        if selected_option == 0:  
+        if selected_option == 0:
             self.current_state = GameState.MODE_SELECTION
-        elif selected_option == 1:  
+        elif selected_option == 1:
             self.current_state = GameState.SETTINGS
-        elif selected_option == 2:  
+        elif selected_option == 2:
             self.current_state = GameState.INFO
-        elif selected_option == 3:  
+        elif selected_option == 3:
             self.current_state = GameState.EXIT
-
-
 
     @handle_event(GameState.MODE_SELECTION)
     def handle_mode_selection(self):
@@ -153,7 +159,7 @@ class Game:
             self.handle_settings()
             self.handle_info()
 
-            if self.music_is_playing:
+            if self.volume:
                 pygame.mixer.music.load(self._music_files[0])
                 pygame.mixer.music.play(-1)
             else:
@@ -161,6 +167,7 @@ class Game:
 
             pygame.display.update()
             self.clock.tick(60)
+
 
 if __name__ == "__main__":
     game = Game()

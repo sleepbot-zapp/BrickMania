@@ -109,7 +109,7 @@ class MainGame(Page):
         text = font_for_game_over.render(
             "Game Over! Press ENTER to restart", True, self.color.RED
         )
-        highscore = self.update_db("Classic", score)
+        highscore = self.update_db_highscore("Classic", score)
         text2 = font_for_game_over.render(
             f"High Score = {[score, highscore][highscore > score]}",
             True,
