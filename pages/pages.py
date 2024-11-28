@@ -1,3 +1,5 @@
+from models import Session
+
 class Page:
     def __init__(self, screen, height, width, scale, game) -> None:
         self.screen = screen
@@ -15,3 +17,14 @@ class Page:
         elif right_align:
             x -= text_rect.width
         self.screen.blit(text_surface, (x, y))
+
+    def update_db(self, mode, score):
+        with Session(self.game.db, "w") as conn:
+            resp = conn.search(mode)
+            highscore = score
+            if resp["Response Code"] == 2:
+                conn.add(mode, score)
+            elif resp["Response"][mode] < score:
+                conn.update(mode, score)
+            else: highscore = resp['Response'][mode]
+            return highscore

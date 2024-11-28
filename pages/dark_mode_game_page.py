@@ -2,7 +2,6 @@ import random
 import sys
 import time
 import pygame
-from helpers import settings
 from helpers.constants import ball_radius, bottom_font, font
 from models import (
     Ball,
@@ -24,7 +23,6 @@ class DarkModeGame(Page):
     def __init__(self, screen, height, width, scale, game) -> None:
         super().__init__(screen, height, width, scale, game)
         self.fonts = (pygame.font.SysFont(None, int(42 * self.scale)),)
-        self.data = settings.Settings.open()
         self.score = 0
         self.powerups = []
         self.special_balls = []
@@ -111,7 +109,7 @@ class DarkModeGame(Page):
             ),
         )
 
-    def game_over(self, score, settings: settings.Settings):
+    def game_over(self, score):
         self.balls = [
             Ball(
                 screen=self.screen,
@@ -129,17 +127,13 @@ class DarkModeGame(Page):
         text = font_for_game_over.render(
             "Game Over! Press ENTER to restart", True, Color.RED
         )
-        highscore = settings.highscore
+        highscore = self.update_db("Dark", score)
         text2 = font_for_game_over.render(
             f"High Score = {[score, highscore][highscore > score]}",
             True,
             [Color.GREEN, Color.YELLOW][highscore > score],
         )
         text3 = font_for_game_over.render(f"Your Score = {score}", True, Color.YELLOW)
-
-        if highscore < score:
-            settings.highscore = score
-            settings.flush()
 
         self.screen.blit(
             text,
@@ -295,7 +289,7 @@ class DarkModeGame(Page):
                 ball.x, ball.y, ball.dx, ball.dy = ball.move_ball(dt, self.player)
 
             if all(ball.y >= self.height - 60 for ball in self.balls):
-                user_exited = self.game_over(self.score, self.data)
+                user_exited = self.game_over(self.score)
                 if user_exited:
                     self.balls = [
                         Ball(
@@ -333,7 +327,7 @@ class DarkModeGame(Page):
                 for brick in self.bricks:
                     brick.y += brick.speed * dt
                     if brick.y + brick.height >= self.height:
-                        user_exited = self.game_over(self.score, self.data)
+                        user_exited = self.game_over(self.score)
                         if user_exited:
                             return True
                         else:

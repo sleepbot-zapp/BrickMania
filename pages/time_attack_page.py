@@ -3,8 +3,6 @@ import sys
 import time
 
 import pygame
-
-from helpers import settings
 from helpers.constants import ball_radius, bottom_font, font
 from models import (
     Ball,
@@ -13,6 +11,7 @@ from models import (
     draw_bricks,
     drop_powerup,
     create_new_bricks,
+    Session
 )
 from .pages import Page
 
@@ -26,7 +25,6 @@ class TimeAttack(Page):
     def __init__(self, screen, height, width, scale, game, color) -> None:
         super().__init__(screen, height, width, scale, game)
         self.fonts = (pygame.font.SysFont(None, int(42 * self.scale)),)
-        self.data = settings.Settings.open()
         self.score = 0
         self.powerups = []
         self.special_balls = []
@@ -100,7 +98,7 @@ class TimeAttack(Page):
             ),
         )
 
-    def game_over(self, score, settings: settings.Settings):
+    def game_over(self, score):
         self.balls = [
             Ball(
                 screen=self.screen,
@@ -118,7 +116,7 @@ class TimeAttack(Page):
         text = font_for_game_over.render(
             "Game Over! Press ENTER to restart", True, self.color.RED
         )
-        highscore = settings.highscore
+        highscore = self.update_db("Time", score)
         text2 = font_for_game_over.render(
             f"High Score = {[score, highscore][highscore > score]}",
             True,
@@ -127,10 +125,6 @@ class TimeAttack(Page):
         text3 = font_for_game_over.render(
             f"Your Score = {score}", True, self.color.YELLOW
         )
-
-        if highscore < score:
-            settings.highscore = score
-            settings.flush()
 
         self.screen.blit(
             text,
@@ -208,7 +202,7 @@ class TimeAttack(Page):
 
             if self.timer <= 0:
                 if self.bricks:
-                    user_exited = self.game_over(self.score, self.data)
+                    user_exited = self.game_over(self.score,)
                     if user_exited:
                         return True
 
@@ -304,7 +298,7 @@ class TimeAttack(Page):
                 ball.x, ball.y, ball.dx, ball.dy = ball.move_ball(dt, self.player)
 
             if all(ball.y >= self.height - 60 for ball in self.balls):
-                user_exited = self.game_over(self.score, self.data)
+                user_exited = self.game_over(self.score,)
                 if user_exited:
                     self.balls = [
                         Ball(

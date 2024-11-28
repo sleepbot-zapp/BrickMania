@@ -12,6 +12,7 @@ class NavigationAction(AutoEnum):
     DOWN: int
     SELECT: int
     NONE: int
+    EXIT: int
 
 
 class MainMenu(Page):

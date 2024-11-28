@@ -16,7 +16,7 @@ from helpers import (
 from models import Color
 from pages import Info, MainMenu, Settings, ModeSelection
 from pages import loading_screen
-
+from models import Database, Session
 
 class GameState(AutoEnum):
     """Enum to manage game states."""
@@ -61,6 +61,11 @@ class Game:
         self.settings_page = None
         self.info_page = None
         self.mode_selection = None
+        self.db = Database(
+            db_file="BrickMania.zdb",
+            key_file="BrickMania_key.zkey",
+            iv_file="Brickmania_iv.ziv"
+        )
 
     def pre_load_music(self):
         """Pre-load music with set volume."""
@@ -96,13 +101,13 @@ class Game:
         selected_option = self.main_menu.generate(
             self.colors, brick_width, brick_height
         )
-        if selected_option == 0:  # Play
+        if selected_option == 0:  
             self.current_state = GameState.MODE_SELECTION
-        elif selected_option == 1:  # Settings
+        elif selected_option == 1:  
             self.current_state = GameState.SETTINGS
-        elif selected_option == 2:  # Info
+        elif selected_option == 2:  
             self.current_state = GameState.INFO
-        elif selected_option == 3:  # Exit
+        elif selected_option == 3:  
             self.current_state = GameState.EXIT
 
 
@@ -137,10 +142,11 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.screen.fill(self.colors.BLACK)
 
-        while self.current_state != GameState.EXIT:
+        while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.current_state = GameState.EXIT
+                    pygame.quit()
+                    sys.exit()
 
             self.handle_main_menu()
             self.handle_mode_selection()
@@ -155,10 +161,6 @@ class Game:
 
             pygame.display.update()
             self.clock.tick(60)
-
-        pygame.quit()
-        sys.exit()
-
 
 if __name__ == "__main__":
     game = Game()

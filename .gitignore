@@ -2,3 +2,6 @@ venv/
 maingame2.py
 __pycache__/
 test.py
+BrickMania_key.zkey
+Brickmania_iv.ziv
+BrickMania.zdb

@@ -1,5 +1,4 @@
 __all__ = [
-    "Settings",
     "SCALE",
     "WIDTH",
     "HEIGHT",
@@ -61,5 +60,4 @@ from helpers.constants import (
     trail_length,
 )
 from helpers.loading_combinations import combs
-from helpers.settings import Settings
 from helpers.autoenum import AutoEnum
