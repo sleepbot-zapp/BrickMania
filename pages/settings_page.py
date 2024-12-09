@@ -6,19 +6,19 @@ from models import Color, Session
 
 
 class SettingsOption(AutoEnum):
-    MUSIC = 0
-    COLORS = 1
+    MUSIC: int
+    COLORS: int
 
 
 class ColorComponent(AutoEnum):
-    RED = 0
-    GREEN = 1
-    BLUE = 2
+    RED: int
+    GREEN: int
+    BLUE: int
 
 
 class EditingMode(AutoEnum):
-    NONE = 0
-    EDITING = 1
+    NONE: int
+    EDITING: int
 
 
 class Settings(Page):

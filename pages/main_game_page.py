@@ -10,7 +10,6 @@ from models import (
     draw_bricks,
     drop_powerup,
     create_new_bricks,
-    Session,
 )
 from .pages import Page
 
