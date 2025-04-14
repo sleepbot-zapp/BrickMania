@@ -16,7 +16,6 @@ from helpers import (
 from models import Color
 from pages import Info, MainMenu, Settings, ModeSelection
 from pages import loading_screen
-from models import Database, Session
 
 
 class GameState(AutoEnum):
@@ -31,16 +30,13 @@ class GameState(AutoEnum):
 
 def handle_event(state):
     """Decorator to handle state-specific events."""
-
     def decorator(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             if self.current_state == state:
                 return func(self, *args, **kwargs)
             return None
-
         return wrapper
-
     return decorator
 
 
@@ -65,12 +61,6 @@ class Game:
         self.settings_page = None
         self.info_page = None
         self.mode_selection = None
-        self.db = Database(
-            db_file="BrickMania.zdb",
-            key_file="BrickMania_key.zkey",
-            iv_file="Brickmania_iv.ziv",
-        )
-        self.session = Session(self.db, "W")
         self.volume = 0.0
 
     def pre_load_music(self):

@@ -10,6 +10,7 @@ from models import (
     draw_bricks,
     drop_powerup,
     create_new_bricks,
+    Color
 )
 from .pages import Page
 
@@ -108,12 +109,14 @@ class MainGame(Page):
         text = font_for_game_over.render(
             "Game Over! Press ENTER to restart", True, self.color.RED
         )
-        highscore = self.update_db_highscore("Classic", score)
         text2 = font_for_game_over.render(
-            f"High Score = {[score, highscore][highscore > score]}",
-            True,
-            [self.color.GREEN, self.color.YELLOW][highscore > score],
+            "40",True,
+            [Color.GREEN, Color.YELLOW][0],
         )
+#            f"High Score = {[score, highscore][highscore > score]}",
+        #     True,
+        #     [Color.GREEN, Color.YELLOW][highscore > score],
+        # )
         text3 = font_for_game_over.render(
             f"Your Score = {score}", True, self.color.YELLOW
         )

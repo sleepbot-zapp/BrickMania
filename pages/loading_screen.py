@@ -1,7 +1,5 @@
 import math
 import random
-from random import choice, uniform
-from sys import exit
 from pygame import (
     K_LSHIFT,
     K_RETURN,
@@ -32,8 +30,7 @@ def loading_screen(color):
     angle = 0
 
     spinner_center = [WIDTH // 2, HEIGHT // 2]
-    time = 0
-    move_speed = 2
+    frame_count = 0
 
     tip_font = SysFont("Arial", 24)
     tips = [
@@ -43,15 +40,28 @@ def loading_screen(color):
         "Stay active to avoid the paddle drifting!",
         "Press DOWN to destroy 5 random bricks!",
     ]
-    tip = choice(tips)
+    tip = random.choice(tips)
 
     rotation_angle_x = 30
     rotation_angle_y = 30
+
+    def rotate_3d(x, y, z, angle_x, angle_y):
+        """Rotate a point in 3D space around X and Y axes."""
+        y, z = (
+            y * math.cos(math.radians(angle_x)) - z * math.sin(math.radians(angle_x)),
+            y * math.sin(math.radians(angle_x)) + z * math.cos(math.radians(angle_x)),
+        )
+        x, z = (
+            x * math.cos(math.radians(angle_y)) + z * math.sin(math.radians(angle_y)),
+            -x * math.sin(math.radians(angle_y)) + z * math.cos(math.radians(angle_y)),
+        )
+        return x, y
 
     while True:
         screen.fill(color.BLACK)
         clock.tick(60)
 
+        # Header
         loading_text = tip_font.render("BrickMania", True, color.WHITE)
         screen.blit(
             loading_text,
@@ -59,100 +69,44 @@ def loading_screen(color):
         )
 
         tip_text = tip_font.render("Tip: " + tip, True, color.WHITE)
-        screen.blit(
-            tip_text, (WIDTH // 2 - tip_text.get_width() // 2, HEIGHT // 2 + 123)
-        )
+        screen.blit(tip_text, (WIDTH // 2 - tip_text.get_width() // 2, HEIGHT // 2 + 123))
 
-        spinner_center[0] = WIDTH // 2 + 100 * math.sin(time * 0.02) + uniform(-2, 2)
-        spinner_center[1] = HEIGHT // 2 + 50 * math.cos(time * 0.03) + uniform(-2, 2)
+        # Animate spinner center
+        spinner_center[0] = WIDTH // 2 + 100 * math.sin(frame_count * 0.02) + random.uniform(-2, 2)
+        spinner_center[1] = HEIGHT // 2 + 50 * math.cos(frame_count * 0.03) + random.uniform(-2, 2)
 
         scale_factor_x = 1 + (spinner_center[0] - WIDTH // 2) / WIDTH
         scale_factor_y = 1 - (spinner_center[1] - HEIGHT // 2) / HEIGHT
         scale_factor = max(0.5, min(2, scale_factor_x * scale_factor_y))
 
-        def rotate_3d(x, y, z, angle_x, angle_y):
-            """Rotate a point in 3D space around X and Y axes."""
-
-            new_y = y * math.cos(math.radians(angle_x)) - z * math.sin(
-                math.radians(angle_x)
-            )
-            new_z = y * math.sin(math.radians(angle_x)) + z * math.cos(
-                math.radians(angle_x)
-            )
-            y, z = new_y, new_z
-
-            new_x = x * math.cos(math.radians(angle_y)) + z * math.sin(
-                math.radians(angle_y)
-            )
-            new_z = -x * math.sin(math.radians(angle_y)) + z * math.cos(
-                math.radians(angle_y)
-            )
-            x, z = new_x, new_z
-
-            return x, y, z
-
         for i in range(spinner_segments):
-            segment_angle_start = angle + (i * angle_per_segment)
-            segment_angle_end = segment_angle_start + angle_per_segment
+            seg_start = angle + (i * angle_per_segment)
+            seg_end = seg_start + angle_per_segment
 
-            x1 = (
-                radius
-                * scale_factor
-                * func1(math.cos(math.radians(segment_angle_start)))
-            )
-            y1 = (
-                radius
-                * scale_factor
-                * func1(math.sin(math.radians(segment_angle_start)))
-            )
-            z1 = 0
+            x1 = radius * scale_factor * func1(math.cos(math.radians(seg_start)))
+            y1 = radius * scale_factor * func1(math.sin(math.radians(seg_start)))
+            x2 = radius * scale_factor * func2(math.cos(math.radians(seg_end)))
+            y2 = radius * scale_factor * func2(math.sin(math.radians(seg_end)))
 
-            x2 = (
-                radius * scale_factor * func2(math.cos(math.radians(segment_angle_end)))
-            )
-            y2 = (
-                radius * scale_factor * func2(math.sin(math.radians(segment_angle_end)))
-            )
-            z2 = 0
+            sx1, sy1 = rotate_3d(x1, y1, 0, rotation_angle_x, rotation_angle_y)
+            ex1, ey1 = rotate_3d(-x1, -y1, 0, rotation_angle_x, rotation_angle_y)
+            sx2, sy2 = rotate_3d(x2, y2, 0, rotation_angle_x, rotation_angle_y)
+            ex2, ey2 = rotate_3d(-x2, -y2, 0, rotation_angle_x, rotation_angle_y)
 
-            start_x1, start_y1, _ = rotate_3d(
-                x1, y1, z1, rotation_angle_x, rotation_angle_y
-            )
-            end_x1, end_y1, _ = rotate_3d(
-                -x1, -y1, z1, rotation_angle_x, rotation_angle_y
-            )
-            start_x2, start_y2, _ = rotate_3d(
-                x2, y2, z2, rotation_angle_x, rotation_angle_y
-            )
-            end_x2, end_y2, _ = rotate_3d(
-                -x2, -y2, z2, rotation_angle_x, rotation_angle_y
-            )
-
-            start_x1 += spinner_center[0]
-            start_y1 += spinner_center[1]
-            end_x1 += spinner_center[0]
-            end_y1 += spinner_center[1]
-            start_x2 += spinner_center[0]
-            start_y2 += spinner_center[1]
-            end_x2 += spinner_center[0]
-            end_y2 += spinner_center[1]
-
-            line(screen, color.BLUE, (end_x1, end_y1), (end_x2, end_y2), 3)
-            line(screen, color.RED, (start_x1, start_y1), (start_x2, start_y2), 3)
+            line(screen, color.BLUE, (ex1 + spinner_center[0], ey1 + spinner_center[1]),
+                 (ex2 + spinner_center[0], ey2 + spinner_center[1]), 3)
+            line(screen, color.RED, (sx1 + spinner_center[0], sy1 + spinner_center[1]),
+                 (sx2 + spinner_center[0], sy2 + spinner_center[1]), 3)
 
         angle += spinner_speed
-        time += move_speed
+        frame_count += 1
 
-        bottom_text = bottom_font.render("Press Enter to Continue", True, (92, 95, 119))
-        screen.blit(
-            bottom_text,
-            (
-                WIDTH - bottom_text.get_width() - 10,
-                HEIGHT - bottom_text.get_height() - 10,
-            ),
-        )
-        bottom_text = bottom_font.render("Press Shift to go back", True, (92, 95, 119))
-        screen.blit(bottom_text, (10, HEIGHT - bottom_text.get_height() - 10))
+        # Bottom prompts
+        shift_text = bottom_font.render("Press Shift to go back", True, (92, 95, 119))
+        screen.blit(shift_text, (10, HEIGHT - shift_text.get_height() - 10))
+
+        enter_text = bottom_font.render("Press Enter to Continue", True, (92, 95, 119))
+        screen.blit(enter_text, (WIDTH - enter_text.get_width() - 10, HEIGHT - enter_text.get_height() - 10))
 
         for e in event.get():
             if e.type == QUIT:
@@ -161,7 +115,7 @@ def loading_screen(color):
             if e.type == KEYDOWN:
                 if e.key == K_RETURN:
                     return
-                if e.key in (K_RSHIFT, K_LSHIFT):
+                if e.key in (K_LSHIFT, K_RSHIFT):
                     return True
             if e.type == MOUSEMOTION and e.buttons[0]:
                 rotation_angle_x = max(0, min(90, rotation_angle_x + e.rel[1] * 0.5))

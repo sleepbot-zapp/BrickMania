@@ -151,7 +151,7 @@ class Info(Page):
         total_text_height = line_height * len(rendered_lines)
         running = True
         scroll_speed = 1
-        tooltips = ["Saad", "Zapp", "Aarthex"]
+        tooltips = ["Aarthex", "Saad", "Zapp", ]
 
         while running:
             mouse_pos = pygame.mouse.get_pos()
